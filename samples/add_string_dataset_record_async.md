@@ -1,0 +1,46 @@
+# add_string_dataset_record_async.py
+This sample creates a dataset comprising string records
+if one does not exist and adds a record to the dataset.
+The sample uses async methods to commit a dataset and records
+and illustrates async operation using asyncio.
+
+## Summary
+A set is a collection of objects.
+A named set of data records is a dataset.
+Such datasets can implement any point-in-time (PIT) or bitemporal data
+and prove this provenance to third parties.
+The sample demonstrates the higher-order async vBase dataset and string record abstractions
+that hide the details of the object and record content id (CID) calculation (hashing).
+This example builds on the add_string_dataset_record.py code and
+illustrates async methods.
+
+## Detailed Description:
+
+```python
+vbc = VBaseClient.create_instance_from_env(".env")
+```
+Create a vBase object using a Web3 HTTP commitment service.
+The commitment service is a smart contract running on a blockchain.
+The initialization uses connection parameters specified in environment variables.
+
+```python
+VBaseDatasetAsync.create(vbc, name=SET_NAME, record_type=VBaseStringObject)
+```
+Create the test dataset asynchronously.
+This factory method constructs a `VBaseDatasetAsync` object
+using the `asyncio` event loop.
+Arguments and mechanics are similar to those of `VBaseDataset` object creation.
+
+```python
+ds.add_record_async("TestRecord")
+```
+Add string record to the dataset asynchronously.
+This method makes an object commitment using the `asyncio` event loop.
+Arguments and mechanics are similar to those of `ds.add_record()` call.
+
+```python
+assert ds.verify_commitments()
+```
+Verify that a given set commitment exists for a given user.
+This will typically be called by the data consumer to verify
+a producer's claims about dataset provenance.

@@ -1,0 +1,22 @@
+# Py ignored files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IntelliJ, IDEA, PyCharm
+/out/
+.idea/
+.idea_modules/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# VS Code
+.vscode/
+
+# DS Store files
+*.DS_Store
+
+# Config
+.env*
