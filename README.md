@@ -29,11 +29,12 @@ pip install git+https://github.com/validityBase/vbase-py.git@main
 
 ### Configure vBase access
 
+Please contact vBase for help configuring your environment and to obtain an API key.
+An API key provides simple managed access to commitment services
+without the need to worry about blockchains and cryptocurrency.
+
 If you have previously configured vBase access, for instance when using the `vbase-py-tools` package,
 you can re-use those settings by copying `.env` file to the `vbase-py-samples` folder.
 If this is your first time working with vBase, you should configure new settings.
-
-If this is your first time accessing vBase, please install the `vbase-py-tools` package 
+If this is your first time accessing vBase, please install the `vbase-py-tools` package
 and follow the setup instructions using the `config_env` script provided in that package. 
-
-You can also contact vBase for help configuring your environment and to obtain an API key.
