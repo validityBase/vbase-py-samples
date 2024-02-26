@@ -1,1 +1,2 @@
-vbase==0.0.1
+git+https://github.com/validityBase/vbase-py.git#egg=vbase
+
