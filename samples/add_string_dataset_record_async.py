@@ -30,7 +30,7 @@ async def main():
     """
 
     # Initialize vBase using environment variables.
-    vbc = VBaseClient.create_instance_from_env(".env")
+    vbc = VBaseClient.create_instance_from_env()
 
     # Create the dataset object, if necessary.
     # Call the async VBaseDatasetAsync.create() factory method

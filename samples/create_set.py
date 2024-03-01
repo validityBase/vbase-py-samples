@@ -12,7 +12,7 @@ SET_NAME = "TestDataset"
 
 
 # Initialize vBase using environment variables.
-vbc = VBaseClient.create_instance_from_env(".env")
+vbc = VBaseClient.create_instance_from_env()
 
 # Create the set commitment.
 receipt = vbc.add_named_set(SET_NAME)

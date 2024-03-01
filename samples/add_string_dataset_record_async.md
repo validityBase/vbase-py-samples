@@ -17,7 +17,7 @@ illustrates async methods.
 ## Detailed Description:
 
 ```python
-vbc = VBaseClient.create_instance_from_env(".env")
+vbc = VBaseClient.create_instance_from_env()
 ```
 Create a vBase object using a Web3 HTTP commitment service.
 The commitment service is a smart contract running on a blockchain.
