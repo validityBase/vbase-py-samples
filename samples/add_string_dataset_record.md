@@ -25,7 +25,7 @@ ds = VBaseDataset(vbc, SET_NAME, VBaseStringObject)
 ```
 Create the test dataset.
 If this is a new dataset,
-this operation records that the user with the above PRIVATE_KEY
+this operation records that the user with the above VBASE_COMMITMENT_SERVICE_PRIVATE_KEY
 has created the named dataset.
 Dataset creation is idempotent.
 If this is an existing dataset, the call is ignored. 

@@ -24,7 +24,7 @@ receipt = vbc.add_named_set(SET_NAME)
 print("add_named_set() receipt:\n%s", pprint.pformat(receipt))
 ```
 Create the test set commitment.
-This operation records that the user with the above PRIVATE_KEY
+This operation records that the user with the above VBASE_COMMITMENT_SERVICE_PRIVATE_KEY
 has created the named dataset.
 Such commitments are used to validate that a given collection of user datasets is complete
 and mitigates Sybil attacks (https://en.wikipedia.org/wiki/Sybil_attack).

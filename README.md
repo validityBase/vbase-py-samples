@@ -46,14 +46,14 @@ Below is a summary of the configuration settings from the resulting `.env` file:
 # Forwarder Configuration
 # URL of the production vBase forwarder service.
 # Users should not change this value.
-FORWARDER_ENDPOINT_URL="https://api.vbase.com/forwarder/"
+VBASE_FORWARDER_URL="https://api.vbase.com/forwarder/"
 # User API key for accessing the vBase forwarder service.
 # Users should set this value to the API key they received from vBase.
-FORWARDER_API_KEY="USER_VBASE_API_KEY"
+VBASE_API_KEY="USER_VBASE_API_KEY"
 
 # User Private Key
 # The private key for making stamps/commitments.
 # This key signs and controls all operations -- it must be kept secret.
 # vBase will never request this value.
-PRIVATE_KEY="USER_PRIVATE_KEY"
+VBASE_COMMITMENT_SERVICE_PRIVATE_KEY="USER_VBASE_COMMITMENT_SERVICE_PRIVATE_KEY"
 ```
