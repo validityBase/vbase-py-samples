@@ -29,7 +29,7 @@ The following steps guide you through this process of setting up vBase Python SD
 3. **Set up your environment:**
 
    1. **Option 1: Copy your existing environment:**
-        If you have previously configured vBase access, for instance when using the `vbase-py-tools` package, you can re-use those settings by copying `.env` file to the `vbase-py-samples` folder:
+        If you have previously configured vBase access, for instance, when using the `vbase-py-tools` package, you can re-use those settings by copying `.env` file to the `vbase-py-samples` folder:
         ```bash
         cp ~/validityBase/vbase-py-tools/.env ~/validityBase/vbase-py-samples
         ```
@@ -57,7 +57,7 @@ The following steps guide you through this process of setting up vBase Python SD
     # vBase will never request this value.
     VBASE_COMMITMENT_SERVICE_PRIVATE_KEY="USER_VBASE_COMMITMENT_SERVICE_PRIVATE_KEY"
     ```
-    You can keep these values in `.env` file in the working directory of your Python code or add them to your command environment.
+    You can keep these values in the `.env` file in the working directory of your Python code or add them to your command environment.
 
 5. **You are all set!**
     You can make and verify commitments. Please review the samples and their documentation for additional info.
