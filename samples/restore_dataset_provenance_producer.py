@@ -89,6 +89,7 @@ for i in reversed(seq):
     s3_dest_obj_name = f"{copy_folder_name}/obj_{i}.txt"
     s3.copy(copy_source, BUCKET_NAME, s3_dest_obj_name)
     print(f"Copied {copy_source} to {s3_dest_obj_name}")
+
 # Display the copy objects as a time series.
 objects_receipt = s3.list_objects_v2(Bucket=BUCKET_NAME, Prefix=copy_folder_name + "/")
 print("S3 objects copied:")
@@ -108,6 +109,7 @@ for r in objects_receipt["Contents"]:
     vb_ds_copy.timestamps.append(
         str(pd.Timestamp(response["LastModified"]).tz_convert("UTC"))
     )
+
 print("Dataset loaded:")
 pprint.pprint(vb_ds_copy.to_pd_object())
 
@@ -120,18 +122,24 @@ for log in l_log:
 # Metadata restoration
 
 # Fix the timestamps.
+# Create the indexing service.
 indexing_service = Web3HTTPIndexingService.create_instance_from_commitment_service(
     vbc.commitment_service
 )
+# Find the commitment receipts for the set.
 commitment_receipts = indexing_service.find_user_set_objects(
     user=vb_ds_copy.owner, set_cid=vb_ds_copy.cid
 )
+# Fix the timestamps using the commitment receipts.
 for i, vb_ds_record in enumerate(vb_ds_copy.records):
     # Find the matching receipt and update the corresponding timestamp.
     obj_cid = vb_ds_record.get_cid()
     matches = [r["objectCid"] == obj_cid for r in commitment_receipts]
     i_match = next((i for i, v in enumerate(matches) if v), -1)
     vb_ds_copy.timestamps[i] = commitment_receipts[i_match]["timestamp"]
+
+print("Dataset fixed:")
+pprint.pprint(vb_ds_copy.to_pd_object())
 
 # Verify the records again.
 success, l_log = vb_ds_copy.verify_commitments()
