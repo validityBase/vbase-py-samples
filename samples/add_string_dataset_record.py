@@ -1,5 +1,6 @@
-"""
-This sample creates a dataset comprising string records
+# # add_string_dataset_record
+
+"""This sample creates a dataset comprising string records
 if one does not exist and adds a record to the dataset.
 
 The sample demonstrates the higher order vBase dataset and string record abstractions
@@ -31,4 +32,4 @@ receipt = ds.add_record("TestRecord")
 print(f"add_record() receipt:\n{pprint.pformat(receipt)}")
 
 # Validate the dataset commitments.
-assert ds.verify_commitments()
+assert ds.verify_commitments()[0]

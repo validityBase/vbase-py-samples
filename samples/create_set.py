@@ -1,5 +1,6 @@
-"""
-This sample creates and validates a vBase set.
+# # create_set
+
+"""This sample creates and validates a vBase set.
 """
 
 import pprint

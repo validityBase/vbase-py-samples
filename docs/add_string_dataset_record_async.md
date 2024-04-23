@@ -39,7 +39,7 @@ This method makes an object commitment using the `asyncio` event loop.
 Arguments and mechanics are similar to those of `ds.add_record()` call.
 
 ```python
-assert ds.verify_commitments()
+assert ds.verify_commitments()[0]
 ```
 Verify that a given set commitment exists for a given user.
 This will typically be called by the data consumer to verify

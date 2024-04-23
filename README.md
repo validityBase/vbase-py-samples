@@ -1,6 +1,6 @@
 # vbase-py-samples
 
-vBase Python Samples
+vBase Python Software Development Kit (SDK) Samples
 
 -   Python 3.8+ support
 

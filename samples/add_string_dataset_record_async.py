@@ -1,5 +1,6 @@
-"""
-This sample creates a dataset comprising string records
+# # add_string_dataset_record_async
+
+"""This sample creates a dataset comprising string records
 if one does not exist and adds a record to the dataset.
 The sample uses async methods to commit dataset and records
 and illustrates async operation using asyncio.
@@ -62,7 +63,7 @@ async def main():
     print(f"add_record_async() receipt:\n{pprint.pformat(receipt)}")
 
     # Validate the dataset commitments.
-    assert ds.verify_commitments()
+    assert ds.verify_commitments()[0]
 
 
 asyncio.run(main())

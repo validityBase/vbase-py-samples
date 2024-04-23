@@ -41,7 +41,7 @@ A set record commitment establishes that a dataset record with a given CID
 has existed at a given time for a given set.
 
 ```python
-assert ds.verify_commitments()
+assert ds.verify_commitments()[0]
 ```
 Verify that a given set commitment exists for a given user.
 This will typically be called by the data consumer to verify
