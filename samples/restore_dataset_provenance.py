@@ -48,7 +48,7 @@ boto_client = create_s3_client_from_env()
 # ## Source dataset
 
 # Create the vBase dataset object.
-vb_ds = VBaseDataset(vbc, SET_NAME, VBaseIntObject)
+ds = VBaseDataset(vbc, SET_NAME, VBaseIntObject)
 print(f"Created dataset {SET_NAME}")
 
 # Create an integer sequence from 1 to 5.
@@ -57,7 +57,7 @@ seq = range(1, 6)
 # and the corresponding dataset objects.
 for i in seq:
     s3_obj_name = f"{FOLDER_NAME}/obj_{i}.txt"
-    vbase_receipt = vb_ds.add_record(i)
+    vbase_receipt = ds.add_record(i)
     print(f"Created dataset record {i}, receipt:\n{pprint.pformat(vbase_receipt)}")
     # Store the object after the commitment has been made
     # to ensure that the commitment timestamp precedes the object timestamp.
@@ -67,18 +67,18 @@ for i in seq:
     print(f"Created S3 object {i}, receipt:\n{pprint.pformat(s3_receipt)}")
 
 # Validate the dataset commitments.
-assert vb_ds.verify_commitments()[0]
+assert ds.verify_commitments()[0]
 
 # We have the dataset and its objects created.
 print("S3 objects:")
 print_s3_objects(boto_client, BUCKET_NAME, FOLDER_NAME)
 print("vBase dataset:")
-print(vb_ds.to_pd_object())
+print(ds.to_pd_object())
 
 
 # ## Dataset copy
 
-# Copy the bucket to another bucket, losing the timestamps.
+# Copy the folder to another folder, losing the timestamps.
 copy_s3_bucket(
     boto_client=boto_client,
     source_bucket_name=BUCKET_NAME,

@@ -23,7 +23,7 @@ The following steps guide you through this process of setting up vBase Python SD
 2. **Install the vBase Python SDK Samples:**
     Clone the `vbase-py-samples` GitHub repository:
     ```bash
-    pip install git+https://github.com/validityBase/vbase-py-samples.git
+    git clone https://github.com/validityBase/vbase-py-samples.git
     ```
 
 3. **Set up your environment:**

@@ -117,12 +117,12 @@ def copy_s3_bucket(
 
 
 def init_vbase_dataset_from_s3_objects(
-    vb_ds: VBaseDataset, boto_client: boto3.client, bucket_name: str, folder_name: str
+    ds: VBaseDataset, boto_client: boto3.client, bucket_name: str, folder_name: str
 ) -> VBaseDataset:
     """
     Get S3 objects and add them to a dataset.
 
-    :param vb_ds: The vBaseDataset object to initialize.
+    :param ds: The vBaseDataset object to initialize.
     :param boto_client: The boto3.client object.
     :param bucket_name: The bucket name.
     :param folder_name: The folder name within the bucket.
@@ -132,15 +132,15 @@ def init_vbase_dataset_from_s3_objects(
     s3_objs = get_s3_objects(boto_client, bucket_name, folder_name)
     if s3_objs is None:
         print("No objects")
-        return vb_ds
+        return ds
     # Append object data and records to the dataset.
-    vb_ds.records = []
-    vb_ds.timestamps = []
+    ds.records = []
+    ds.timestamps = []
     for s3_onj in s3_objs:
         response = boto_client.get_object(Bucket=bucket_name, Key=s3_onj["Key"])
         data = response["Body"].read()
-        vb_ds.records.append(VBaseIntObject(int(data)))
-        vb_ds.timestamps.append(
+        ds.records.append(VBaseIntObject(int(data)))
+        ds.timestamps.append(
             str(pd.Timestamp(response["LastModified"]).tz_convert("UTC"))
         )
-    return vb_ds
+    return ds

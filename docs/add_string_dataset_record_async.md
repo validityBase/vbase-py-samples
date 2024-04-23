@@ -16,31 +16,31 @@ illustrates async methods.
 
 ## Detailed Description:
 
-```python
-vbc = VBaseClient.create_instance_from_env()
-```
-Create a vBase object using a Web3 HTTP commitment service.
+- Create a vBase object using a Web3 HTTP commitment service.
 The commitment service is a smart contract running on a blockchain.
-The initialization uses connection parameters specified in environment variables.
+The initialization uses connection parameters specified in environment variables:
+    ```python
+    vbc = VBaseClient.create_instance_from_env()
+    ```
 
-```python
-VBaseDatasetAsync.create(vbc, name=SET_NAME, record_type=VBaseStringObject)
-```
-Create the test dataset asynchronously.
+- Create the test dataset asynchronously.
 This factory method constructs a `VBaseDatasetAsync` object
 using the `asyncio` event loop.
 Arguments and mechanics are similar to those of `VBaseDataset` object creation.
+    ```python
+    VBaseDatasetAsync.create(vbc, name=SET_NAME, record_type=VBaseStringObject)
+    ```
 
-```python
-ds.add_record_async("TestRecord")
-```
-Add string record to the dataset asynchronously.
+- Add string record to the dataset asynchronously.
 This method makes an object commitment using the `asyncio` event loop.
-Arguments and mechanics are similar to those of `ds.add_record()` call.
+Arguments and mechanics are similar to those of `ds.add_record()` call:
+    ```python
+    ds.add_record_async("TestRecord")
+    ```
 
-```python
-assert ds.verify_commitments()[0]
-```
-Verify that a given set commitment exists for a given user.
+- Verify that a given set commitment exists for a given user.
 This will typically be called by the data consumer to verify
-a producer's claims about dataset provenance.
+a producer's claims about dataset provenance:
+    ```python
+    assert ds.verify_commitments()[0]
+    ```

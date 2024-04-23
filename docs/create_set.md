@@ -12,18 +12,14 @@ without the benefit of simplifying higher-level abstractions.
 
 ## Detailed Description:
 
-```python
-vbc = VBaseClient.create_instance_from_env()
-```
-Create a vBase object using a Web3 HTTP commitment service.
+- Create a vBase object using a Web3 HTTP commitment service.
 The commitment service is a smart contract running on a blockchain.
-The initialization uses connection parameters specified in environment variables.
+The initialization uses connection parameters specified in environment variables:
+    ```python
+    vbc = VBaseClient.create_instance_from_env()
+    ```
 
-```python
-receipt = vbc.add_named_set(SET_NAME)
-print("add_named_set() receipt:\n%s", pprint.pformat(receipt))
-```
-Create the test set commitment.
+- Create the test set commitment.
 This operation records that the user with the above VBASE_COMMITMENT_SERVICE_PRIVATE_KEY
 has created the named dataset.
 Such commitments are used to validate that a given collection of user datasets is complete
@@ -35,10 +31,14 @@ It can be optionally retained to simplify subsequent validation.
 All receipts are also available via vBase indexing services.
 Since add_set() calls are idempotent,
 duplicate calls will be no-ops and will return empty receipts.
+    ```python
+    receipt = vbc.add_named_set(SET_NAME)
+    print("add_named_set() receipt:\n%s", pprint.pformat(receipt))
+    ```
 
-```python
-assert vbc.user_named_set_exists(vbc.get_default_user(), SET_NAME)
-```
-Verify that a given set commitment exists for a given user.
+- Verify that a given set commitment exists for a given user.
 This will typically be called by the data consumer to verify
-a producer's claims about dataset provenance.
+a producer's claims about dataset provenance:
+    ```python
+    assert vbc.user_named_set_exists(vbc.get_default_user(), SET_NAME)
+    ```
