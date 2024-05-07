@@ -45,7 +45,7 @@ vbc = VBaseClient.create_instance_from_env()
 boto_client = create_s3_client_from_env()
 
 
-# ## Source dataset
+# ## Source Dataset
 
 # Create the vBase dataset object.
 ds = VBaseDataset(vbc, SET_NAME, VBaseIntObject)
@@ -73,10 +73,10 @@ assert ds.verify_commitments()[0]
 print("S3 objects:")
 print_s3_objects(boto_client, BUCKET_NAME, FOLDER_NAME)
 print("vBase dataset:")
-print(ds.to_pd_object())
+print(ds.get_pd_data_frame())
 
 
-# ## Dataset copy
+# ## Dataset Copy
 
 # Copy the folder to another folder, losing the timestamps.
 copy_s3_bucket(
@@ -92,7 +92,7 @@ print("Copy S3 objects:")
 print_s3_objects(boto_client, BUCKET_NAME, COPY_FOLDER_NAME)
 
 
-# ## Copy validation
+# ## Copy Validation
 
 # Create a vBase dataset from the copy S3 objects.
 ds_copy = VBaseDataset(vbc, SET_NAME, VBaseIntObject)
@@ -101,7 +101,7 @@ ds_copy = init_vbase_dataset_from_s3_objects(
     ds_copy, boto_client, BUCKET_NAME, COPY_FOLDER_NAME
 )
 print("Dataset loaded:")
-pprint.pprint(ds_copy.to_pd_object())
+pprint.pprint(ds_copy.get_pd_data_frame())
 
 # Verify the records.
 success, l_log = ds_copy.verify_commitments()
@@ -111,13 +111,13 @@ for log in l_log:
     print(log)
 
 
-# ## Metadata restoration
+# ## Metadata Restoration
 
 # Fix the timestamps.
 assert ds_copy.try_restore_timestamps_from_index()[0]
 
 print("Dataset fixed:")
-pprint.pprint(ds_copy.to_pd_object())
+pprint.pprint(ds_copy.get_pd_data_frame())
 
 # Verify the records again.
 assert ds_copy.verify_commitments()[0]
