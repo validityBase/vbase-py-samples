@@ -8,6 +8,7 @@ from typing import List, Union
 import boto3
 from dotenv import load_dotenv
 import pandas as pd
+import json
 
 from vbase import (
     VBaseDataset,
@@ -136,11 +137,39 @@ def init_vbase_dataset_from_s3_objects(
     # Append object data and records to the dataset.
     ds.records = []
     ds.timestamps = []
-    for s3_onj in s3_objs:
-        response = boto_client.get_object(Bucket=bucket_name, Key=s3_onj["Key"])
-        data = response["Body"].read()
-        ds.records.append(VBaseIntObject(int(data)))
+    for s3_obj in s3_objs:
+        response = boto_client.get_object(Bucket=bucket_name, Key=s3_obj["Key"])
+        str_data = response["Body"].read().decode('utf-8')
+        ds.records.append(ds.record_type(str_data))
         ds.timestamps.append(
             str(pd.Timestamp(response["LastModified"]).tz_convert("UTC"))
         )
     return ds
+
+
+def create_s3_objects_from_dataset(
+    ds: VBaseDataset, boto_client: boto3.client, bucket_name: str, folder_name: str
+) -> VBaseDataset:
+    """
+    Create S3 objects for dataset records.
+
+    :param ds: The vBaseDataset object.
+    :param boto_client: The boto3.client object.
+    :param bucket_name: The bucket name.
+    :param folder_name: The folder name within the bucket.
+    """
+    if not folder_name.endswith("/"):
+        folder_name += "/"
+    # Append dataset name to folder name, if necessary.
+    if not folder_name.endswith(f"{ds.name}/"):
+        folder_name += f"{ds.name}/"
+
+    # Loop over the dataset records,
+    # creating S3 objects for them.
+    for i, record in enumerate(ds.records):
+        record_json = json.dumps(record.get_dict())
+        s3_obj_name = f"{folder_name}obj_{i}.json"
+        s3_receipt = boto_client.put_object(
+            Bucket=bucket_name, Key=s3_obj_name, Body=record_json
+        )
+        print(f"Created S3 object: {s3_obj_name}")
