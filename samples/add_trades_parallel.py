@@ -1,18 +1,23 @@
-# # add_trades
+# # add_trades_parallel
 
 """This sample creates a strategy comprising JSON trade records
 and verifies the strategy.
 """
 
+
+# ## Imports
+
 from datetime import datetime
-from dotenv import load_dotenv
 import json
 import os
 import pprint
 import random
 import subprocess
+import sys
 import time
 from concurrent.futures import ThreadPoolExecutor
+from dotenv import load_dotenv
+import matplotlib.pyplot as plt
 
 from vbase import (
     VBaseClient,
@@ -21,7 +26,7 @@ from vbase import (
     VBaseJsonObject,
 )
 
-from samples.aws_utils import (
+from aws_utils import (
     create_s3_client_from_env,
     create_s3_objects_from_dataset,
     init_vbase_dataset_from_s3_objects,
@@ -30,13 +35,12 @@ from samples.aws_utils import (
 
 # ## Configuration
 
-# The sample uses 5 users, 2 strategies per user,
-# and 10 trades per strategy.
+# The sample uses 5 users with strategies and 10 trades per strategy.
 N_USERS = 5
 N_TRADES = 10
 
 # Use hardcoded test accounts for the example.
-# Each account is a PK, address tuple.
+# Each account is defined by the private key that gives owners control of their data.
 l_accounts = [
     {
         "pk": "0xabfc6c981e4e9f1f26175bc40aef73248d467617309c5e04e83da34171999076",
@@ -64,12 +68,23 @@ l_accounts = [
 BUCKET_NAME = "vbase-test"
 
 # Name of the source S3 folder for the dataset records.
-FOLDER_NAME = "add_trades_parallel/"
+FOLDER_NAME = f"add_trades_parallel/{datetime.now().strftime('%Y%m%d%H%M%S')}/"
+
+# Check if the script is running in an interactive mode or a Jupyter notebook.
+if "ipykernel" not in sys.modules and "IPython" in sys.modules:
+    # The following line creates overactive warning.
+    # We want the import within the clause.
+    # pylint: disable=ungrouped-imports
+    import matplotlib
+
+    # Set plot backend to WebAgg.
+    # This backend provides interactive web charts.
+    matplotlib.use("WebAgg")
 
 
 # ## Setup
 
-# Create a VBaseClient object for each strategy.
+# Load the information necessary to call vBase APIs.
 load_dotenv(verbose=True, override=True)
 forwarder_url = os.environ.get("VBASE_FORWARDER_URL")
 api_key = os.environ.get("VBASE_API_KEY")
@@ -110,16 +125,16 @@ def create_strategy_dataset(i_strat):
     :param i_strat: Strategy index
     """
     # Create the vBase dataset object.
-    ds = VBaseDataset(
+    ds_strat = VBaseDataset(
         l_starts[i_strat]["vbc"], l_starts[i_strat]["name"], VBaseJsonObject
     )
-    print(f"Created dataset: {ds}")
-    return ds
+    print(f"Created dataset: {pprint.pformat(ds_strat.to_dict())}")
+    return ds_strat
 
 
 with ThreadPoolExecutor(max_workers=len(l_starts)) as executor:
     results = executor.map(create_strategy_dataset, range(len(l_starts)))
-l_datasets = [ds for ds in results]
+l_datasets = list(results)
 
 
 # ## Post Trades
@@ -138,13 +153,14 @@ def post_strategy_trades(i_strat):
     for i_trade in range(N_TRADES):
         trade = json.dumps(
             {
-                "tade_id": i_trade,
+                "trade_id": i_trade,
                 "symbol": "ETHUSD",
                 # Create a random trade in [-1, 1].
-                "size": random.random() * 2 - 1,
+                "size": round(random.random() * 2 - 1, 2),
             }
         )
         trades.append(trade)
+        # Add trade to the vBase dataset object.
         receipt = l_datasets[i_strat].add_record(trade)
         print(f"Posted trade: {pprint.pformat(receipt)}")
         receipts.append(receipt)
@@ -156,23 +172,25 @@ with ThreadPoolExecutor(max_workers=len(l_starts)) as executor:
     results = executor.map(post_strategy_trades, range(len(l_starts)))
 elapsed_time = time.time() - start_time
 l_trades, l_receipts = zip(*results)
-print(f"Posting trades took {elapsed_time} seconds.")
-print(f"TPS: {N_USERS * N_TRADES / elapsed_time}")
+
+print(f"Trades: {N_USERS * N_TRADES}")
+print(f"Time elapsed (sec.): {elapsed_time}")
+print(f"Throughput (trades/min.): {N_USERS * N_TRADES / elapsed_time * 60}")
 
 # Save all the posted trades.
 for ds in l_datasets:
     print(f"Saving dataset: {ds.name}")
-    create_s3_objects_from_dataset(
-        ds, boto_client, BUCKET_NAME, FOLDER_NAME
-    )
+    create_s3_objects_from_dataset(ds, boto_client, BUCKET_NAME, FOLDER_NAME)
 
 # Display saved data using the shell.
 for ds in l_datasets:
     print(f"Displaying S3 objects for dataset: {ds.name}")
     for i in range(len(ds.records)):
-        command = f"curl https://vbase-test.s3.amazonaws.com/add_trades_parallel/{ds.name}/obj_{i}.json"
+        command = f"curl https://vbase-test.s3.amazonaws.com/{FOLDER_NAME}{ds.name}/obj_{i}.json"
         print(command)
-        process = subprocess.run(command, shell=True, text=True, capture_output=True)
+        process = subprocess.run(
+            command, shell=True, text=True, capture_output=True, check=True
+        )
         print(process.stdout)
 
 
@@ -182,32 +200,52 @@ for ds in l_datasets:
 # This is done on the consumer/validator machine
 # using data specified by the producer/prover.
 ds_consumer = VBaseDataset(
-    vbc=VBaseClient(
-        ForwarderCommitmentService(
-            forwarder_url,
-            api_key
-        )
-    ),
+    vbc=VBaseClient(ForwarderCommitmentService(forwarder_url, api_key)),
     init_dict={
-        "name": "user0_strategy20240512224826",
-        "owner": "0xA401F59d7190E4448Eb60691E3bc78f1Ef03e88C",
+        "name": l_datasets[0].name,
+        "owner": l_datasets[0].owner,
         "record_type_name": "VBaseJsonObject",
         "records": [],
-    }
+    },
 )
 
 # Load dataset records from the bucket.
 init_vbase_dataset_from_s3_objects(
-    ds_consumer,
-    boto_client,
-    BUCKET_NAME,
-    FOLDER_NAME + ds_consumer.name
+    ds_consumer, boto_client, BUCKET_NAME, FOLDER_NAME + ds_consumer.name
 )
-print(f"Consumer dataset before timestamp validation:\n{pprint.pformat(ds_consumer.to_dict())}")
+print(
+    f"Consumer dataset before timestamp validation:\n{pprint.pformat(ds_consumer.to_dict())}"
+)
 
 # Restore timestamps using commitments and display the validated dataset.
 ds_consumer.try_restore_timestamps_from_index()
-print(f"Copy dataset after timestamp validation:\n{pprint.pformat(ds_consumer.to_dict())}")
+print(
+    f"Copy dataset after timestamp validation:\n{pprint.pformat(ds_consumer.to_dict())}"
+)
+
+# Print a table of the trades and transaction hash links.
+l_receipts = ds_consumer.get_commitment_receipts()
+print("num\ttrade\ttrade_hash\ttx")
+for i, record in enumerate(ds_consumer.records):
+    print(f"{i}\t{record.data}\t{record.cid}\t{l_receipts[i]['transactionHash']}")
+
+# Start building the HTML table.
+html = "<table>"
+html += "<tr><th>num</th><th>trade</th><th>trade_hash</th><th>tx</th></tr>"
+# Populate the table with data.
+for i, record in enumerate(ds_consumer.records):
+    html += (f"<tr><td>{i}</td><td>{record.data}</td><td>{record.cid}</td>"
+             f"<td>{l_receipts[i]['transactionHash']}</td></tr>")
+html += "</table>"
+
+# Check if the script is running in an interactive mode or a Jupyter notebook.
+if "ipykernel" not in sys.modules and "IPython" in sys.modules:
+    pprint.pprint(html)
+else:
+    # Load support for HTML display, if necessary.
+    from IPython.display import display, HTML
+    # Display the HTML table in the Jupyter notebook.
+    display(HTML(html))
 
 # Plot the cumulative strategy return
 # using a fictional return series.
@@ -215,5 +253,6 @@ df = ds_consumer.get_pd_data_frame()
 print("Strategy DataFrame:\n", df)
 df["wt"] = df["size"].cumsum()
 random.seed(1)
-returns = [(random.random() * 2 - 0.9) / 100 for i in range(df.shape[0])]
-(1 + df["wt"] * returns).cumprod().plot()
+returns = [(random.random() * 2 - 1) / 100 for i in range(df.shape[0])]
+(1 + df["wt"] * returns).cumprod().shift(1).fillna(1).plot()
+plt.show()

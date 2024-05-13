@@ -139,7 +139,7 @@ def init_vbase_dataset_from_s3_objects(
     ds.timestamps = []
     for s3_obj in s3_objs:
         response = boto_client.get_object(Bucket=bucket_name, Key=s3_obj["Key"])
-        str_data = response["Body"].read().decode('utf-8')
+        str_data = response["Body"].read().decode("utf-8")
         ds.records.append(ds.record_type(str_data))
         ds.timestamps.append(
             str(pd.Timestamp(response["LastModified"]).tz_convert("UTC"))
