@@ -125,11 +125,11 @@ def create_strategy_dataset(i_strat):
     :param i_strat: Strategy index
     """
     # Create the vBase dataset object.
-    ds_strat = VBaseDataset(
+    ds_strategy = VBaseDataset(
         l_starts[i_strat]["vbc"], l_starts[i_strat]["name"], VBaseJsonObject
     )
-    print(f"Created dataset: {pprint.pformat(ds_strat.to_dict())}")
-    return ds_strat
+    print(f"Created dataset: {pprint.pformat(ds_strategy.to_dict())}")
+    return ds_strategy
 
 
 with ThreadPoolExecutor(max_workers=len(l_starts)) as executor:

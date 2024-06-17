@@ -10,10 +10,7 @@ from dotenv import load_dotenv
 import pandas as pd
 import json
 
-from vbase import (
-    VBaseDataset,
-    VBaseIntObject,
-)
+from vbase import VBaseDataset
 
 
 def create_s3_client_from_env() -> boto3.client:
@@ -173,3 +170,30 @@ def create_s3_objects_from_dataset(
             Bucket=bucket_name, Key=s3_obj_name, Body=record_json
         )
         print(f"Created S3 object: {s3_obj_name}")
+
+
+def write_s3_object(
+    boto_client: boto3.client, bucket_name: str, folder_name: str, file_name: str, data: str
+) -> VBaseDataset:
+    """
+    Create S3 objects for dataset records.
+
+    :param ds: The vBaseDataset object.
+    :param boto_client: The boto3.client object.
+    :param bucket_name: The bucket name.
+    :param folder_name: The folder name within the bucket.
+    """
+    if not folder_name.endswith("/"):
+        folder_name += "/"
+    # Append dataset name to folder name, if necessary.
+    if not folder_name.endswith("/"):
+        folder_name += "/"
+    
+    s3_obj_name = folder_name + file_name
+
+    # Loop over the dataset records,
+    # creating S3 objects for them.
+    s3_receipt = boto_client.put_object(
+        Bucket=bucket_name, Key=s3_obj_name, Body=data
+    )
+    print(f"Created S3 object: {s3_obj_name}")
