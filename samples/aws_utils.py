@@ -173,7 +173,11 @@ def create_s3_objects_from_dataset(
 
 
 def write_s3_object(
-    boto_client: boto3.client, bucket_name: str, folder_name: str, file_name: str, data: str
+    boto_client: boto3.client,
+    bucket_name: str,
+    folder_name: str,
+    file_name: str,
+    data: str,
 ) -> VBaseDataset:
     """
     Create S3 objects for dataset records.
@@ -188,12 +192,10 @@ def write_s3_object(
     # Append dataset name to folder name, if necessary.
     if not folder_name.endswith("/"):
         folder_name += "/"
-    
+
     s3_obj_name = folder_name + file_name
 
     # Loop over the dataset records,
     # creating S3 objects for them.
-    s3_receipt = boto_client.put_object(
-        Bucket=bucket_name, Key=s3_obj_name, Body=data
-    )
+    s3_receipt = boto_client.put_object(Bucket=bucket_name, Key=s3_obj_name, Body=data)
     print(f"Created S3 object: {s3_obj_name}")

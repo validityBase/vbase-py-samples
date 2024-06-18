@@ -234,8 +234,10 @@ html = "<table>"
 html += "<tr><th>num</th><th>trade</th><th>trade_hash</th><th>tx</th></tr>"
 # Populate the table with data.
 for i, record in enumerate(ds_consumer.records):
-    html += (f"<tr><td>{i}</td><td>{record.data}</td><td>{record.cid}</td>"
-             f"<td>{l_receipts[i]['transactionHash']}</td></tr>")
+    html += (
+        f"<tr><td>{i}</td><td>{record.data}</td><td>{record.cid}</td>"
+        f"<td>{l_receipts[i]['transactionHash']}</td></tr>"
+    )
 html += "</table>"
 
 # Check if the script is running in an interactive mode or a Jupyter notebook.
@@ -244,6 +246,7 @@ if "ipykernel" not in sys.modules and "IPython" in sys.modules:
 else:
     # Load support for HTML display, if necessary.
     from IPython.display import display, HTML
+
     # Display the HTML table in the Jupyter notebook.
     display(HTML(html))
 
