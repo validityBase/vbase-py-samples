@@ -1,24 +1,22 @@
-# # verify_portfolio_history_s3
+# # Track Record Verification Demo
 
-"""This sample verifies a strategy comprising
-a history of JSON portfolio records stored in an S3 bucket.
+"""This sample verifies a tamper-proof portfolio track record.
 """
 
 
 # ## Imports
 
-import os
 import pprint
 import random
 import sys
 from dotenv import load_dotenv
 import matplotlib.pyplot as plt
-
+import numpy as np
+import pandas as pd
 from vbase import (
     VBaseClient,
     VBaseDataset,
 )
-
 from aws_utils import (
     create_s3_client_from_env,
     init_vbase_dataset_from_s3_objects,
@@ -27,55 +25,30 @@ from aws_utils import (
 
 # ## Configuration
 
-# Note that the data to verify is defined solely by the dataset name
-# and the owner address.
-
-# Define the strategy name.
-STRATEGY_NAME = "strategy20240617231129"
-
-# Define the strategy owner address.
+# The strategy owner address.
 STRATEGY_OWNER = "0xA401F59d7190E4448Eb60691E3bc78f1Ef03e88C"
 
-# S3 bucket for the test data.
+# The strategy name.
+STRATEGY_NAME = "strategy20240618145216"
+
+# Additional configuration.
 BUCKET_NAME = "vbase-test"
-
-# Name of the source S3 folder for the dataset records.
 FOLDER_NAME = "add_trades/"
-
 STRATEGY_FOLDER_NAME = FOLDER_NAME + STRATEGY_NAME
 
 
 # ## Setup
 
 # Load the information necessary to call vBase APIs.
-load_dotenv(verbose=True, override=True)
+assert load_dotenv(verbose=True, override=True)
 
-# Create an AWS client using environment variables.
+# Connect to AWS.
 boto_client = create_s3_client_from_env()
 
 # Connect to vBase.
 vbc = VBaseClient.create_instance_from_env()
 
-
-# ## Plot Setup
-
-# Check if the script is running in an interactive mode or a Jupyter notebook.
-if "ipykernel" not in sys.modules and "IPython" in sys.modules:
-    # The following line creates overactive warning.
-    # We want the import within the clause.
-    # pylint: disable=ungrouped-imports
-    import matplotlib
-
-    # Set plot backend to WebAgg.
-    # This backend provides interactive web charts.
-    matplotlib.use("WebAgg")
-
-
-# ## Validate Load the Portfolio Dataset
-
-# Create a strategy dataset to validate.
-# This is done on the consumer/validator machine
-# using data specified by the producer/prover.
+# Initialize the strategy dataset object.
 ds_strategy = VBaseDataset(
     vbc,
     init_dict={
@@ -86,20 +59,33 @@ ds_strategy = VBaseDataset(
     },
 )
 
-# Load dataset records from the bucket.
-init_vbase_dataset_from_s3_objects(
+# Additional Setup.
+if "ipykernel" not in sys.modules and "IPython" in sys.modules:
+    # Configure plot backend if running in interactive mode.
+    # The following line creates overactive warning.
+    # We want the import within the clause.
+    # pylint: disable=ungrouped-imports
+    import matplotlib
+
+    # Set plot backend to WebAgg.
+    # This backend provides interactive web charts.
+    matplotlib.use("WebAgg")
+
+
+# ## Validate the Portfolio History
+
+# Load the portfolio records.
+ds_strategy = init_vbase_dataset_from_s3_objects(
     ds_strategy, boto_client, BUCKET_NAME, STRATEGY_FOLDER_NAME
 )
-print(f"Dataset before timestamp validation:\n{pprint.pformat(ds_strategy.to_dict())}")
 
+# Restore timestamps using the blockchain stamps.
+assert ds_strategy.try_restore_timestamps_from_index()
 
-# ## Validate the Portfolio Dataset
+# Verify the portfolio records.
+assert ds_strategy.verify_commitments()
 
-# Restore timestamps using commitments and display the validated dataset.
-ds_strategy.try_restore_timestamps_from_index()
-print(f"Dataset after timestamp validation:\n{pprint.pformat(ds_strategy.to_dict())}")
-
-# Start building the HTML table.
+# Build and display the verified portfolio records.
 l_receipts = ds_strategy.get_commitment_receipts()
 html = "<table>"
 html += "<tr><th>num</th><th>portfolio</th><th>portfolio_hash</th><th>tx</th></tr>"
@@ -110,7 +96,6 @@ for i, record in enumerate(ds_strategy.records):
         f"<td>{l_receipts[i]['transactionHash']}</td></tr>"
     )
 html += "</table>"
-
 # Check if the script is running in an interactive mode or a Jupyter notebook.
 if "ipykernel" not in sys.modules and "IPython" in sys.modules:
     pprint.pprint(html)
@@ -122,15 +107,35 @@ else:
     display(HTML(html))
 
 
-# ## Print Portfolio Analytics
+# ## Display Portfolio Analytics
 
-# Plot the cumulative strategy return
-# using a fictional return series.
-df = ds_strategy.get_pd_data_frame()
-print("Strategy DataFrame:\n", df)
+# Convert strategy data to a Pandas DataFrame.
+df_strategy = ds_strategy.get_pd_data_frame()
+print("Strategy DataFrame:\n", df_strategy)
+
+# Plot validated strategy return.
 random.seed(1)
-asset_returns = [(random.random() * 2 - 1) / 100 for i in range(df.shape[0])]
-df["returns"] = df["size"] * asset_returns
-print("\nReturns DataFrame:\n", df["returns"])
-(1 + df["returns"]).cumprod().shift(1).fillna(1).plot()
+df_asset_returns = pd.DataFrame(
+    (np.random.random(size=df_strategy.shape) * 2 - 1) / 20,
+    index=df_strategy.index,
+    columns=df_strategy.columns,
+)
+df_strategy_returns = (df_strategy.shift(1) * df_asset_returns).sum(axis=1)
+print("\nReturns DataFrame:\n", df_strategy_returns)
+(1 + df_strategy_returns).cumprod().fillna(1).plot()
 plt.show()
+
+
+# ## Summary
+
+"""Process
+* We used only a link to the portfolio history, strategy name and owner.
+* We validated data integrity and timestamps using public blockchain records.
+* We converted the historical data to a Pandas DataFrame for easy analysis.
+"""
+
+"""Key Implications
+* The track record and all analytics can be independently calculated and verified forever.
+* Data can be validated with a single line.
+* vBase integrates smoothly with existing data science libraries and workflows.
+"""

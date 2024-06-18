@@ -48,7 +48,7 @@ BUCKET_NAME = "vbase-test"
 FOLDER_NAME = f"add_trades/"
 
 # Define the strategy name.
-STRATEGY_NAME =  f"strategy" + datetime.now().strftime("%Y%m%d%H%M%S")
+STRATEGY_NAME = f"strategy" + datetime.now().strftime("%Y%m%d%H%M%S")
 STRATEGY_FOLDER_NAME = f"{FOLDER_NAME}{STRATEGY_NAME}/"
 
 # Check if the script is running in an interactive mode or a Jupyter notebook.
