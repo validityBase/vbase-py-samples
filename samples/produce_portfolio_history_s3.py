@@ -35,7 +35,7 @@ STRATEGY_NAME = "strategy" + datetime.now().strftime("%Y%m%d%H%M%S")
 # Additional configuration.
 BUCKET_NAME = "vbase-test"
 N_TIME_PERIODS = 10
-FOLDER_NAME = "add_trades/"
+FOLDER_NAME = "samples/portfolio_history/"
 STRATEGY_FOLDER_NAME = FOLDER_NAME + STRATEGY_NAME
 ADDRESS = "0xA401F59d7190E4448Eb60691E3bc78f1Ef03e88C"
 

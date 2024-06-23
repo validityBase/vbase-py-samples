@@ -33,7 +33,7 @@ DATASET_NAME = "sentiment_dataset_20240620103503"
 
 # Additional configuration.
 BUCKET_NAME = "vbase-test"
-FOLDER_NAME = "sentiment_dataset/"
+FOLDER_NAME = "samples/sentiment_dataset_history/"
 DATASET_FOLDER_NAME = FOLDER_NAME + DATASET_NAME
 
 

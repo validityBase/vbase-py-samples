@@ -35,7 +35,7 @@ DATASET_NAME = "sentiment_dataset_" + datetime.now().strftime("%Y%m%d%H%M%S")
 # Additional configuration.
 BUCKET_NAME = "vbase-test"
 N_TIME_PERIODS = 10
-FOLDER_NAME = "sentiment_dataset/"
+FOLDER_NAME = "samples/sentiment_dataset_history/"
 DATASET_FOLDER_NAME = FOLDER_NAME + DATASET_NAME
 ADDRESS = "0xA401F59d7190E4448Eb60691E3bc78f1Ef03e88C"
 

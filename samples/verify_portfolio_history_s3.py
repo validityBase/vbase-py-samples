@@ -33,7 +33,7 @@ STRATEGY_NAME = "strategy20240618145216"
 
 # Additional configuration.
 BUCKET_NAME = "vbase-test"
-FOLDER_NAME = "add_trades/"
+FOLDER_NAME = "samples/portfolio_history/"
 STRATEGY_FOLDER_NAME = FOLDER_NAME + STRATEGY_NAME
 
 
