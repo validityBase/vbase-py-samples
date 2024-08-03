@@ -29,11 +29,13 @@ from aws_utils import (
 # The trader's sovereign cryptographic identity.
 PK = "0xabfc6c981e4e9f1f26175bc40aef73248d467617309c5e04e83da34171999076"
 
-# Additional configuration.
+# The strategy name.
 STRATEGY_NAME = "strategy" + datetime.now().strftime("%Y%m%d%H%M%S")
+
+# Additional configuration.
 BUCKET_NAME = "vbase-test"
 N_TIME_PERIODS = 10
-FOLDER_NAME = "add_trades/"
+FOLDER_NAME = "samples/portfolio_history/"
 STRATEGY_FOLDER_NAME = FOLDER_NAME + STRATEGY_NAME
 ADDRESS = "0xA401F59d7190E4448Eb60691E3bc78f1Ef03e88C"
 
