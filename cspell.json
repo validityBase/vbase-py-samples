@@ -4,7 +4,9 @@
     "dictionaryDefinitions": [],
     "dictionaries": [],
     "words": [
-        "boto3"
+        "boto",
+        "boto3",
+        "clientportal"
     ],
     "ignoreWords": [],
     "import": []

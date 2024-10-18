@@ -2,13 +2,13 @@
 AWS utilities
 """
 
+import json
 import os
 import pprint
 from typing import List, Union
 import boto3
 from dotenv import load_dotenv
 import pandas as pd
-import json
 
 from vbase import VBaseDataset
 
@@ -26,8 +26,8 @@ def create_s3_client_from_env() -> boto3.client:
         aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
     )
     # Create an S3 client
-    boto_client = aws_session.client("s3")
-    return boto_client
+    boto3_client = aws_session.client("s3")
+    return boto3_client
 
 
 def get_s3_objects(
@@ -146,7 +146,7 @@ def init_vbase_dataset_from_s3_objects(
 
 def create_s3_objects_from_dataset(
     ds: VBaseDataset, boto_client: boto3.client, bucket_name: str, folder_name: str
-) -> VBaseDataset:
+) -> dict:
     """
     Create S3 objects for dataset records.
 
@@ -154,6 +154,7 @@ def create_s3_objects_from_dataset(
     :param boto_client: The boto3.client object.
     :param bucket_name: The bucket name.
     :param folder_name: The folder name within the bucket.
+    :return: The operation receipts.
     """
     if not folder_name.endswith("/"):
         folder_name += "/"
@@ -163,6 +164,7 @@ def create_s3_objects_from_dataset(
 
     # Loop over the dataset records,
     # creating S3 objects for them.
+    l_s3_receipts = []
     for i, record in enumerate(ds.records):
         record_json = json.dumps(record.get_dict())
         s3_obj_name = f"{folder_name}obj_{i}.json"
@@ -170,6 +172,8 @@ def create_s3_objects_from_dataset(
             Bucket=bucket_name, Key=s3_obj_name, Body=record_json
         )
         print(f"Created S3 object: {s3_obj_name}")
+        l_s3_receipts.append(s3_receipt)
+    return l_s3_receipts
 
 
 def write_s3_object(
@@ -178,7 +182,7 @@ def write_s3_object(
     folder_name: str,
     file_name: str,
     data: str,
-) -> VBaseDataset:
+) -> dict:
     """
     Create S3 objects for dataset records.
 
@@ -186,6 +190,7 @@ def write_s3_object(
     :param boto_client: The boto3.client object.
     :param bucket_name: The bucket name.
     :param folder_name: The folder name within the bucket.
+    :return: The operation receipt.
     """
     if not folder_name.endswith("/"):
         folder_name += "/"
@@ -199,3 +204,4 @@ def write_s3_object(
     # creating S3 objects for them.
     s3_receipt = boto_client.put_object(Bucket=bucket_name, Key=s3_obj_name, Body=data)
     print(f"Created S3 object: {s3_obj_name}")
+    return s3_receipt

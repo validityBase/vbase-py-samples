@@ -42,7 +42,7 @@ The following steps guide you through this process of setting up vBase Python SD
     Below is a summary of the configuration settings from the resulting `.env` file:
 
     ```bash
-    # This is the vBase Forwarder URL. 
+    # This is the vBase Forwarder URL.
     # The following is the production vBase Forwarder service URL.
     # Users should not change this value:
     VBASE_FORWARDER_URL="https://api.vbase.com/forwarder/"
