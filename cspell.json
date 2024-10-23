@@ -6,7 +6,8 @@
     "words": [
         "boto",
         "boto3",
-        "clientportal"
+        "clientportal",
+        "quickstart"
     ],
     "ignoreWords": [],
     "import": []
