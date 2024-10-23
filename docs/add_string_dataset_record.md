@@ -25,7 +25,7 @@ If this is a new dataset,
 this operation records that the user with the above VBASE_COMMITMENT_SERVICE_PRIVATE_KEY
 has created the named dataset.
 Dataset creation is idempotent.
-If this is an existing dataset, the call is ignored. 
+If this is an existing dataset, the call is ignored.
 Such commitments are used to validate that a given collection of user datasets is complete
 and mitigates Sybil attacks (https://en.wikipedia.org/wiki/Sybil_attack).
     ```python

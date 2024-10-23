@@ -27,10 +27,10 @@ for accessing AWS S3 service and vBase services:
     VBASE_FORWARDER_URL="https://test.api.vbase.com/forwarder/"
     # vBaseTest API key
     VBASE_API_KEY="YOUR_VBASE_API_KEY"
-    
+
     # Private key for making commitments
     VBASE_COMMITMENT_SERVICE_PRIVATE_KEY="YOUR_VBASE_COMMITMENT_SERVICE_PRIVATE_KEY"
-    
+
     # AWS Configuration
     AWS_ACCESS_KEY_ID="YOUR_AWS_ACCESS_KEY_ID"
     AWS_SECRET_ACCESS_KEY="YOUR_AWS_SECRET_ACCESS_KEY"
@@ -51,7 +51,7 @@ If this is a new dataset,
 this operation records that the user with the above VBASE_COMMITMENT_SERVICE_PRIVATE_KEY
 has created the named dataset.
 Dataset creation is idempotent.
-If this is an existing dataset, the call is ignored. 
+If this is an existing dataset, the call is ignored.
 Such commitments are used to validate that a given collection of user datasets is complete
 and mitigates Sybil attacks (https://en.wikipedia.org/wiki/Sybil_attack).
     ```python
@@ -112,10 +112,10 @@ and verify the corrected provenance data:
     ```python
     # Fix the timestamps.
     assert ds_copy.try_restore_timestamps_from_index()[0]
-    
+
     print("Dataset fixed:")
     pprint.pprint(ds_copy.to_pd_object())
-    
+
     # Verify the records again.
     assert ds_copy.verify_commitments()[0]
     ```

@@ -21,3 +21,19 @@ venv/
 
 # Config
 .env*
+
+# Sphinx build artifacts
+_build/
+build/
+doctrees/
+*.doctree
+
+# Sphinx intermediate and log files
+*.log
+*.pickle
+*.pdf
+*.epub
+*.mobi
+
+# Sphinx static assets
+_static/

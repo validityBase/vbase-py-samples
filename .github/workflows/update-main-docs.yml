@@ -1,0 +1,63 @@
+name: Update the Main Docs Repository
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-main-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r docs/requirements.txt
+
+      - name: Build Sphinx Markdown docs
+        run: |
+          sphinx-build -b markdown docs/ docs/_build/markdown
+
+      - name: Clone the main docs repo
+        env:
+          DOCS_BUILD_PAT: ${{ secrets.DOCS_BUILD_PAT }}
+        run: |
+          git clone https://$DOCS_BUILD_PAT@github.com/validityBase/docs.git main-docs
+          cd main-docs
+          rm -rf vbase-py-samples/
+          mkdir -p vbase-py-samples/
+
+      - name: Copy documentation to the main docs repo
+        run: |
+          cp -r docs/_build/markdown/* main-docs/vbase-py-samples/
+
+      - name: Commit and push changes to the main docs repo
+        env:
+          DOCS_BUILD_PAT: ${{ secrets.DOCS_BUILD_PAT }}
+        run: |
+          cd main-docs
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add vbase-py-samples/
+          if git diff-index --quiet HEAD; then
+            echo "No changes to commit"
+            exit 0
+          else
+            echo "Changes detected"
+            git commit -m "Update vbase-py-samples documentation from automated build"
+            git push https://$DOCS_BUILD_PAT@github.com/validityBase/docs.git main
+          fi
+
+      - name: Cleanup main-docs folder
+        if: always() # Run even if previous steps fail to clean up.
+        run: |
+          rm -rf main-docs

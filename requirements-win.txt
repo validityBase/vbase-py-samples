@@ -1,0 +1,6 @@
+# Install specific packages
+# rather then rely on automatic dependency install
+# which can be error prone on Windows.
+ckzg>=2.0.1
+numpy>=2.1.2
+-r requirements.txt
