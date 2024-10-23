@@ -1,5 +1,5 @@
 """
-Interactive Brokers Portfolio Stamping Sample
+Alpaca Portfolio Stamping Sample
 
 The sample can be run from the command line interactively or as a script
 if your environment is set appropriately.
@@ -21,6 +21,8 @@ from vbase import (
     VBaseStringObject,
 )
 
+import alpaca_trade_api as tradeapi
+
 from aws_utils import (
     create_s3_client_from_env,
     write_s3_object,
@@ -28,48 +30,26 @@ from aws_utils import (
 from utils import get_env_var_or_fail
 
 
-"""
-## IB Client Portal Gateway Setup
-
-This sample requires a running IB client portal gateway.
-Start the client portal gateway:
-
-- At the Command Line, run:
-```
-cd \\path\\to\\clientportal\\clientportal.gw
-bin\\run.bat root\\conf.yaml
-```
-
-- Open the client portal in a browser:
-```
-https://localhost:5000/
-```
-
-- You may need to ignore security warnings and 
-accept the self-signed certificate in your browser.
-
-- Login to the client portal with your IB credentials.
-
-- You should see the "Client login succeeds" message.
-"""
-
-
 # ## Configuration
 
 # Load dotenv configuration if available, else, use environment variables.
 dotenv.load_dotenv(".env", verbose=True, override=True)
 
-# Load IB configuration from environment variables.
-IB_ACCOUNT_ID = get_env_var_or_fail("IB_ACCOUNT_ID")
+# Load Alpaca configuration from environment variables.
+ALPACA_API_KEY = get_env_var_or_fail("ALPACA_API_KEY")
+ALPACA_API_SECRET = get_env_var_or_fail("ALPACA_API_SECRET")
+ALPACA_API_BASE_URL = get_env_var_or_fail("ALPACA_API_BASE_URL")
 
 
-# ## Get Portfolio from Interactive Brokers
+# ## Get Portfolio from Alpaca
 
-# Get portfolio positions from the client portal gateway.
-req = f"https://127.0.0.1:5000/v1/api/portfolio/{IB_ACCOUNT_ID}/positions/"
-resp = requests.get(req, verify=False, timeout=30)
-if resp.status_code != 200:
-    raise Exception(f"Failed to get portfolio summary: {resp.status_code}")
+# Initialize the Alpaca API
+api = tradeapi.REST(
+    ALPACA_API_KEY, ALPACA_API_SECRET, ALPACA_API_BASE_URL, api_version="v2"
+)
+
+# Fetch your portfolio positions.
+positions = api.list_positions()
 
 # Get all equity positions from the response that match assetClass = "STK".
 positions = [
