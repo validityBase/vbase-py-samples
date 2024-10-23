@@ -29,6 +29,7 @@ from aws_utils import (
 
 # ## Utilities
 
+
 def get_env_var_or_fail(env_var_name: str) -> str:
     """
     Get an environment variable or raise an exception if not found.
@@ -156,9 +157,7 @@ str_timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
 file_name = f"port_{str_timestamp}.csv"
 
 # Save the portfolio CSV to the S3 bucket.
-boto3_receipt = write_s3_object(
-    s3_client, bucket_name, folder_name, file_name, str_csv
-)
+boto3_receipt = write_s3_object(s3_client, bucket_name, folder_name, file_name, str_csv)
 if boto3_receipt is None or boto3_receipt["ResponseMetadata"]["HTTPStatusCode"] != 200:
     raise Exception(f"Failed to save portfolio CSV to S3: {boto3_receipt}")
 print(f"Saved CSV: {file_name}")
