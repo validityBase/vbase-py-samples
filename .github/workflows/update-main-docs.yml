@@ -23,10 +23,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r docs/requirements.txt
 
-      - name: Build Sphinx HTML documentation
+      - name: Build Sphinx Markdown docs
         run: |
-          cd docs
-          make html
+          sphinx-build -b markdown docs/ docs/_build/markdown
 
       - name: Clone the main docs repo
         env:
@@ -39,7 +38,7 @@ jobs:
 
       - name: Copy documentation to the main docs repo
         run: |
-          cp -r docs/_build/html/* main-docs/vbase-py-samples/
+          cp -r docs/_build/markdown/* main-docs/vbase-py-samples/
 
       - name: Commit and push changes to the main docs repo
         env:

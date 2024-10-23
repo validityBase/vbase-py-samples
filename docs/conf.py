@@ -21,6 +21,7 @@ author = "PIT Labs, Inc."
 
 extensions = [
     "myst_parser",
+    "sphinx_markdown_builder",
     "sphinx.ext.duration",
     "sphinx.ext.doctest",
     "sphinx.ext.autodoc",
@@ -30,11 +31,7 @@ extensions = [
 # Add Markdown as a supported source format.
 source_suffix = [".rst", ".md"]
 
-# Use theme suitable for import into external docs.
-html_theme = "sphinx_rtd_theme"
-
-# Hide the Sphinx footer text.
-# These settings are used by some themes and may give warning with unsupported themes.
-html_show_sphinx = False
-html_show_sourcelink = False
-html_theme_options = {}
+# Configure Markdown output.
+markdown_builder_options = {
+    "output": "docs/_build/markdown",  # Where Markdown files will be output
+}
