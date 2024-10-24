@@ -20,6 +20,7 @@ The sample will run the **Interactive Brokers (IB) Client Portal Gateway** on yo
 3. **vBase**: Follow the [vBase Windows Guide](windows_guide.md) to set up Windows environment to run vBase samples.
 
 ## 2. Download and Install Client Portal Gateway
+
 Interactive Brokers provides the **Client Portal Gateway** as a lightweight API gateway for accessing account data via a Web API. Follow these steps to download and run the gateway:
 
 1. **Download the Client Portal Gateway**:

@@ -49,17 +49,15 @@ api = tradeapi.REST(
 )
 
 # Fetch your portfolio positions.
-positions = api.list_positions()
-
-# Get all equity positions from the response that match assetClass = "STK".
-positions = [
-    # Get only the symbol and quantity for each position.
-    {"sym": p["contractDesc"], "value": p["mktValue"]}
-    for p in json.loads(resp.content)
-    if p["assetClass"] == "STK"
-]
-if len(positions) == 0:
+resp = api.list_positions()
+if len(resp) == 0:
     raise Exception("No equity positions found.")
+
+# Extract the symbol and market value from the positions.
+positions = [
+    {"sym": p.symbol, "value": p.market_value}
+    for p in resp
+]
 
 # Normalize weights as % of the total value.
 total_value = sum([p["value"] for p in positions])

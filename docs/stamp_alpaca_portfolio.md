@@ -9,9 +9,9 @@ The sample can be run from the command line interactively or as a script if your
 - [1. Prerequisites](#1-prerequisites)
 - [2. (Optional) Sign Up for an Alpaca Account](#2-optional-sign-up-for-an-alpaca-account)
 - [3. (Optional) Enable Paper Trading](#3-optional-enable-paper-trading)
-- [3. Obtain Your API Keys](#3-obtain-your-api-keys)
-- [4. Set Environment Variables](#4-set-environment-variables)
-- [5. Run the Sample](#5-run-the-sample)
+- [4. Obtain Your API Keys](#4-obtain-your-api-keys)
+- [5. Set Environment Variables](#5-set-environment-variables)
+- [6. Run the Sample](#6-run-the-sample)
 
 ## 1. Prerequisites
 
@@ -36,7 +36,8 @@ The sample can be run from the command line interactively or as a script if your
    - After signing up, you will receive a verification email from Alpaca. Click on the link to verify your email address.
 
 4. **Complete Account Information**:
-   - Once you’ve verified your email, Alpaca will ask for additional information to complete your account setup. This is standard for all brokerage accounts.
+   - Once you’ve verified your email, Alpaca will ask for additional information to complete your account setup. This is standard for brokerage accounts.
+   - You may need to set up multi-factor authentication (MFA) with an Authenticator app or SMS.
    - You may need to provide your address, phone number, and identity verification information.
 
 ## 3. (Optional) Enable Paper Trading
@@ -47,9 +48,9 @@ The sample can be run from the command line interactively or as a script if your
 
 2. **Enable Paper Trading**:
    - Toggle the **Enable Paper Trading** option if it’s not enabled by default.
-   - You will receive a starting balance of $100,000 in your paper trading account.
+   - You will receive a starting balance in your paper trading account.
 
-## 3. Obtain Your API Keys
+## 4. Obtain Your API Keys
 
    - In the dashboard, go to **Your Account** > **API Keys**.
    - Generate API keys for **paper trading**. These include:
@@ -57,7 +58,7 @@ The sample can be run from the command line interactively or as a script if your
      - **API Secret Key**: Used to authenticate your requests.
    - Store your **API Key ID** and **API Secret Key** securely. You’ll use these in your environment variables that Python scripts will use to access your Alpaca account.
 
-## 4. Set Environment Variables
+## 5. Set Environment Variables
 
 Set the following environment variables for your IB and vBase configuration:
    - Alpaca Configuration:
@@ -65,7 +66,7 @@ Set the following environment variables for your IB and vBase configuration:
      - `ALPACA_API_SECRET` - The Alpaca API Secret.
      - `ALPACA_API_BASE_URL` - Base URL for the Alpaca API:
        - https://paper-api.alpaca.markets for paper trading.
-       - https://broker-api.alpaca.markets for live trading this is.
+       - https://api.alpaca.markets for live trading.
    - AWS S3 Configuration (Optional if you save the portfolio data elsewhere):
      - `AWS_ACCESS_KEY_ID` - The Access Key used to connect to the S3 service.
      - `AWS_SECRET_ACCESS_KEY` - The Secret Key used to connect to the S3 service.
@@ -78,7 +79,7 @@ Set the following environment variables for your IB and vBase configuration:
      - `VBASE_COMMITMENT_SERVICE_PRIVATE_KEY` - The private key used to sign portfolio stamps.
      - `VBASE_DATASET_NAME` - The name of the vBase dataset that will hold the portfolio history.
 
-## 5. Run the Sample
+## 6. Run the Sample
 
 Run the sample from the command line:
    ```bash
