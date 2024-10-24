@@ -9,7 +9,6 @@ if your environment is set appropriately.
 
 from io import StringIO
 from datetime import datetime
-import os
 import pprint
 import json
 import dotenv
