@@ -1,5 +1,5 @@
 """
-Interactive Brokers Portfolio Stamping Sample
+Alpaca Portfolio Stamping Sample
 
 The sample can be run from the command line interactively or as a script
 if your environment is set appropriately.
@@ -10,15 +10,15 @@ if your environment is set appropriately.
 from io import StringIO
 from datetime import datetime
 import pprint
-import json
 import dotenv
 import pandas as pd
-import requests
 from vbase import (
     VBaseClient,
     VBaseDataset,
     VBaseStringObject,
 )
+
+import alpaca_trade_api as tradeapi
 
 from aws_utils import (
     create_s3_client_from_env,
@@ -27,58 +27,31 @@ from aws_utils import (
 from utils import get_env_var_or_fail
 
 
-"""
-## IB Client Portal Gateway Setup
-
-This sample requires a running IB client portal gateway.
-Start the client portal gateway:
-
-- At the Command Line, run:
-```
-cd \\path\\to\\clientportal\\clientportal.gw
-bin\\run.bat root\\conf.yaml
-```
-
-- Open the client portal in a browser:
-```
-https://localhost:5000/
-```
-
-- You may need to ignore security warnings and 
-accept the self-signed certificate in your browser.
-
-- Login to the client portal with your IB credentials.
-
-- You should see the "Client login succeeds" message.
-"""
-
-
 # ## Configuration
 
 # Load dotenv configuration if available, else, use environment variables.
 dotenv.load_dotenv(".env", verbose=True, override=True)
 
-# Load IB configuration from environment variables.
-IB_ACCOUNT_ID = get_env_var_or_fail("IB_ACCOUNT_ID")
+# Load Alpaca configuration from environment variables.
+ALPACA_API_KEY = get_env_var_or_fail("ALPACA_API_KEY")
+ALPACA_API_SECRET = get_env_var_or_fail("ALPACA_API_SECRET")
+ALPACA_API_BASE_URL = get_env_var_or_fail("ALPACA_API_BASE_URL")
 
 
-# ## Get Portfolio from Interactive Brokers
+# ## Get Portfolio from Alpaca
 
-# Get portfolio positions from the client portal gateway.
-req = f"https://127.0.0.1:5000/v1/api/portfolio/{IB_ACCOUNT_ID}/positions/"
-resp = requests.get(req, verify=False, timeout=30)
-if resp.status_code != 200:
-    raise Exception(f"Failed to get portfolio summary: {resp.status_code}")
+# Initialize the Alpaca API
+api = tradeapi.REST(
+    ALPACA_API_KEY, ALPACA_API_SECRET, ALPACA_API_BASE_URL, api_version="v2"
+)
 
-# Get all equity positions from the response that match assetClass = "STK".
-positions = [
-    # Get only the symbol and quantity for each position.
-    {"sym": p["contractDesc"], "value": p["mktValue"]}
-    for p in json.loads(resp.content)
-    if p["assetClass"] == "STK"
-]
-if len(positions) == 0:
+# Fetch your portfolio positions.
+resp = api.list_positions()
+if len(resp) == 0:
     raise Exception("No equity positions found.")
+
+# Extract the symbol and market value from the positions.
+positions = [{"sym": p.symbol, "value": p.market_value} for p in resp]
 
 # Normalize weights as % of the total value.
 total_value = sum([p["value"] for p in positions])

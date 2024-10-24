@@ -1,4 +1,6 @@
-# stamp_interactive_brokers_portfolio.py
+---
+stamp_interactive_brokers_portfolio.py
+---
 
 This sample illustrates how to retrieve, save, and stamp an Interactive Brokers (IB) portfolio.
 
@@ -6,25 +8,19 @@ The sample can be run from the command line interactively or as a script if your
 
 The sample will run the **Interactive Brokers (IB) Client Portal Gateway** on your Windows computer and make a request to it using the Web API from Python.
 
-## Prerequisites
+- [1. Prerequisites](#1-prerequisites)
+- [2. Download and Install Client Portal Gateway](#2-download-and-install-client-portal-gateway)
+- [3. Set Environment Variables](#3-set-environment-variables)
+- [4. Run the Sample](#4-run-the-sample)
+
+## 1. Prerequisites
+
 1. **Interactive Brokers Account**: You must have an IB account (live or paper trading).
 2. **Python**: Ensure Python is installed on your Windows machine.
 3. **vBase**: Follow the [vBase Windows Guide](windows_guide.md) to set up Windows environment to run vBase samples.
-4. **Set Environment Variables**: Set the following environment variables for your IB and vBase configuration:
-   - `IB_ACCOUNT_ID` - The IB account id.
-   - `AWS_ACCESS_KEY_ID` - The Access Key used to connect to the S3 service.
-   - `AWS_SECRET_ACCESS_KEY` - The Secret Key used to connect to the S3 service.
-   - `AWS_S3_BUCKET_NAME` - The AWS S3 bucket name used to store the portfolio data.
-   - `VBASE_FORWARDER_URL` - vBase Forwarder Service URL:
-     - https://dev.api.vbase.com/forwarder/ for development/testnet.
-     - https://api.vbase.com/forwarder/ for production.
-   - `VBASE_API_KEY` - The vBase API Key used to access the Forwarder service.
-   - `VBASE_COMMITMENT_SERVICE_PRIVATE_KEY` - The private key used to sign portfolio stamps.
 
-# User Dataset Config
-VBASE_DATASET_NAME="ib_portfolio_stamping"
+## 2. Download and Install Client Portal Gateway
 
-## 1: Download and Install Client Portal Gateway
 Interactive Brokers provides the **Client Portal Gateway** as a lightweight API gateway for accessing account data via a Web API. Follow these steps to download and run the gateway:
 
 1. **Download the Client Portal Gateway**:
@@ -35,18 +31,46 @@ Interactive Brokers provides the **Client Portal Gateway** as a lightweight API 
    - After downloading the Client Portal Gateway ZIP file, extract it to a folder on your machine (e.g., `C:\IBClientPortalGateway`).
 
 3. **Run the Gateway**:
-   - Navigate to the extracted folder and double-click the `ibgateway.bat` file.
-   - This will start the gateway, and it will launch a web page where you can log in to your Interactive Brokers account using your credentials and 2FA (if required).
-   - After successful login, the gateway will start and display a `Gateway session started` message, along with the Web API access URL and port number (default is `127.0.0.1:5000`).
+   - At the Command Line, run:
+   ```
+   cd \\path\\to\\clientportal\\clientportal.gw
+   bin\\run.bat root\\conf.yaml
+   ```
 
-## 2: Authenticate to the Gateway
-Once the gateway is running, it provides a Web API that requires authentication via the session token returned during the login process. The gateway will keep running in the background.
+4. **Authenticate to the Gateway**:
+   - Open the client portal in a browser:
+   ```
+   https://localhost:5000/
+   ```
+   You may need to ignore security warnings and accept the self-signed certificate in your browser.
+   - Login to the client portal with your IB credentials.
+   - You should see the "Client login succeeds" message.
+   - Once the gateway is running, it provides a Web API that requires authentication via the session token returned during the login process. The gateway will keep running in the background.
 
-## 3: Run the Sample
+## 3. Set Environment Variables
+
+Set the following environment variables for your IB and vBase configuration:
+   - IB Configuration:
+     - `IB_ACCOUNT_ID` - The IB account id.
+   - `AWS_ACCESS_KEY_ID` - The Access Key used to connect to the S3 service.
+   - `AWS_SECRET_ACCESS_KEY` - The Secret Key used to connect to the S3 service.
+   - `AWS_S3_BUCKET_NAME` - The AWS S3 bucket name used to store the portfolio data.
+   - AWS S3 Configuration (Optional if you save the portfolio data elsewhere):
+     - `AWS_ACCESS_KEY_ID` - The Access Key used to connect to the S3 service.
+     - `AWS_SECRET_ACCESS_KEY` - The Secret Key used to connect to the S3 service.
+     - `AWS_S3_BUCKET_NAME` - The AWS S3 bucket name used to store the portfolio data.
+   - vBase Configuration:
+     - `VBASE_FORWARDER_URL` - vBase Forwarder Service URL:
+       - https://dev.api.vbase.com/forwarder/ for development/testnet.
+       - https://api.vbase.com/forwarder/ for production.
+     - `VBASE_API_KEY` - The vBase API Key used to access the Forwarder service.
+     - `VBASE_COMMITMENT_SERVICE_PRIVATE_KEY` - The private key used to sign portfolio stamps.
+     - `VBASE_DATASET_NAME` - The name of the vBase dataset that will hold the portfolio history.
+
+## 4. Run the Sample
 
 Run the sample from the command line:
    ```bash
    python3 stamp_interactive_brokers_portfolio.py
    ```
-
 or walk through the sample in an interactive window.
