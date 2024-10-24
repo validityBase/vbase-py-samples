@@ -54,10 +54,7 @@ if len(resp) == 0:
     raise Exception("No equity positions found.")
 
 # Extract the symbol and market value from the positions.
-positions = [
-    {"sym": p.symbol, "value": p.market_value}
-    for p in resp
-]
+positions = [{"sym": p.symbol, "value": p.market_value} for p in resp]
 
 # Normalize weights as % of the total value.
 total_value = sum([p["value"] for p in positions])
