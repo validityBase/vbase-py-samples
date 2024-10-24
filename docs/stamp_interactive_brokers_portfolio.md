@@ -52,9 +52,6 @@ Interactive Brokers provides the **Client Portal Gateway** as a lightweight API 
 Set the following environment variables for your IB and vBase configuration:
    - IB Configuration:
      - `IB_ACCOUNT_ID` - The IB account id.
-   - `AWS_ACCESS_KEY_ID` - The Access Key used to connect to the S3 service.
-   - `AWS_SECRET_ACCESS_KEY` - The Secret Key used to connect to the S3 service.
-   - `AWS_S3_BUCKET_NAME` - The AWS S3 bucket name used to store the portfolio data.
    - AWS S3 Configuration (Optional if you save the portfolio data elsewhere):
      - `AWS_ACCESS_KEY_ID` - The Access Key used to connect to the S3 service.
      - `AWS_SECRET_ACCESS_KEY` - The Secret Key used to connect to the S3 service.
