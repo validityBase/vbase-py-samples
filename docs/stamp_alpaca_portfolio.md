@@ -88,6 +88,6 @@ Set the following environment variables for your IB and vBase configuration:
 
 Run the sample from the command line:
    ```bash
-   python3 stamp_alpaca_portfolio.py
+   python stamp_alpaca_portfolio.py
    ```
 or walk through the sample in an interactive window.
