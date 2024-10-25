@@ -1,8 +1,16 @@
 ---
-GitHub Codespaces Guide
+title: GitHub Codespaces Guide
 ---
 
+<!-- omit in toc -->
+# GitHub Codespaces Guide
+
 This tutorial guides you through setting up GitHub Codespaces to run vBase samples.
+
+- [1. Open a Notebook in GitHub Codespaces](#1-open-a-notebook-in-github-codespaces)
+- [2. Configure Codespaces Secrets](#2-configure-codespaces-secrets)
+  - [2.1. Add the Secret to GitHub Repository Secrets](#21-add-the-secret-to-github-repository-secrets)
+  - [2.2. Use the Secret in Your Codespace](#22-use-the-secret-in-your-codespace)
 
 ## 1. Open a Notebook in GitHub Codespaces
 

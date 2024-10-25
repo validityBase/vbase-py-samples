@@ -1,32 +1,46 @@
+----
+1. title: vBase Python Samples Quickstart
+----
+
+<!-- omit in toc -->
 # vBase Python Samples Quickstart
 
 The following steps guide you through this process of setting up vBase Python SDK in your local environment:
 
+<!-- omit in toc -->
 > **Note for Windows users:**
     If you're on Windows, the following instructions will work on the Windows Subsystem for Linux (WSL). WSL provides a Linux environment on your Windows OS. Please follow the following guide to set up your WSL environment for vBase: [https://docs.vbase.com/getting-started/windows-subsystem-for-linux-wsl-guide](https://docs.vbase.com/getting-started/windows-subsystem-for-linux-wsl-guide)
 
-1. **Get a vBase API key:**
-    Please [contact vBase](https://www.vbase.com/contact/) and request an API key if you wish to have the simplest experience. The API key is needed to access the forwarder API service, which simplifies commitment and validation operations but is not required for interacting with vBase.
+- [1. Get a vBase API Key](#1-get-a-vbase-api-key)
+- [2. Create the vBase Directory](#2-create-the-vbase-directory)
+- [3. Install the vBase Python SDK](#3-install-the-vbase-python-sdk)
+- [4. Clone the vBase Python SDK Samples](#4-clone-the-vbase-python-sdk-samples)
+- [5. Set up Your Environment](#5-set-up-your-environment)
+- [6. Verify Your Environment](#6-verify-your-environment)
+- [7. You Are All Set!](#7-you-are-all-set)
 
-1. **Create the vBase directory:**
+## 1. Get a vBase API Key
+    Please [access the vBase App](https://app.vbase.com), sign-up, and retrieve the API Key from your user profile if you wish to have the simplest experience. The API key is needed to access the forwarder API service. This service simplifies commitment and validation operations but is not required for interacting with vBase.
+
+## 2. Create the vBase Directory
     Create the directory where you want to clone vBase repositories and switch to this directory by running:
     ```bash
     mkdir ~/validityBase && cd ~/validityBase
     ```
 
-1. **Install the vBase Python SDK:**
+## 3. Install the vBase Python SDK
     Install the `vbase` python package that provides the vBase Python SDK from GitHub:
     ```bash
     pip install git+https://github.com/validityBase/vbase-py.git
     ```
 
-2. **Clone the vBase Python SDK Samples:**
+## 4. Clone the vBase Python SDK Samples
     Clone the `vbase-py-samples` GitHub repository:
     ```bash
     git clone https://github.com/validityBase/vbase-py-samples.git
     ```
 
-3. **Set up your environment:**
+## 5. Set up Your Environment
 
    1. **Option 1: Copy your existing environment:**
         If you have previously configured vBase access, for instance, when using the `vbase-py-tools` package, you can re-use those settings by copying `.env` file to the `vbase-py-samples` folder:
@@ -38,7 +52,7 @@ The following steps guide you through this process of setting up vBase Python SD
         If this is your first time working with vBase, you should configure new settings.
         Please install the `vbase-py-tools` package and follow the setup instructions using the `config_env` script provided in that package as instructed at the following link: [https://docs.vbase.com/python-sdk/package-vbase-py-tools/setup](https://docs.vbase.com/python-sdk/package-vbase-py-tools/setup)
 
-4. **Verify your environment:**
+## 6. Verify Your Environment
     Below is a summary of the configuration settings from the resulting `.env` file:
 
     ```bash
@@ -58,5 +72,5 @@ The following steps guide you through this process of setting up vBase Python SD
     ```
     You can keep these values in the `.env` file in the working directory of your Python code or add them to your command environment.
 
-5. **You are all set!**
+## 7. You Are All Set!
     You can make and verify commitments. Please review the samples and their documentation for additional info.

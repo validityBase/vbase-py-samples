@@ -1,7 +1,16 @@
-# create_set.py
+----
+title: Create a Set
+----
+
+<!-- omit in toc -->
+# Create a Set
+
 This sample creates and validates a vBase set.
 
+You can find the implementation in [`create_set.py`](https://github.com/validityBase/vbase-py-samples/blob/main/samples/create_set.py).
+
 ## Summary
+
 A set is a collection of objects.
 A named set of data records is a dataset.
 Such datasets can implement any point-in-time (PIT) or bitemporal data

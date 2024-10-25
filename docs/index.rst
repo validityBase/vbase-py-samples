@@ -1,5 +1,5 @@
-vbase-py-samples Documentation
-==============================
+vBase Python Software Development Kit (SDK) Samples
+===================================================
 
 .. toctree::
    :maxdepth: 2

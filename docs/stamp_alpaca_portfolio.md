@@ -1,10 +1,15 @@
 ---
-stamp_alpaca_portfolio.py
+title: Stamp Alpaca Portfolio
 ---
+
+<!-- omit in toc -->
+# Stamp Alpaca Portfolio
 
 This sample illustrates how to retrieve, save, and stamp an Alpaca portfolio.
 
 The sample can be run from the command line interactively or as a script if your environment is set appropriately.
+
+You can find the implementation in [`stamp_alpaca_portfolio.py`](https://github.com/validityBase/vbase-py-samples/blob/main/samples/stamp_alpaca_portfolio.py).
 
 - [1. Prerequisites](#1-prerequisites)
 - [2. (Optional) Sign Up for an Alpaca Account](#2-optional-sign-up-for-an-alpaca-account)

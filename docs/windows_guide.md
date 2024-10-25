@@ -1,3 +1,8 @@
+---
+title: Windows vBase Setup Guide
+---
+
+<!-- omit in toc -->
 # Windows vBase Setup Guide
 
 This tutorial guides you through setting up Windows environment
@@ -5,13 +10,12 @@ to run vBase samples.
 
 We provide steps for setting up a Python virtual environment (venv) on a Windows 10 system and installing all the necessary build tools required for compiling and installing typical Python packages.
 
-- [Windows vBase Setup Guide](#windows-vbase-setup-guide)
-  - [1: Install Python on Windows](#1-install-python-on-windows)
-  - [2: Install Microsoft Visual C++ Build Tools](#2-install-microsoft-visual-c-build-tools)
-  - [3: Create a Python Virtual Environment (venv)](#3-create-a-python-virtual-environment-venv)
-  - [4: Install Required Build Tools for Python Packages](#4-install-required-build-tools-for-python-packages)
-  - [5: Install Python Packages (with Dependencies)](#5-install-python-packages-with-dependencies)
-  - [6: Verify Installation (Optional)](#6-verify-installation-optional)
+- [1: Install Python on Windows](#1-install-python-on-windows)
+- [2: Install Microsoft Visual C++ Build Tools](#2-install-microsoft-visual-c-build-tools)
+- [3: Create a Python Virtual Environment (venv)](#3-create-a-python-virtual-environment-venv)
+- [4: Install Required Build Tools for Python Packages](#4-install-required-build-tools-for-python-packages)
+- [5: Install Python Packages (with Dependencies)](#5-install-python-packages-with-dependencies)
+- [6: Verify Installation (Optional)](#6-verify-installation-optional)
 
 ## 1: Install Python on Windows
 

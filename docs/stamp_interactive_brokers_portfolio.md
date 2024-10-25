@@ -1,12 +1,17 @@
 ---
-stamp_interactive_brokers_portfolio.py
+title: Stamp Interactive Brokers Portfolio
 ---
+
+<!-- omit in toc -->
+# Stamp Interactive Brokers Portfolio
 
 This sample illustrates how to retrieve, save, and stamp an Interactive Brokers (IB) portfolio.
 
 The sample can be run from the command line interactively or as a script if your environment is set appropriately.
 
 The sample will run the **Interactive Brokers (IB) Client Portal Gateway** on your Windows computer and make a request to it using the Web API from Python.
+
+You can find the implementation in [`stamp_interactive_brokers_portfolio.py`](https://github.com/validityBase/vbase-py-samples/blob/main/samples/stamp_interactive_brokers_portfolio.py).
 
 - [1. Prerequisites](#1-prerequisites)
 - [2. Download and Install Client Portal Gateway](#2-download-and-install-client-portal-gateway)

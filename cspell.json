@@ -4,9 +4,12 @@
     "dictionaryDefinitions": [],
     "dictionaries": [],
     "words": [
+        "asyncio",
+        "bitemporal",
         "boto",
         "boto3",
         "clientportal",
+        "Codespaces",
         "quickstart"
     ],
     "ignoreWords": [],

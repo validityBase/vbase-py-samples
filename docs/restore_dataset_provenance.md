@@ -1,7 +1,15 @@
-# restore_dataset_provenance.py
+----
+title: Restore Dataset Provenance
+----
+
+<!-- omit in toc -->
+# Restore Dataset Provenance
+
 This sample illustrates how a dataset producer can create a dataset
 and how the provenance of the dataset can be restored
 after loss during copying or other transformations.
+
+You can find the implementation in [`restore_dataset_provenance.py`](https://github.com/validityBase/vbase-py-samples/blob/main/samples/restore_dataset_provenance.py).
 
 ## Summary
 
