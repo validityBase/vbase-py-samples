@@ -99,7 +99,7 @@ On Windows 10, the easiest way to clone a GitHub repository without installing a
 
 1. **Open Command Prompt** (or PowerShell) and navigate to your project folder:
    ```bash
-   cd C:\Users\%USERNAME%\Projects\validityBase
+   cd C:\Users\%USERNAME%\Projects\validityBase\vbase-py-samples
    ```
 
 2. **Create a virtual environment** using the `venv` module:
