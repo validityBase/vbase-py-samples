@@ -13,10 +13,12 @@ from dotenv import load_dotenv
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
 from vbase import (
     VBaseClient,
     VBaseDataset,
 )
+
 from aws_utils import (
     create_s3_client_from_env,
     init_vbase_dataset_from_s3_objects,

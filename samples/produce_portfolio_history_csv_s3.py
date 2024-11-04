@@ -7,17 +7,19 @@
 # ## Imports
 
 from datetime import datetime
-import json
 import os
+import pandas as pd
 import pprint
 import random
 from dotenv import load_dotenv
+
 from vbase import (
     VBaseClient,
     ForwarderCommitmentService,
     VBaseDataset,
-    VBaseJsonObject,
+    VBaseStringObject,
 )
+
 from aws_utils import (
     create_s3_client_from_env,
     write_s3_object,
@@ -27,7 +29,7 @@ from aws_utils import (
 # ## Configuration
 
 # The trader's sovereign cryptographic identity.
-PK = "0xabfc6c981e4e9f1f26175bc40aef73248d467617309c5e04e83da34171999076"
+PRIVATE_KEY = "0xabfc6c981e4e9f1f26175bc40aef73248d467617309c5e04e83da34171999076"
 
 # The strategy name.
 STRATEGY_NAME = "strategy" + datetime.now().strftime("%Y%m%d%H%M%S")
@@ -47,23 +49,23 @@ load_dotenv(verbose=True, override=True)
 forwarder_url = os.environ.get("VBASE_FORWARDER_URL")
 api_key = os.environ.get("VBASE_API_KEY")
 
-# Connect to AWS.
-boto_client = create_s3_client_from_env()
-
 # Connect to vBase.
 vbc = VBaseClient(
     ForwarderCommitmentService(
         forwarder_url,
         api_key,
-        PK,
+        PRIVATE_KEY,
     )
 )
+
+# Connect to AWS.
+boto_client = create_s3_client_from_env()
 
 
 # ## Create and Stamp Portfolios
 
 # Create the vBase dataset object for the strategy.
-ds_strategy = VBaseDataset(vbc, STRATEGY_NAME, VBaseJsonObject)
+ds_strategy = VBaseDataset(vbc, STRATEGY_NAME, VBaseStringObject)
 print(f"Created dataset: {pprint.pformat(ds_strategy.to_dict())}")
 
 # Create sample portfolios.
@@ -71,18 +73,14 @@ random.seed(1234)
 for i_trade in range(N_TIME_PERIODS):
     # Create a random portfolio in [-1, 1].
     # We can use any identifier for which returns can be verified.
-    port = json.dumps(
-        {
-            "SPY": round(random.random() * 2 - 1, 2),
-            "TSLA": round(random.random() * 2 - 1, 2),
-            "BTCUSD": round(random.random() * 2 - 1, 2),
-            "JPM:CDS:5": round(random.random() * 2 - 1, 2),
-        }
-    )
-    print(f"Portfolio: {pprint.pformat(port)}")
+    port_csv = pd.DataFrame({
+        "sym": ["SPY", "TSLA", "BTCUSD", "JPM:CDS:5"],
+        "wt": [round(random.random() * 2 - 1, 2) for _ in range(4)]
+    }).to_csv(index=False)
+    print(f"Portfolio:\n{port_csv}")
 
     # Add the portfolio to the vBase dataset object.
-    receipt = ds_strategy.add_record(port)
+    receipt = ds_strategy.add_record(port_csv)
     print(f"Stamp receipt: {pprint.pformat(receipt)}")
 
     # Save the portfolio.
@@ -90,8 +88,8 @@ for i_trade in range(N_TIME_PERIODS):
         boto_client,
         BUCKET_NAME,
         STRATEGY_FOLDER_NAME,
-        f"portfolio_{i_trade}.json",
-        port,
+        f"portfolio_{i_trade}.csv",
+        port_csv,
     )
 
 # Display the shareable portfolio history URL.

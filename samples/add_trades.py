@@ -41,7 +41,7 @@ start_time = time.time()
 for i in range(10):
     trade = json.dumps(
         {
-            "tade_id": i,
+            "trade_id": i,
             "symbol": "ETHUSD",
             "size": 1 if i % 2 == 0 else -1,
         }
