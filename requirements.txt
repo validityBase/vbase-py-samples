@@ -3,4 +3,4 @@ python-dotenv>=1.0.1
 pandas>=2.0.3
 matplotlib>=3.7.5
 quantstats>=0.0.62
-git+https://github.com/validityBase/vbase-py.git#egg=vbase
+git+https://github.com/validityBase/vbase-py.git@main

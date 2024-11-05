@@ -1,0 +1,9 @@
+[MESSAGES CONTROL]
+# Disable the warning:
+# W0105: String statement has no effect (pointless-string-statement)
+# We use multi-line strings comments for documentation purposes.
+disable=W0105
+
+[VARIABLES]
+# Allow specific lowercase names without warnings.
+additional-builtins=html
