@@ -1,18 +1,14 @@
-# # Sentiment Dataset Verification Demo
+# # Track Record Verification Demo
 
-"""This sample verifies a tamper-proof dataset history.
+"""This sample verifies a tamper-proof portfolio track record.
 """
 
 
 # ## Imports
 
 import pprint
-import random
 import sys
 from dotenv import load_dotenv
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
 
 from vbase import (
     VBaseClient,
@@ -21,22 +17,23 @@ from vbase import (
 
 from aws_utils import (
     create_s3_client_from_env,
-    init_vbase_dataset_from_s3_objects,
+    read_s3_object,
+    init_vbase_dataset_from_long_csv,
 )
 
 
 # ## Configuration
 
-# The dataset owner address.
-DATASET_OWNER = "0xA401F59d7190E4448Eb60691E3bc78f1Ef03e88C"
+# The strategy owner address.
+STRATEGY_OWNER = "0xA401F59d7190E4448Eb60691E3bc78f1Ef03e88C"
 
-# The dataset name.
-DATASET_NAME = "sentiment_dataset_20240620103503"
+# The strategy name.
+STRATEGY_NAME = "strategy20240618145216"
 
 # Additional configuration.
 BUCKET_NAME = "vbase-test"
-FOLDER_NAME = "samples/sentiment_dataset_history/"
-DATASET_FOLDER_NAME = FOLDER_NAME + DATASET_NAME
+FOLDER_NAME = "samples/portfolio_history/"
+STRATEGY_FOLDER_NAME = FOLDER_NAME + STRATEGY_NAME
 
 
 # ## Setup
@@ -50,13 +47,13 @@ boto_client = create_s3_client_from_env()
 # Connect to vBase.
 vbc = VBaseClient.create_instance_from_env()
 
-# Initialize the dataset object.
-ds = VBaseDataset(
+# Initialize the strategy dataset object.
+ds_strategy = VBaseDataset(
     vbc,
     init_dict={
-        "name": DATASET_NAME,
-        "owner": DATASET_OWNER,
-        "record_type_name": "VBaseJsonObject",
+        "name": STRATEGY_NAME,
+        "owner": STRATEGY_OWNER,
+        "record_type_name": "VBaseStringObject",
         "records": [],
     },
 )
@@ -74,25 +71,34 @@ if "ipykernel" not in sys.modules and "IPython" in sys.modules:
     matplotlib.use("WebAgg")
 
 
-# ## Validate the Dataset History
+# ## Validate the Portfolio History
 
-# Load the dataset records.
-ds = init_vbase_dataset_from_s3_objects(
-    ds, boto_client, BUCKET_NAME, DATASET_FOLDER_NAME
+# Load the long portfolio history CSV.
+csv_ports_long = read_s3_object(
+    boto_client,
+    BUCKET_NAME,
+    STRATEGY_FOLDER_NAME,
+    "portfolio_long.csv",
 )
+print("Strategy long CSV:\n", csv_ports_long)
+
+# Load the portfolio records.
+ds_strategy = init_vbase_dataset_from_long_csv(ds_strategy, csv_ports_long)
 
 # Restore timestamps using the blockchain stamps.
-assert ds.try_restore_timestamps_from_index()
+assert ds_strategy.try_restore_timestamps_from_index()
 
-# Verify the records.
-assert ds.verify_commitments()
+# Verify the portfolio records.
+assert ds_strategy.verify_commitments()
 
-# Build and display the verified records.
-l_receipts = ds.get_commitment_receipts()
-html = "<table>"
-html += "<tr><th>num</th><th>record</th><th>record_hash</th><th>tx</th></tr>"
+# Build and display the verified portfolio records.
+l_receipts = ds_strategy.get_commitment_receipts()
+html = (
+    "<table>"
+    + "<tr><th>num</th><th>portfolio</th><th>portfolio_hash</th><th>tx</th></tr>"
+)
 # Populate the table with data.
-for i, record in enumerate(ds.records):
+for i, record in enumerate(ds_strategy.records):
     html += (
         f"<tr><td>{i}</td><td>{record.data}</td><td>{record.cid}</td>"
         f"<td>{l_receipts[i]['transactionHash']}</td></tr>"
@@ -109,35 +115,12 @@ else:
     display(HTML(html))
 
 
-# ## Display Analytics
-
-# Convert dataset data to a Pandas DataFrame.
-df_dataset = ds.get_pd_data_frame()
-print("Dataset DataFrame:\n", df_dataset)
-
-# Convert data to a signal.
-df_signal = (df_dataset - 50) / 50
-print("Signal DataFrame:\n", df_signal)
-
-# Plot validated signal return.
-random.seed(1)
-df_asset_returns = pd.DataFrame(
-    (np.random.random(size=df_signal.shape) * 2 - 1) / 20,
-    index=df_signal.index,
-    columns=df_signal.columns,
-)
-df_signal_returns = (df_signal.shift(1) * df_asset_returns).sum(axis=1)
-print("\nReturns DataFrame:\n", df_signal_returns)
-(1 + df_signal_returns).cumprod().fillna(1).plot()
-plt.show()
-
-
 # ## Summary
 
 """Process
-* We used only a link to the dataset history, name and owner.
+* We used only a link to the portfolio history, strategy name and owner.
 * We validated data integrity and timestamps using public blockchain records.
-* We converted the historical data to a Pandas DataFrame for easy analysis.
+* We converted the long CSV to a series of verified timestamped records.
 """
 
 """Key Implications

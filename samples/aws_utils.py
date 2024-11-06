@@ -2,6 +2,7 @@
 AWS utilities
 """
 
+from io import StringIO
 import json
 import os
 import pprint
@@ -144,6 +145,52 @@ def init_vbase_dataset_from_s3_objects(
     return ds
 
 
+def init_vbase_dataset_from_long_csv(ds: VBaseDataset, csv_long: str) -> VBaseDataset:
+    """
+    Initialize a dataset using a CSV string in a long format.
+
+    Consider the following two CSVs:
+
+        sym,wt
+        SPY,0.93
+        TSLA,-0.12
+
+        sym,wt
+        SPY,-0.63
+        TSLA,-0.77
+
+    They can be concatenated into a long format CSV
+    along with their object timestamps as follows:
+
+        t,sym,wt
+        2024-11-05 20:45:12+00:00,SPY,0.93
+        2024-11-05 20:45:12+00:00,TSLA,-0.12
+        2024-11-05 20:45:22+00:00,SPY,-0.63
+        2024-11-05 20:45:22+00:00,TSLA,-0.77
+
+    The function takes the long CSV and initializes the dataset.
+
+    :param ds: The vBaseDataset object to initialize.
+    :param csv_long: The long CSV string.
+    """
+    df_ds = pd.read_csv(StringIO(csv_long))
+
+    # Extract the unique timestamps from the first column.
+    timestamps = df_ds.iloc[:, 0].unique()
+
+    # Iterate over the timestamps and add the records to the dataset.
+    for timestamp in timestamps:
+        df_record = df_ds[df_ds.iloc[:, 0] == timestamp]
+        # Drop the timestamp column.
+        df_record = df_record.iloc[:, 1:]
+        # Convert the record to a CSV string.
+        csv_record = df_record.to_csv(index=False)
+        # Append the record to the dataset.
+        ds.records.append(ds.record_type(csv_record))
+        ds.timestamps.append(str(pd.Timestamp(timestamp).tz_convert("UTC")))
+    return ds
+
+
 def create_s3_objects_from_dataset(
     ds: VBaseDataset, boto_client: boto3.client, bucket_name: str, folder_name: str
 ) -> dict:
@@ -184,7 +231,7 @@ def write_s3_object(
     data: str,
 ) -> dict:
     """
-    Create S3 objects for dataset records.
+    Write an object to S3.
 
     :param ds: The vBaseDataset object.
     :param boto_client: The boto3.client object.
@@ -199,9 +246,31 @@ def write_s3_object(
         folder_name += "/"
 
     s3_obj_name = folder_name + file_name
-
-    # Loop over the dataset records,
-    # creating S3 objects for them.
     s3_receipt = boto_client.put_object(Bucket=bucket_name, Key=s3_obj_name, Body=data)
     print(f"Created S3 object: {s3_obj_name}")
     return s3_receipt
+
+
+def read_s3_object(
+    boto_client: boto3.client, bucket_name: str, folder_name: str, file_name: str
+) -> str:
+    """
+    Read an object to S3.
+
+    :param ds: The vBaseDataset object.
+    :param boto_client: The boto3.client object.
+    :param bucket_name: The bucket name.
+    :param folder_name: The folder name within the bucket.
+    :return: the object string.
+    """
+    if not folder_name.endswith("/"):
+        folder_name += "/"
+    # Append dataset name to folder name, if necessary.
+    if not folder_name.endswith("/"):
+        folder_name += "/"
+
+    s3_obj_name = folder_name + file_name
+
+    response = boto_client.get_object(Bucket=bucket_name, Key=s3_obj_name)
+    str_data = response["Body"].read().decode("utf-8")
+    return str_data

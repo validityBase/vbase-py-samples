@@ -5,6 +5,11 @@ __pycache__/
 *.pyd
 venv/
 
+# Package build
+*.egg-info/
+build/
+dist/
+
 # IntelliJ, IDEA, PyCharm
 /out/
 .idea/
@@ -24,7 +29,6 @@ venv/
 
 # Sphinx build artifacts
 _build/
-build/
 doctrees/
 *.doctree
 
