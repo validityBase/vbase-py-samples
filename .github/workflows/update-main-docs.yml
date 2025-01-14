@@ -1,6 +1,7 @@
 name: Update the Main Docs Repository
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -27,37 +28,9 @@ jobs:
         run: |
           sphinx-build -b markdown docs/ docs/_build/markdown
 
-      - name: Clone the main docs repo
-        env:
-          DOCS_BUILD_PAT: ${{ secrets.DOCS_BUILD_PAT }}
-        run: |
-          git clone https://$DOCS_BUILD_PAT@github.com/validityBase/docs.git main-docs
-          cd main-docs
-          rm -rf vbase-py-samples/
-          mkdir -p vbase-py-samples/
-
-      - name: Copy documentation to the main docs repo
-        run: |
-          cp -r docs/_build/markdown/* main-docs/vbase-py-samples/
-
-      - name: Commit and push changes to the main docs repo
-        env:
-          DOCS_BUILD_PAT: ${{ secrets.DOCS_BUILD_PAT }}
-        run: |
-          cd main-docs
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add vbase-py-samples/
-          if git diff-index --quiet HEAD; then
-            echo "No changes to commit"
-            exit 0
-          else
-            echo "Changes detected"
-            git commit -m "Update vbase-py-samples documentation from automated build"
-            git push https://$DOCS_BUILD_PAT@github.com/validityBase/docs.git main
-          fi
-
-      - name: Cleanup main-docs folder
-        if: always() # Run even if previous steps fail to clean up.
-        run: |
-          rm -rf main-docs
+      - name: Publish Documents
+        uses: validityBase/docs/publish-docs-action@main
+        with:
+          docs-repo-access-token: ${{ secrets.DOCS_REPO_ACCESS_TOKEN }}
+          source-docs-path: 'docs/_build/markdown'
+          target-repository-branch: vbase-py-samples-test
