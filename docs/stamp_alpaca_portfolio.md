@@ -14,8 +14,8 @@ You can find the implementation in [`stamp_alpaca_portfolio.py`](https://github.
 - [4. Obtain Your API Keys](#obtain-keys)
 - [5. Switch to the Sample Directory](#switch-directory)
 - [6. Install the Alpaca Python Package](#install-alpaca)
-- [5. Set Environment Variables](#set-env)
-- [6. Run the Sample](#run-sample)
+- [7. Set Environment Variables](#set-env)
+- [8. Run the Sample](#run-sample)
 
 ## 1. Prerequisites<a href="#prereq" id="#prereq"></a>
 
@@ -74,7 +74,7 @@ Install the `alpaca_trade_api` Python package:
 pip install alpaca_trade_api
 ```
 
-## 5. Set Environment Variables<a href="#set-env" id="#set-env"></a>
+## 7. Set Environment Variables<a href="#set-env" id="#set-env"></a>
 
 Set the following environment variables for your IB and vBase configuration.    - Alpaca Configuration:
 - `ALPACA_API_KEY` - The Alpaca API Key.
@@ -118,7 +118,7 @@ VBASE_COMMITMENT_SERVICE_PRIVATE_KEY="VBASE_COMMITMENT_SERVICE_PRIVATE_KEY"
 VBASE_DATASET_NAME="alpaca_portfolio_stamping_test"
 ```
 
-## 6. Run the Sample<a href="#run-sample" id="#run-sample"></a>
+## 8. Run the Sample<a href="#run-sample" id="#run-sample"></a>
 
 Run the sample from the command line:
 
