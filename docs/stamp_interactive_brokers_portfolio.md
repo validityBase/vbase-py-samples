@@ -1,7 +1,3 @@
----
-title: Stamp Interactive Brokers Portfolio
----
-
 <!-- omit in toc -->
 
 # Stamp Interactive Brokers Portfolio

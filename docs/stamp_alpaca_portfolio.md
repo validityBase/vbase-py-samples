@@ -17,6 +17,7 @@ You can find the implementation in [`stamp_alpaca_portfolio.py`](https://github.
 - [7. Set Environment Variables](#set-env)
 - [8. Run the Sample](#run-sample)
 
+
 ## 1. Prerequisites<a href="#prereq" id="#prereq"></a>
 
 1. **Alpaca Account**: You must have an Alpaca account (live or paper trading).
@@ -77,12 +78,12 @@ pip install alpaca_trade_api
 ## 7. Set Environment Variables<a href="#set-env" id="#set-env"></a>
 
 Set the following environment variables for your IB and vBase configuration.    - Alpaca Configuration:
+
 - `ALPACA_API_KEY` - The Alpaca API Key.
 - `ALPACA_API_SECRET` - The Alpaca API Secret.
 - `ALPACA_API_BASE_URL` - Base URL for the Alpaca API:
 - https://paper-api.alpaca.markets for paper trading.
 - https://api.alpaca.markets for live trading.
-
 - AWS S3 Configuration (Optional if you save the portfolio data elsewhere):
   - `AWS_ACCESS_KEY_ID` - The Access Key used to connect to the S3 service.
   - `AWS_SECRET_ACCESS_KEY` - The Secret Key used to connect to the S3 service.
