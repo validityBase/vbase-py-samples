@@ -12,7 +12,7 @@ and illustrates async operation using asyncio.
 
 You can find the implementation in [`add_string_dataset_record_async.py`](https://github.com/validityBase/vbase-py-samples/blob/main/samples/add_string_dataset_record_async.py).
 
-## Summary
+## Summary<a href="#summary" id="summary"></a>
 
 A set is a collection of objects.
 A named set of data records is a dataset.
@@ -23,7 +23,7 @@ that hide the details of the object and record content id (CID) calculation (has
 This example builds on the add_string_dataset_record.py code and
 illustrates async methods.
 
-## Detailed Description:
+## Detailed Description<a href="#detailed-description" id="detailed-description"></a>
 
 - Create a vBase object using a Web3 HTTP commitment service.
 The commitment service is a smart contract running on a blockchain.
