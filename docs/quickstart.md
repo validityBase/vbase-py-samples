@@ -7,13 +7,13 @@ The following steps guide you through this process of setting up vBase Python SD
 <!-- omit in toc -->
 > **Note for Windows users:**
 > If you’re on Windows, the following instructions will work on the Windows Subsystem for Linux (WSL). WSL provides a Linux environment on your Windows OS. Please follow [this guide to set up your WSL environment for vBase.](windows_subsystem_for_linux_guide.md)
-- [1. Get a vBase API Key](https://docs.vbase.com/getting-started/python-quickstart-readme/quickstart-1#get-a-vbase-api-key)
-- [2. Create the vBase Directory](https://docs.vbase.com/getting-started/python-quickstart-readme/quickstart-1#create-the-vbase-directory)
-- [3. Install the vBase Python SDK](https://docs.vbase.com/getting-started/python-quickstart-readme/quickstart-1#install-the-vbase-python-sdk)
-- [4. Clone the vBase Python SDK Samples](https://docs.vbase.com/getting-started/python-quickstart-readme/quickstart-1#clone-the-vbase-python-sdk-samples)
-- [5. Set up Your Environment](https://docs.vbase.com/getting-started/python-quickstart-readme/quickstart-1#set-up-your-environment)
-- [6. Verify Your Environment](https://docs.vbase.com/getting-started/python-quickstart-readme/quickstart-1#verify-your-environment)
-- [7. You Are All Set!](https://docs.vbase.com/getting-started/python-quickstart-readme/quickstart-1#you-are-all-set)
+- [1. Get a vBase API Key](quickstart.md#get-a-vbase-api-key)
+- [2. Create the vBase Directory](quickstart.md#create-the-vbase-directory)
+- [3. Install the vBase Python SDK](quickstart.md#install-the-vbase-python-sdk)
+- [4. Clone the vBase Python SDK Samples](quickstart.md#clone-the-vbase-python-sdk-samples)
+- [5. Set up Your Environment](quickstart.md#set-up-your-environment)
+- [6. Verify Your Environment](quickstart.md#verify-your-environment)
+- [7. You Are All Set!](quickstart.md#you-are-all-set)
 
 
 ## 1. Get a vBase API Key <a href="#get-a-vbase-api-key" id="get-a-vbase-api-key"></a>
