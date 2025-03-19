@@ -58,7 +58,8 @@ git clone https://github.com/validityBase/vbase-py-samples.git
    
 **Option 2: Create a new environment:**
    If this is your first time working with vBase, you should configure new settings.
-   Please install the `vbase-py-tools` package and follow the setup instructions using the `config_env` script provided in that package as instructed at the following link: [vBase Py Tools Setup Instructions](https://docs.vbase.com/python-sdk/index-1/setup).
+Please install the `vbase-py-tools` package and follow the setup instructions using the `config_env` script provided in that package as instructed at the following link: [vBase Py Tools Setup Instructions REL](../vbase-py-tools/setup.md).
+[vBase Py Tools Setup Instructions ABS](https://github.com/validityBase/docs/vbase-py-tools/setup.md).
 
 ## 6. Verify Your Environment <a href="#verify-your-environment" id="verify-your-environment"></a>
 
