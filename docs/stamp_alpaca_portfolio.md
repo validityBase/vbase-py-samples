@@ -8,14 +8,14 @@ The sample can be run from the command line interactively or as a script if your
 
 You can find the implementation in [`stamp_alpaca_portfolio.py`](https://github.com/validityBase/vbase-py-samples/blob/main/samples/stamp_alpaca_portfolio.py).
 
-- [1. Prerequisites](https://docs.vbase.com/python-sdk/index/stamp_alpaca_portfolio#prerequisites)
-- [2. (Optional) Sign Up for an Alpaca Account](https://docs.vbase.com/python-sdk/index/stamp_alpaca_portfolio#optional-signup-for-an-alpaca-account)
-- [3. (Optional) Enable Paper Trading](https://docs.vbase.com/python-sdk/index/stamp_alpaca_portfolio#optional-enable-paper-trading)
-- [4. Obtain Your API Keys](https://docs.vbase.com/python-sdk/index/stamp_alpaca_portfolio#obtain-your-api-keys)
-- [5. Switch to the Sample Directory](https://docs.vbase.com/python-sdk/index/stamp_alpaca_portfolio#switch-to-the-sample-directory)
-- [6. Install the Alpaca Python Package](https://docs.vbase.com/python-sdk/index/stamp_alpaca_portfolio#install-the-alpaca-python-package)
-- [7. Set Environment Variables](https://docs.vbase.com/python-sdk/index/stamp_alpaca_portfolio#set-environment-variables)
-- [8. Run the Sample](https://docs.vbase.com/python-sdk/index/stamp_alpaca_portfolio#run-the-sample)
+- [1. Prerequisites](../vbase-py-samples/stamp_alpaca_portfolio.md#prerequisites){.external}
+- [2. (Optional) Sign Up for an Alpaca Account](../vbase-py-samples/stamp_alpaca_portfolio.md#optional-signup-for-an-alpaca-account){.external}
+- [3. (Optional) Enable Paper Trading](../vbase-py-samples/stamp_alpaca_portfolio.md#optional-enable-paper-trading){.external}
+- [4. Obtain Your API Keys](../vbase-py-samples/stamp_alpaca_portfolio.md#obtain-your-api-keys){.external}
+- [5. Switch to the Sample Directory](../vbase-py-samples/stamp_alpaca_portfolio.md#switch-to-the-sample-directory){.external}
+- [6. Install the Alpaca Python Package](../vbase-py-samples/stamp_alpaca_portfolio.md#install-the-alpaca-python-package){.external}
+- [7. Set Environment Variables](../vbase-py-samples/stamp_alpaca_portfolio.md#set-environment-variables){.external}
+- [8. Run the Sample](../vbase-py-samples/stamp_alpaca_portfolio.md#run-the-sample){.external}
 
 
 ## 1. Prerequisites<a href="#prerequisites" id="#prerequisites"></a>

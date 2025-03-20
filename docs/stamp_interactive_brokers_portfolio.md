@@ -10,10 +10,10 @@ The sample will run the **Interactive Brokers (IB) Client Portal Gateway** on yo
 
 You can find the implementation in [`stamp_interactive_brokers_portfolio.py`](https://github.com/validityBase/vbase-py-samples/blob/main/samples/stamp_interactive_brokers_portfolio.py).
 
-- [1. Prerequisites](https://docs.vbase.com/python-sdk/index/stamp_interactive_brokers_portfolio#prerequisites)
-- [2. Download and Install Client Portal Gateway](https://docs.vbase.com/python-sdk/index/stamp_interactive_brokers_portfolio#download-and-install-client-portal-gateway)
-- [3. Set Environment Variables](https://docs.vbase.com/python-sdk/index/stamp_interactive_brokers_portfolio#set-environmental-variables)
-- [4. Run the Sample](https://docs.vbase.com/python-sdk/index/stamp_interactive_brokers_portfolio#run-the-sample)
+- [1. Prerequisites](../vbase-py-samples/stamp_interactive_brokers_portfolio.md#prerequisites){.external}
+- [2. Download and Install Client Portal Gateway](../vbase-py-samples/stamp_interactive_brokers_portfolio.md#download-and-install-client-portal-gateway){.external}
+- [3. Set Environment Variables](../vbase-py-samples/stamp_interactive_brokers_portfolio.md#set-environmental-variables){.external}
+- [4. Run the Sample](../vbase-py-samples/stamp_interactive_brokers_portfolio.md#run-the-sample){.external}
 
 ## 1. Prerequisites <a href="#prerequisites" id="#prerequisites"></a>
 
