@@ -41,6 +41,3 @@ markdown_builder_options = {
 # for h1 and h2 level headings
 # (corresponding to #, ## in markdown).
 myst_heading_anchors = 2
-myst_enable_extensions = [
-    "attrs_inline"
-]
