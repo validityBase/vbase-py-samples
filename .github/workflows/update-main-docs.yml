@@ -29,7 +29,7 @@ jobs:
           sphinx-build -b markdown docs/ docs/_build/markdown
 
       - name: Publish Documents
-        uses: validityBase/docs/publish-docs-action@feature/replace_repo_ref
+        uses: validityBase/docs/publish-docs-action@main
         with:
           docs-repo-access-token: ${{ secrets.DOCS_REPO_ACCESS_TOKEN }}
           source-docs-path: 'docs/_build/markdown'
