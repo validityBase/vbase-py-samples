@@ -32,4 +32,6 @@ jobs:
         uses: validityBase/docs/publish-docs-action@main
         with:
           docs-repo-access-token: ${{ secrets.DOCS_REPO_ACCESS_TOKEN }}
-          source-docs-path: 'docs/_build/markdown'          
+          source-docs-path: 'docs/_build/markdown'
+          resolve-absolute-links-repos: |
+              vbase-py-tools
