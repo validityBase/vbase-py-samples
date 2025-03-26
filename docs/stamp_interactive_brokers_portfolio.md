@@ -15,7 +15,7 @@ You can find the implementation in [`stamp_interactive_brokers_portfolio.py`](ht
 - [3. Set Environment Variables](stamp_interactive_brokers_portfolio.md#set-environmental-variables)
 - [4. Run the Sample](stamp_interactive_brokers_portfolio.md#ib-run-the-sample)
 
-## 1. Prerequisites <a href="#prerequisites" id="prerequisites"></a>
+## 1. Prerequisites <a href="#ib-prerequisites" id="ib-prerequisites"></a>
 
 1. **Interactive Brokers Account**: You must have an IB account (live or paper trading).
 2. **Python**: Ensure Python is installed on your Windows machine.
