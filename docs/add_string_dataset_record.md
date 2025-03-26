@@ -10,7 +10,8 @@ if one does not exist and adds a record to the dataset.
 
 You can find the implementation in [`add_string_dataset_record.py`](https://github.com/validityBase/vbase-py-samples/blob/main/samples/add_string_dataset_record.py).
 
-## Summary<a href="#summary" id="summary"></a>
+(str-rec-sync-summary)=
+## Summary<a href="#str-rec-sync-summary" id="str-rec-sync-summary"></a>
 
 A set is a collection of objects.
 A named set of data records is a dataset.
@@ -20,7 +21,8 @@ The sample demonstrates the higher-order vBase dataset and string record abstrac
 that hide the details of the object and record content id (CID) calculation (hashing).
 This example builds on the `create_set.py` code and omits redundant comments.
 
-## Detailed Description<a href="#detailed-description" id="detailed-description"></a>
+(str-rec-sync-detailed-description)=
+## Detailed Description<a href="#str-rec-sync-detailed-description" id="str-rec-sync-detailed-description"></a>
 
 - Create a vBase object using a Web3 HTTP commitment service.
 The commitment service is a smart contract running on a blockchain.

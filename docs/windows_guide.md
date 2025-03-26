@@ -10,17 +10,18 @@ to run vBase samples.
 
 We provide steps for setting up a Python virtual environment (venv) on a Windows 10 system and installing all the necessary build tools required for compiling and installing typical Python packages.
 
-- [1. Install Python on Windows](#install-python-on-windows)
-- [2. Install Microsoft Visual C++ Build Tools](#install-microsoft-visual-c-build-tools)
-- [3. Create the Project Directory](#create-the-project-directory)
-- [4. Clone vBase Samples into the Project Directory](#clone-vbase-samples-into-the-project-directory)
-  - [4.1. Option 1. Clone the vbase-py-samples repository:](#option-1-clone-the-vbase-py-samples-repository)
-  - [4.2. Option 2. Download the vbase-py-samples repository as a ZIP file:](#option-2-download-the-vbase-py-samples-repository-as-a-zip-file)
-- [5. Create a Python Virtual Environment (venv)](#create-a-python-virtual-environment-venv)
-- [6. Install Required Build Tools for Python Packages](#install-required-build-tools-for-python-packages)
-- [7. Install vBase Dependencies](#install-vbase-dependencies)
-- [8. You Are All Set!](#you-are-all-set)
+- [1. Install Python on Windows](install-python-on-windows)
+- [2. Install Microsoft Visual C++ Build Tools](install-microsoft-visual-c-build-tools)
+- [3. Create the Project Directory](create-the-project-directory)
+- [4. Clone vBase Samples into the Project Directory](clone-vbase-samples-into-the-project-directory)
+  - [4.1. Option 1. Clone the vbase-py-samples repository:](option-1-clone-the-vbase-py-samples-repository)
+  - [4.2. Option 2. Download the vbase-py-samples repository as a ZIP file:](option-2-download-the-vbase-py-samples-repository-as-a-zip-file)
+- [5. Create a Python Virtual Environment (venv)](create-a-python-virtual-environment-venv)
+- [6. Install Required Build Tools for Python Packages](install-required-build-tools-for-python-packages)
+- [7. Install vBase Dependencies](install-vbase-dependencies)
+- [8. You Are All Set!](you-are-all-set)
 
+(install-python-on-windows)=
 ## 1. Install Python on Windows<a href="#install-python-on-windows" id="install-python-on-windows"></a>
 
 If Python is not already installed on your system, follow these steps:
@@ -42,6 +43,7 @@ If Python is not already installed on your system, follow these steps:
      ```
    - You should see the installed Python version.
 
+(install-microsoft-visual-c-build-tools)=
 ## 2. Install Microsoft Visual C++ Build Tools<a href="#install-microsoft-visual-c-build-tools" id="install-microsoft-visual-c-build-tools"></a>
 
 Many Python packages require compilation using Microsoft Visual C++ Build Tools.
@@ -57,6 +59,7 @@ Many Python packages require compilation using Microsoft Visual C++ Build Tools.
 
 3. **Finish Installation** and allow the tools to install.
 
+(create-the-project-directory)=
 ## 3. Create the Project Directory<a href="#create-the-project-directory" id="create-the-project-directory"></a>
 
 These instructions assume that the samples will be located in the `C:\Users\%USERNAME%\Projects\validityBase\vbase-py-samples` folder.
@@ -67,10 +70,12 @@ Create the project folder and switch to it:
    cd  C:\Users\%USERNAME%\Projects\validityBase\vbase-py-samples
    ```
 
+(clone-vbase-samples-into-the-project-directory)=
 ## 4. Clone vBase Samples into the Project Directory<a href="#clone-vbase-samples-into-the-project-directory" id="clone-vbase-samples-into-the-project-directory"></a>
 
 Samples can be cloned using `git` or downloaded and extracted as a ZIP file.
 
+(option-1-clone-the-vbase-py-samples-repository)=
 ### 4.1. Option 1. Clone the vbase-py-samples repository<a href="#option-1-clone-the-vbase-py-samples-repository" id="option-1-clone-the-vbase-py-samples-repository"></a>
    
 If you have `git` installed, clone the `vbase-py-samples` repository using the command line:
@@ -79,6 +84,7 @@ If you have `git` installed, clone the `vbase-py-samples` repository using the c
    git clone https://github.com/validityBase/vbase-py-samples.git
    ```
 
+(option-2-download-the-vbase-py-samples-repository-as-a-zip-file)=
 ### 4.2. Option 2. Download the vbase-py-samples repository as a ZIP file<a href="#option-2-download-the-vbase-py-samples-repository-as-a-zip-file" id="option-2-download-the-vbase-py-samples-repository-as-a-zip-file"></a>
 
 On Windows 10, the easiest way to clone a GitHub repository without installing additional software is to use **GitHub’s built-in Zip download** feature. This method allows you to download the repository as a ZIP file and extract it, effectively "cloning" the repository without requiring Git or any command-line tools.
@@ -95,6 +101,7 @@ On Windows 10, the easiest way to clone a GitHub repository without installing a
    - Right-click on the ZIP file and select **Extract All...**.
    - Choose a destination folder, such as the samples folder `C:\Users\%USERNAME%\Projects\validityBase\vbase-py-samples`, and extract the contents.
 
+(create-a-python-virtual-environment-venv)=
 ## 5. Create a Python Virtual Environment (venv)<a href="#create-a-python-virtual-environment-venv" id="create-a-python-virtual-environment-venv"></a>
 
 1. **Open Command Prompt** (or PowerShell) and navigate to your project folder:
@@ -116,6 +123,7 @@ On Windows 10, the easiest way to clone a GitHub repository without installing a
 
    You should now see `(venv)` at the beginning of your command line, indicating that the virtual environment is active.
 
+(install-required-build-tools-for-python-packages)=
 ## 6. Install Required Build Tools for Python Packages<a href="#install-required-build-tools-for-python-packages" id="install-required-build-tools-for-python-packages"></a>
 
 Some packages need additional Python build tools like `setuptools` and `wheel`. Install these tools globally in your virtual environment:
@@ -131,6 +139,7 @@ Some packages need additional Python build tools like `setuptools` and `wheel`. 
    pip install build
    ```
 
+(install-vbase-dependencies)=
 ## 7. Install vBase Dependencies<a href="#install-vbase-dependencies" id="install-vbase-dependencies"></a>
 
 Now that the virtual environment and build tools are set up, you can install the vBase dependencies:
@@ -147,6 +156,7 @@ Now that the virtual environment and build tools are set up, you can install the
    pip install -r requirements-win.txt
    ```
 
+(you-are-all-set)=
 ## 8. You Are All Set!<a href="#you-are-all-set" id="you-are-all-set"></a>
 
 Once the above `pip install` command succeeded, you are ready to run the samples.

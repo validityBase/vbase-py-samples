@@ -11,6 +11,7 @@ after loss during copying or other transformations.
 
 You can find the implementation in [`restore_dataset_provenance.py`](https://github.com/validityBase/vbase-py-samples/blob/main/samples/restore_dataset_provenance.py).
 
+(summary)=
 ## Summary<a href="#summary" id="summary"></a>
 
 When digital objects are copied across physical media, across cloud environments,
@@ -25,6 +26,7 @@ For example:
 This sample illustrates how such timestamps can be restored for vBase datasets
 after the underlying digital objects are copied to a new AWS S3 bucket.
 
+(detailed-description)=
 ## Detailed Description<a href="#detailed-description" id="detailed-description"></a>
 
 - A `.env` file defines the following environment variables
