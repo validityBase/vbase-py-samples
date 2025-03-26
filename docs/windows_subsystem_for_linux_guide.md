@@ -8,13 +8,12 @@ title: Windows Subsystem for Linux (WSL) vBase Setup Guide
 This tutorial guides you through setting up Windows Subsystem for Linux (WSL)
 to run vBase samples.
 
-- [1. Install Windows Subsystem for Linux (WSL)](install-windows-subsystem-for-linux-wsl)
-- [2. Install Jupyter Lab](install-jupyter-lab)
-- [3. Install Git](install-git)
-- [4. Clone the vbase-py-samples Git Repository](clone-the-vbase-py-samples-git-repository)
-- [5. Run Jupyter Lab and Open a Notebook](run-jupyter-lab-and-open-a-notebook)
+- [1. Install Windows Subsystem for Linux (WSL)](windows_subsystem_for_linux_guide.md#install-windows-subsystem-for-linux-wsl)
+- [2. Install Jupyter Lab](windows_subsystem_for_linux_guide.md#install-jupyter-lab)
+- [3. Install Git](windows_subsystem_for_linux_guide.md#install-git)
+- [4. Clone the vbase-py-samples Git Repository](windows_subsystem_for_linux_guide.md#clone-the-vbase-py-samples-git-repository)
+- [5. Run Jupyter Lab and Open a Notebook](windows_subsystem_for_linux_guide.md#run-jupyter-lab-and-open-a-notebook)
 
-(install-windows-subsystem-for-linux-wsl)=
 ## 1. Install Windows Subsystem for Linux (WSL)<a href="#install-windows-subsystem-for-linux-wsl" id="install-windows-subsystem-for-linux-wsl"></a>
 
 1. **Open PowerShell as Administrator:**
@@ -46,7 +45,6 @@ to run vBase samples.
 7. **Launch WSL:**
    After installation, launch WSL from the Start menu. The first launch will take some time due to setup. You will be prompted to create a user account and password.
 
-(install-jupyter-lab)=
 ## 2. Install Jupyter Lab<a href="#install-jupyter-lab" id="install-jupyter-lab"></a>
 
 > **Note:** The following steps assume you have WSL installed and are running commands in the open WSL console window.
@@ -69,7 +67,6 @@ to run vBase samples.
     pip3 install jupyterlab
     ```
 
-(install-git)=
 ## 3. Install Git<a href="#install-git" id="install-git"></a>
 
 1. **Install Git:**
@@ -78,7 +75,6 @@ to run vBase samples.
     sudo apt install git -y
     ```
 
-(clone-the-vbase-py-samples-git-repository)=
 ## 4. Clone the vbase-py-samples Git Repository<a href="#clone-the-vbase-py-samples-git-repository" id="clone-the-vbase-py-samples-git-repository"></a>
 
 1. **Create the vBase directory:**
@@ -93,7 +89,6 @@ to run vBase samples.
     git clone https://github.com/validityBase/vbase-py-samples
     ```
 
-(run-jupyter-lab-and-open-a-notebook)=
 ## 5. Run Jupyter Lab and Open a Notebook<a href="#run-jupyter-lab-and-open-a-notebook" id="run-jupyter-lab-and-open-a-notebook"></a>
 
 1. **Navigate to the Repository Directory:**

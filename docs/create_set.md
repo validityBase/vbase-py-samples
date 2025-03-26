@@ -9,7 +9,6 @@ This sample creates and validates a vBase set.
 
 You can find the implementation in [`create_set.py`](https://github.com/validityBase/vbase-py-samples/blob/main/samples/create_set.py).
 
-(create-set-summary)=
 ## Summary<a href="#create-set-summary" id="create-set-summary"></a>
 
 A set is a collection of objects.
@@ -20,7 +19,6 @@ The sample illustrates low-level vBase set operations.
 Low-level set operations expose all vBase features and provide the most control
 without the benefit of simplifying higher-level abstractions.
 
-(create-set-detailed-description)=
 ## Detailed Description<a href="#create-set-detailed-description" id="create-set-detailed-description"></a>
 
 - Create a vBase object using a Web3 HTTP commitment service.

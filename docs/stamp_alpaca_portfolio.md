@@ -8,17 +8,16 @@ The sample can be run from the command line interactively or as a script if your
 
 You can find the implementation in [`stamp_alpaca_portfolio.py`](https://github.com/validityBase/vbase-py-samples/blob/main/samples/stamp_alpaca_portfolio.py).
 
-- [1. Prerequisites](alpaca-prerequisites)
-- [2. (Optional) Sign Up for an Alpaca Account](optional-signup-for-an-alpaca-account)
-- [3. (Optional) Enable Paper Trading](optional-enable-paper-trading)
-- [4. Obtain Your API Keys](obtain-your-api-keys)
-- [5. Switch to the Sample Directory](switch-to-the-sample-directory)
-- [6. Install the Alpaca Python Package](install-the-alpaca-python-package)
-- [7. Set Environment Variables](set-environment-variables)
-- [8. Run the Sample](run-the-sample)
+- [1. Prerequisites](stamp_alpaca_portfolio.md#alpaca-prerequisites)
+- [2. (Optional) Sign Up for an Alpaca Account](stamp_alpaca_portfolio.md#optional-signup-for-an-alpaca-account)
+- [3. (Optional) Enable Paper Trading](stamp_alpaca_portfolio.md#optional-enable-paper-trading)
+- [4. Obtain Your API Keys](stamp_alpaca_portfolio.md#obtain-your-api-keys)
+- [5. Switch to the Sample Directory](stamp_alpaca_portfolio.md#switch-to-the-sample-directory)
+- [6. Install the Alpaca Python Package](stamp_alpaca_portfolio.md#install-the-alpaca-python-package)
+- [7. Set Environment Variables](stamp_alpaca_portfolio.md#set-environment-variables)
+- [8. Run the Sample](stamp_alpaca_portfolio.md#run-the-sample)
 
 
-(alpaca-prerequisites)=
 ## 1. Prerequisites<a href="#prerequisites" id="prerequisites"></a>
 
 1. **Alpaca Account**: You must have an Alpaca account (live or paper trading).
@@ -30,7 +29,6 @@ You can find the implementation in [`stamp_alpaca_portfolio.py`](https://github.
    pip install alpaca-trade-api
    ```
 
-(optional-signup-for-an-alpaca-account)=
 ## 2. (Optional) Sign Up for an Alpaca Account<a href="#optional-signup-for-an-alpaca-account" id="optional-signup-for-an-alpaca-account"></a>
 
 1. **Go to Alpaca Website**:
@@ -44,7 +42,6 @@ You can find the implementation in [`stamp_alpaca_portfolio.py`](https://github.
    - You may need to set up multi-factor authentication (MFA) with an Authenticator app or SMS.
    - You may need to provide your address, phone number, and identity verification information.
 
-(optional-enable-paper-trading)=
 ## 3. (Optional) Enable Paper Trading<a href="#optional-enable-paper-trading" id="optional-enable-paper-trading"></a>
 
 1. **Go to the Paper Trading Section**:
@@ -54,7 +51,6 @@ You can find the implementation in [`stamp_alpaca_portfolio.py`](https://github.
    - Toggle the **Enable Paper Trading** option if it’s not enabled by default.
    - You will receive a starting balance in your paper trading account.
 
-(obtain-your-api-keys)=
 ## 4. Obtain Your API Keys<a href="#obtain-your-api-keys" id="obtain-your-api-keys"></a>
 
 - In the dashboard, go to **Your Account** > **API Keys**.
@@ -63,7 +59,6 @@ You can find the implementation in [`stamp_alpaca_portfolio.py`](https://github.
   - **API Secret Key**: Used to authenticate your requests.
 - Store your **API Key ID** and **API Secret Key** securely. You’ll use these in your environment variables that Python scripts will use to access your Alpaca account.
 
-(switch-to-the-sample-directory)=
 ## 5. Switch to the Sample Directory<a href="#switch-to-the-sample-directory" id="switch-to-the-sample-directory"></a>
 
 Open Command Prompt (or PowerShell) and navigate to your project folder:
@@ -72,7 +67,6 @@ Open Command Prompt (or PowerShell) and navigate to your project folder:
 cd C:\Users\%USERNAME%\Projects\validityBase\vbase-py-samples
 ```
 
-(install-the-alpaca-python-package)=
 ## 6. Install the Alpaca Python Package<a href="#install-the-alpaca-python-package" id="install-the-alpaca-python-package"></a>
 
 Install the `alpaca_trade_api` Python package:
@@ -81,7 +75,6 @@ Install the `alpaca_trade_api` Python package:
 pip install alpaca_trade_api
 ```
 
-(set-environment-variables)=
 ## 7. Set Environment Variables<a href="#set-environment-variables" id="set-environment-variables"></a>
 
 Set the following environment variables for your IB and vBase configuration.    - Alpaca Configuration:
@@ -126,7 +119,6 @@ VBASE_COMMITMENT_SERVICE_PRIVATE_KEY="VBASE_COMMITMENT_SERVICE_PRIVATE_KEY"
 VBASE_DATASET_NAME="alpaca_portfolio_stamping_test"
 ```
 
-(run-the-sample)=
 ## 8. Run the Sample<a href="#run-the-sample" id="run-the-sample"></a>
 
 Run the sample from the command line:
