@@ -18,7 +18,7 @@ You can find the implementation in [`stamp_alpaca_portfolio.py`](https://github.
 - [8. Run the Sample](stamp_alpaca_portfolio.md#run-the-sample)
 
 
-## 1. Prerequisites<a href="#prerequisites" id="prerequisites"></a>
+## 1. Prerequisites<a href="#alpaca-prerequisites" id="alpaca-prerequisites"></a>
 
 1. **Alpaca Account**: You must have an Alpaca account (live or paper trading).
 2. **Python**: Ensure Python is installed on your Windows machine.
