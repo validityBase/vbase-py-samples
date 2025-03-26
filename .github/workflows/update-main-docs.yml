@@ -35,3 +35,4 @@ jobs:
           source-docs-path: 'docs/_build/markdown'
           resolve-absolute-links-repos: |
               vbase-py-tools
+          target-repository-branch: 'main'
