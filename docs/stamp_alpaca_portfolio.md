@@ -8,14 +8,14 @@ The sample can be run from the command line interactively or as a script if your
 
 You can find the implementation in [`stamp_alpaca_portfolio.py`](https://github.com/validityBase/vbase-py-samples/blob/main/samples/stamp_alpaca_portfolio.py).
 
-- [1. Prerequisites](#prerequisites)
-- [2. (Optional) Sign Up for an Alpaca Account](#optional-signup-for-an-alpaca-account)
-- [3. (Optional) Enable Paper Trading](#optional-enable-paper-trading)
-- [4. Obtain Your API Keys](#obtain-your-api-keys)
-- [5. Switch to the Sample Directory](#switch-to-the-sample-directory)
-- [6. Install the Alpaca Python Package](#install-the-alpaca-python-package)
-- [7. Set Environment Variables](#set-environment-variables)
-- [8. Run the Sample](#run-the-sample)
+- [1. Prerequisites](stamp_alpaca_portfolio.md#prerequisites)
+- [2. (Optional) Sign Up for an Alpaca Account](stamp_alpaca_portfolio.md#optional-sign-up-for-an-alpaca-account)
+- [3. (Optional) Enable Paper Trading](stamp_alpaca_portfolio.md#optional-enable-paper-trading)
+- [4. Obtain Your API Keys](stamp_alpaca_portfolio.md#obtain-your-api-keys)
+- [5. Switch to the Sample Directory](stamp_alpaca_portfolio.md#switch-to-the-sample-directory)
+- [6. Install the Alpaca Python Package](stamp_alpaca_portfolio.md#install-the-alpaca-python-package)
+- [7. Set Environment Variables](stamp_alpaca_portfolio.md#set-environment-variables)
+- [8. Run the Sample](stamp_alpaca_portfolio.md#run-the-sample)
 
 
 ## 1. Prerequisites<a href="#prerequisites" id="prerequisites"></a>
@@ -29,7 +29,7 @@ You can find the implementation in [`stamp_alpaca_portfolio.py`](https://github.
    pip install alpaca-trade-api
    ```
 
-## 2. (Optional) Sign Up for an Alpaca Account<a href="#optional-signup-for-an-alpaca-account" id="optional-signup-for-an-alpaca-account"></a>
+## 2. (Optional) Sign Up for an Alpaca Account<a href="#optional-sign-up-for-an-alpaca-account" id="optional-sign-up-for-an-alpaca-account"></a>
 
 1. **Go to Alpaca Website**:
    - Visit [Alpaca Markets](https://alpaca.markets/) and click on **Sign Up**.

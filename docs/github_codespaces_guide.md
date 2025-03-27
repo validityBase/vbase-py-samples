@@ -7,12 +7,12 @@ title: GitHub Codespaces Guide
 
 This tutorial guides you through setting up GitHub Codespaces to run vBase samples.
 
-- [1. Open a Notebook in GitHub Codespaces](#1-open-a-notebook-in-github-codespaces)
-- [2. Configure Codespaces Secrets](#2-configure-codespaces-secrets)
-  - [2.1. Add the Secret to GitHub Repository Secrets](#21-add-the-secret-to-github-repository-secrets)
-  - [2.2. Use the Secret in Your Codespace](#22-use-the-secret-in-your-codespace)
+- [1. Open a Notebook in GitHub Codespaces](github_codespaces_guide.md#open-a-notebook-in-github-codespaces)
+- [2. Configure Codespaces Secrets](github_codespaces_guide.md#configure-codespaces-secrets)
+  - [2.1. Add the Secret to GitHub Repository Secrets](github_codespaces_guide.md#add-the-secret-to-github-repository-secrets)
+  - [2.2. Use the Secret in Your Codespace](github_codespaces_guide.md#use-the-secret-in-your-codespace)
 
-## 1. Open a Notebook in GitHub Codespaces
+## 1. Open a Notebook in GitHub Codespaces<a href="#open-a-notebook-in-github-codespaces" id="open-a-notebook-in-github-codespaces"></a>
 
 To open a Jupyter notebook from a public GitHub repository in GitHub Codespaces, follow these steps:
 
@@ -43,11 +43,11 @@ To open a Jupyter notebook from a public GitHub repository in GitHub Codespaces,
    - Copy the provided URL from the terminal and paste it into your browser.
    - You should see the Jupyter notebook interface with your notebook file opened and ready to use.
 
-## 2. Configure Codespaces Secrets
+## 2. Configure Codespaces Secrets<a href="#configure-codespaces-secrets" id="configure-codespaces-secrets"></a>
 
 To configure an environment variable in GitHub Codespaces that contains a secret you do not want to save directly in your repository, you can use GitHub's secrets management feature. Here's how you can achieve this:
 
-### 2.1. Add the Secret to GitHub Repository Secrets
+### 2.1. Add the Secret to GitHub Repository Secrets<a href="#add-the-secret-to-github-repository-secrets" id="add-the-secret-to-github-repository-secrets"></a>
 
 1. **Navigate to Your Repository:**
    - Go to your repository on GitHub.
@@ -60,7 +60,7 @@ To configure an environment variable in GitHub Codespaces that contains a secret
    - Click on the `New repository secret` button.
    - Add your secret with a name and its value. For example, you can name it `MY_SECRET` and provide the secret value.
 
-### 2.2. Use the Secret in Your Codespace
+### 2.2. Use the Secret in Your Codespace<a href="#use-the-secret-in-your-codespace" id="use-the-secret-in-your-codespace"></a>
 
 To use the secret within your Codespace, you'll need to reference it in your `devcontainer.json` file.
 
