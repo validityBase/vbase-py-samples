@@ -45,7 +45,7 @@ bin\\run.bat root\\conf.yaml
 https://localhost:5000/
 ```
 
-- You may need to ignore security warnings and 
+- You may need to ignore security warnings and
 accept the self-signed certificate in your browser.
 
 - Login to the client portal with your IB credentials.

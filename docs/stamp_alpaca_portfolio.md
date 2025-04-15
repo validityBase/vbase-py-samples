@@ -1,6 +1,6 @@
-<!-- omit in toc -->
-
 # Stamp Alpaca Portfolio
+
+<!-- omit in toc -->
 
 This sample illustrates how to retrieve, save, and stamp an Alpaca portfolio.
 
@@ -17,14 +17,13 @@ You can find the implementation in [`stamp_alpaca_portfolio.py`](https://github.
 - [7. Set Environment Variables](stamp_alpaca_portfolio.md#set-environment-variables)
 - [8. Run the Sample](stamp_alpaca_portfolio.md#run-the-sample)
 
-
 ## 1. Prerequisites<a href="#prerequisites" id="prerequisites"></a>
 
 1. **Alpaca Account**: You must have an Alpaca account (live or paper trading).
 2. **Python**: Ensure Python is installed on your Windows machine.
 3. **vBase**: Follow the [vBase Windows Guide](windows_guide.md) to set up Windows environment to run vBase samples.
-4. **Alpaca Python SDK**: Alpaca provides a Python SDK to simplify accessing their API.
-   To install the SDK, open your terminal or command prompt and install the SDK:
+4. **Alpaca Python SDK**: Alpaca provides a Python SDK to simplify accessing their API. To install the SDK, open your terminal or command prompt and install the SDK:
+
    ```bash
    pip install alpaca-trade-api
    ```
@@ -77,13 +76,14 @@ pip install alpaca_trade_api
 
 ## 7. Set Environment Variables<a href="#set-environment-variables" id="set-environment-variables"></a>
 
-Set the following environment variables for your IB and vBase configuration.    - Alpaca Configuration:
+Set the following environment variables for your IB and vBase configuration:
 
-- `ALPACA_API_KEY` - The Alpaca API Key.
-- `ALPACA_API_SECRET` - The Alpaca API Secret.
-- `ALPACA_API_BASE_URL` - Base URL for the Alpaca API:
-- https://paper-api.alpaca.markets for paper trading.
-- https://api.alpaca.markets for live trading.
+- Alpaca Configuration:
+  - `ALPACA_API_KEY` - The Alpaca API Key.
+  - `ALPACA_API_SECRET` - The Alpaca API Secret.
+  - `ALPACA_API_BASE_URL` - Base URL for the Alpaca API:
+    - https://paper-api.alpaca.markets for paper trading.
+    - https://api.alpaca.markets for live trading.
 - AWS S3 Configuration (Optional if you save the portfolio data elsewhere):
   - `AWS_ACCESS_KEY_ID` - The Access Key used to connect to the S3 service.
   - `AWS_SECRET_ACCESS_KEY` - The Secret Key used to connect to the S3 service.

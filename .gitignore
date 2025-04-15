@@ -41,3 +41,6 @@ doctrees/
 
 # Sphinx static assets
 _static/
+
+# Node modules
+node_modules/
