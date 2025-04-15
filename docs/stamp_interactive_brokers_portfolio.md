@@ -1,6 +1,6 @@
-<!-- omit in toc -->
-
 # Stamp Interactive Brokers Portfolio
+
+<!-- omit in toc -->
 
 This sample illustrates how to retrieve, save, and stamp an Interactive Brokers (IB) portfolio.
 
@@ -31,13 +31,16 @@ Interactive Brokers provides the **Client Portal Gateway** as a lightweight API 
 2. **Extract the ZIP File**:
    - After downloading the Client Portal Gateway ZIP file, extract it to a folder on your machine (e.g., `C:\IBClientPortalGateway`).
 3. **Run the Gateway**:
+
    - At the Command Line, run:
 
    ```default
    cd \\path\\to\\clientportal\\clientportal.gw
    bin\\run.bat root\\conf.yaml
    ```
+
 4. **Authenticate to the Gateway**:
+
    - Open the client portal in a browser:
 
    ```default
@@ -45,6 +48,7 @@ Interactive Brokers provides the **Client Portal Gateway** as a lightweight API 
    ```
 
    You may need to ignore security warnings and accept the self-signed certificate in your browser.
+
    - Login to the client portal with your IB credentials.
    - You should see the “Client login succeeds” message.
    - Once the gateway is running, it provides a Web API that requires authentication via the session token returned during the login process. The gateway will keep running in the background.
