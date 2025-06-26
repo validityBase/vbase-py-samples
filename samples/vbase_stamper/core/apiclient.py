@@ -17,8 +17,8 @@ class StampData(TypedDict, total=False):
     idempotencyWindow: int
 
 
-class VBaseClient:
-    """Client for interacting with the VBase API for stamping files."""
+class ApiClient:
+    """Api Client for interacting with the VBase API for stamping files."""
     def __init__(self, base_url: str, api_token: str):
         self.base_url = base_url.rstrip("/")
         self.api_token = api_token
@@ -44,6 +44,9 @@ class VBaseClient:
         except requests.RequestException as e:
             logger.error("Request to VBase API failed: %s", e)
             logger.error("Response: %s", response.text if 'response' in locals() else 'No response')
+            
+            curl_cmd = self._build_curl(self.stamp_url, headers, input_data, input_files)
+            logger.error("Try this with curl:\n%s", curl_cmd)
             raise
 
         try:
@@ -51,3 +54,29 @@ class VBaseClient:
         except Exception as e:
             logger.error("Failed to parse JSON from stamp response: %s", response.text)
             raise e
+
+    def _build_curl(self, url: str, headers: dict, data: dict, files: dict) -> str:
+        curl_parts = [f"curl -X POST '{url}'"]
+
+        # Add headers
+        for k, v in headers.items():
+            curl_parts.append(f"-H '{k}: {v}'")
+
+        # Add form fields
+        for k, v in data.items():
+            curl_parts.append(f"-F '{k}={v}'")
+
+        # Add files
+        for k, file_value in files.items():
+            if isinstance(file_value, tuple):
+                # format: (filename, fileobj, ...)
+                filename = file_value[0]
+            elif hasattr(file_value, 'name'):
+                # file object directly
+                filename = file_value.name
+            else:
+                filename = 'unknown'
+
+            curl_parts.append(f"-F '{k}=@{filename}'")
+
+        return " \\\n  ".join(curl_parts)

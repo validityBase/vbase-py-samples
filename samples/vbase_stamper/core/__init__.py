@@ -1,3 +1,3 @@
-from .datasource import LocalFileFolderDataSource
-from .pipeline import VBaseProcessingPipeline
-from .stamping_service import VBaseClient
+from .datasource import LocalDataSource
+from .pipeline import Pipeline
+from .apiclient import ApiClient
