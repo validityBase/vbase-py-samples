@@ -8,7 +8,7 @@ from dotenv import dotenv_values
 
 NOT_IN_COLLECTION =  "not_in_collection"
 
-COLLECTION_CONGIF_JSON = "collection_config.json"
+COLLECTION_CONFIG_JSON = "collection_config.json"
 COLLECTION_CONFIG_DOTENV = ".env.collection_config"
 
 USER_CONFIG_JSON = "env.json"
@@ -36,20 +36,20 @@ class LocalDataSource(AbstractDataSource):
         self.user_configs = {}
 
     def load_user_config(self, user_dir) -> Dict[str, str]:
+        """Load user configuration from the local file system."""
         if user_dir.is_dir():
-                user_config_path = user_dir / USER_CONFIG_JSON
-                if user_config_path.exists():
-                    with open(user_config_path) as f:
-                        meta = json.load(f)
-                        data = {k.lower(): v for k, v in meta.items()}
-                        return data
-                
-              
-                env_path = user_dir / USER_CONFIG_DOTENV
-                if env_path.exists():
-                    meta = dotenv_values(env_path)
+            user_config_path = user_dir / USER_CONFIG_JSON
+            if user_config_path.exists():
+                with open(user_config_path, encoding="utf-8") as f:
+                    meta = json.load(f)
                     data = {k.lower(): v for k, v in meta.items()}
                     return data
+
+            env_path = user_dir / USER_CONFIG_DOTENV
+            if env_path.exists():
+                meta = dotenv_values(env_path)
+                data = {k.lower(): v for k, v in meta.items()}
+                return data
         return {}
     
     def load_user_collection_config(self, user_dir: Path) -> Dict:
@@ -61,9 +61,9 @@ class LocalDataSource(AbstractDataSource):
                 "collection_cid": None
             }
 
-        collection_config_path = user_dir / COLLECTION_CONGIF_JSON
+        collection_config_path = user_dir / COLLECTION_CONFIG_JSON
         if collection_config_path.exists():
-            with open(collection_config_path) as f:
+            with open(collection_config_path, encoding="utf-8") as f:
                 config = json.load(f)
                 collection_cid = config.get("collection_cid")
                 return {
@@ -87,14 +87,14 @@ class LocalDataSource(AbstractDataSource):
         """Load user configurations from the local file system."""
         users_config = {"users": {}}
         for user_dir in self.users_root.iterdir():
-                # load user configuration
-                user_config = self.load_user_config(user_dir)
-                # load collections for the user
-                collections = self.load_collections(user_dir.name) if user_dir.is_dir() else []
-                # add user collections to user config
-                user_config["collections"] = collections
-                # add user config to users_config, by user directory name
-                users_config["users"][user_dir.name] = user_config
+            # load user configuration
+            user_config = self.load_user_config(user_dir)
+            # load collections for the user
+            collections = self.load_collections(user_dir.name) if user_dir.is_dir() else []
+            # add user collections to user config
+            user_config["collections"] = collections
+            # add user config to users_config, by user directory name
+            users_config["users"][user_dir.name] = user_config
 
         return users_config
 
@@ -117,8 +117,9 @@ class LocalDataSource(AbstractDataSource):
 
     def get_files_for_collection(self, collection_path: Path) -> List[Path]:
         """Get files for a specific collection, excluding ignored files."""
-        IGNORE_FILES = [COLLECTION_CONGIF_JSON, COLLECTION_CONFIG_DOTENV]
+        ignore_files = [COLLECTION_CONFIG_JSON, COLLECTION_CONFIG_DOTENV]
         return [
             f for f in collection_path.iterdir()
-            if f.is_file() and f.name not in IGNORE_FILES
+            if f.is_file() and f.name not in ignore_files
         ]
+

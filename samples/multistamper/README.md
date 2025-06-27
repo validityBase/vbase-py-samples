@@ -101,7 +101,7 @@ python -m multistamper.stamp_cli --setup
 python -m multistamper.stamp_cli --users-folder ./samples
 
 # Run stamping and save logs
-python -m multistamper.stamp_cliy --users-folder ./samples --log-file ./logs.json
+python -m multistamper.stamp_cli --users-folder ./samples --log-file ./logs.json
 ```
 
 ## Notes
