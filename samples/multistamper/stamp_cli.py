@@ -138,7 +138,7 @@ def main():
         run_pipeline(api_url, users_folder, run=False)
 
         # Step 2: Ask user for confirmation
-        user_input = input("\nDo you want to apply these changes? (y/N): ").strip().lower()
+        user_input = input("\nDo you want to stamp these files? (y/N): ").strip().lower()
         if user_input == "y":
             run_pipeline(api_url, users_folder, run=True, log_file=Path(args.log_file) if args.log_file else None)
         else:
