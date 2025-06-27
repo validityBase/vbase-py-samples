@@ -1,4 +1,4 @@
-"""vBase File Stamper CLI"""
+"""vBase multistamper CLI"""
 import argparse
 from pathlib import Path
 from dotenv import load_dotenv
