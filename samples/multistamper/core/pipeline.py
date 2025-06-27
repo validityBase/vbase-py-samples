@@ -60,7 +60,6 @@ class Pipeline:
                     data = {
                         "storeStampedFiles": "true",
                         "idempotent": "true",
-                        "idempotencyWindow": "3600",
                     }
                     if collection_cid:
                         data["collectionCid"] = collection_cid
