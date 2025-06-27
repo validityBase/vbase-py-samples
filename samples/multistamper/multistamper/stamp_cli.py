@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import os
 import json
 
-from core import LocalDataSource, Pipeline, ApiClient
+from .core import LocalDataSource, Pipeline, ApiClient
 load_dotenv()
 
 def run_pipeline(api_url: str, users_folder: Path, run: bool, log_file: Path = None):
