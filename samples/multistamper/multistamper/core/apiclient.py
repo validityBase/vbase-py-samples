@@ -1,14 +1,20 @@
 """Stamping Service for VBase API"""
-import requests
-from typing import Optional, Dict, Any, TypedDict
 import logging
+from typing import Any, Dict, Optional, TypedDict
+
+import requests
 
 logger = logging.getLogger(__name__)
 REQUEST_TIMEOUT = 30
 
 
 class StampData(TypedDict, total=False):
-    """Data structure for stamping request."""
+    """Data structure for the stamping API request payload.
+
+    Naming convention:
+    - 'dataCid' refers to the CID (Content Identifier) of the input data.
+    - 'collectionCid' refers to the CID of the associated collection.
+    """
     data: Optional[str]
     dataCid: Optional[str]
     collectionCid: Optional[str]

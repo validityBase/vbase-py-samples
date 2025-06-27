@@ -1,10 +1,10 @@
 """Data source interface and implementation for local file system data storage."""
+import json
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import List, Dict, Optional
-from dotenv import dotenv_values
-import json
+from typing import Dict, List
 
+from dotenv import dotenv_values
 
 NOT_IN_COLLECTION =  "not_in_collection"
 

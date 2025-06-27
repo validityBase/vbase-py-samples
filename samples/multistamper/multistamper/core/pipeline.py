@@ -1,10 +1,10 @@
 """VBase Processing Pipeline for Stamping Files"""
 import json
-from .datasource import AbstractDataSource, NOT_IN_COLLECTION
-from .apiclient import ApiClient
-from typing import List, Dict
 from pathlib import Path
+from typing import Dict, List
 
+from .apiclient import ApiClient
+from .datasource import AbstractDataSource
 
 class Pipeline:
     """Pipeline for processing and stamping files in vBase collections."""
