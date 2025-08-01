@@ -1,6 +1,6 @@
-<!-- omit in toc -->
-
 # Stamp Interactive Brokers Portfolio
+
+<!-- omit in toc -->
 
 This sample illustrates how to retrieve, save, and stamp an Interactive Brokers (IB) portfolio.
 
@@ -37,6 +37,7 @@ Interactive Brokers provides the **Client Portal Gateway** as a lightweight API 
    cd \\path\\to\\clientportal\\clientportal.gw
    bin\\run.bat root\\conf.yaml
    ```
+
 4. **Authenticate to the Gateway**:
    - Open the client portal in a browser:
 

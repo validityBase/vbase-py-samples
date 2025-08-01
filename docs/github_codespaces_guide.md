@@ -1,9 +1,6 @@
----
-title: GitHub Codespaces Guide
----
+# GitHub Codespaces Guide
 
 <!-- omit in toc -->
-# GitHub Codespaces Guide
 
 This tutorial guides you through setting up GitHub Codespaces to run vBase samples.
 
@@ -24,6 +21,7 @@ To open a Jupyter notebook from a public GitHub repository in GitHub Codespaces,
 2. **Set Up the Codespace:**
    - Once the Codespace is created and running, open the terminal in Codespaces.
    - Ensure that you have Jupyter installed. If not, you can install it by running:
+
      ```bash
      pip install notebook
      ```
@@ -34,9 +32,11 @@ To open a Jupyter notebook from a public GitHub repository in GitHub Codespaces,
 
 4. **Run the Jupyter Notebook Server:**
    - In the terminal, navigate to the directory containing your notebook and start the Jupyter notebook server by running:
+
      ```bash
      jupyter notebook
      ```
+
    - This will start the Jupyter server and provide a URL to open the notebook in your browser.
 
 5. **Open the Notebook in Browser:**
@@ -70,7 +70,7 @@ To use the secret within your Codespace, you'll need to reference it in your `de
 
 2. **Reference the Secret:**
    - Modify the `devcontainer.json` to use the secret. Here’s an example configuration:
-   
+
      ```json
      {
        "name": "My Codespace",
@@ -81,10 +81,7 @@ To use the secret within your Codespace, you'll need to reference it in your `de
        "settings": {
          "terminal.integrated.shell.linux": "/bin/bash"
        },
-       "extensions": [
-         "ms-python.python",
-         "ms-azuretools.vscode-docker"
-       ],
+       "extensions": ["ms-python.python", "ms-azuretools.vscode-docker"],
        "postCreateCommand": "echo 'Codespace setup complete!'"
      }
      ```
@@ -95,7 +92,9 @@ To use the secret within your Codespace, you'll need to reference it in your `de
 
 4. **Verify the Secret:**
    - Open a terminal in your Codespace and check if the secret environment variable is set:
+
      ```bash
      echo $MY_SECRET
      ```
+
    - Once the secrets verify you can use them as ordinary environment variables to initialize your vBase client.

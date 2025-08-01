@@ -1,9 +1,6 @@
-----
-title: Create a Set
-----
+# Create a Set
 
 <!-- omit in toc -->
-# Create a Set
 
 This sample creates and validates a vBase set.
 

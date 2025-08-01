@@ -1,8 +1,3 @@
-----
-title: Add a String Record to a Dataset Asynchronously
-----
-
-<!-- omit in toc -->
 # Add a String Record to a Dataset Asynchronously
 
 This sample creates a dataset comprising string records if one does not exist and adds a record to the dataset. The sample uses async methods to commit a dataset and records

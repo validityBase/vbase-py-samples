@@ -1,12 +1,8 @@
-----
-title: Add a String Record to a Dataset
-----
-
-<!-- omit in toc -->
 # Add a String Record to a Dataset
 
-This sample creates a dataset comprising string records
-if one does not exist and adds a record to the dataset.
+<!-- omit in toc -->
+
+This sample creates a dataset comprising string records if one does not exist and adds a record to the dataset.
 
 You can find the implementation in [`add_string_dataset_record.py`](https://github.com/validityBase/vbase-py-samples/blob/main/samples/add_string_dataset_record.py).
 
