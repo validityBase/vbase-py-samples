@@ -145,7 +145,7 @@ Now that the virtual environment and build tools are set up, you can install the
    cd C:\Users\%USERNAME%\Projects\validityBase\vbase-py-samples
    ```
 
-2. **Instal dependencies**: The `vbase-py-samples` project comes with its `requirements-win.txt`. This installs the required pre-built packages available for Windows:
+2. **Install dependencies**: The `vbase-py-samples` project comes with its `requirements-win.txt`. This installs the required pre-built packages available for Windows:
 
    ```bash
    pip install -r requirements-win.txt
