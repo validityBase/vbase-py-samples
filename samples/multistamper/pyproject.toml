@@ -1,0 +1,13 @@
+[project]
+name = "multistamper"
+version = "0.1.0"
+description = "Multistamper CLI tool to multiple stamp files using vBase API"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "python-dotenv",
+    "requests",
+]
+
+[project.scripts]
+multistamper = "multistamper.stamp_cli:main"
