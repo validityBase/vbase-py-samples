@@ -14,13 +14,11 @@ This tutorial guides you through setting up GitHub Codespaces to run vBase sampl
 To open a Jupyter notebook from a public GitHub repository in GitHub Codespaces, follow these steps:
 
 1. **Create a Codespace:**
-
    - Navigate to the repository in GitHub.
    - Click on the `Code` button and then select `Open with Codespaces`.
    - If you don't have a Codespace created for the repository, click on `New codespace` to create one.
 
 2. **Set Up the Codespace:**
-
    - Once the Codespace is created and running, open the terminal in Codespaces.
    - Ensure that you have Jupyter installed. If not, you can install it by running:
 
@@ -29,12 +27,10 @@ To open a Jupyter notebook from a public GitHub repository in GitHub Codespaces,
      ```
 
 3. **Navigate to the Notebook:**
-
    - In the file explorer on the left side of the Codespace, navigate to the directory where your Jupyter notebook (.ipynb file) is located.
    - Click on the notebook file to open it.
 
 4. **Run the Jupyter Notebook Server:**
-
    - In the terminal, navigate to the directory containing your notebook and start the Jupyter notebook server by running:
 
      ```bash
@@ -54,11 +50,9 @@ To configure an environment variable in GitHub Codespaces that contains a secret
 ### 2.1. Add the Secret to GitHub Repository Secrets<a href="#add-the-secret-to-github-repository-secrets" id="add-the-secret-to-github-repository-secrets"></a>
 
 1. **Navigate to Your Repository:**
-
    - Go to your repository on GitHub.
 
 2. **Access Repository Settings:**
-
    - Click on the `Settings` tab of your repository.
 
 3. **Add a New Secret:**
@@ -71,12 +65,10 @@ To configure an environment variable in GitHub Codespaces that contains a secret
 To use the secret within your Codespace, you'll need to reference it in your `devcontainer.json` file.
 
 1. **Edit/Create `devcontainer.json`:**
-
    - Open your repository in GitHub Codespaces.
    - Navigate to the `.devcontainer` directory and open (or create) the `devcontainer.json` file.
 
 2. **Reference the Secret:**
-
    - Modify the `devcontainer.json` to use the secret. Here’s an example configuration:
 
      ```json
@@ -95,12 +87,10 @@ To use the secret within your Codespace, you'll need to reference it in your `de
      ```
 
 3. **Rebuild the Container:**
-
    - After making these changes, rebuild your Codespace container.
    - Open the command palette (`F1` or `Ctrl+Shift+P` on Windows/Linux, `Cmd+Shift+P` on macOS) and type `Codespaces: Rebuild Container`, then select it.
 
 4. **Verify the Secret:**
-
    - Open a terminal in your Codespace and check if the secret environment variable is set:
 
      ```bash

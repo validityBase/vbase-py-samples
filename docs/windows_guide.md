@@ -22,11 +22,9 @@ We provide steps for setting up a Python virtual environment (venv) on a Windows
 If Python is not already installed on your system, follow these steps:
 
 1. **Download Python**:
-
    - Visit the [official Python website](https://www.python.org/downloads/) and download the latest version of Python for Windows.
 
 2. **Run the Installer**:
-
    - During installation, **check the box** that says **"Add Python to PATH"** at the bottom of the installer.
    - Select **Customize Installation**.
    - Ensure that the following options are selected:
@@ -34,7 +32,6 @@ If Python is not already installed on your system, follow these steps:
      - `venv` (Virtual environment support)
 
 3. **Finish Installation** and verify Python is installed:
-
    - Open **Command Prompt** and run:
 
      ```bash
@@ -48,11 +45,9 @@ If Python is not already installed on your system, follow these steps:
 Many Python packages require compilation using Microsoft Visual C++ Build Tools.
 
 1. **Download Microsoft Visual C++ Build Tools**:
-
    - Go to the [Visual Studio Build Tools page](https://visualstudio.microsoft.com/visual-cpp-build-tools/) and download the installer.
 
 2. **Install the C++ Build Tools**:
-
    - In the installer, select the **"Desktop development with C++"** workload.
    - Ensure the following components are selected:
      - **MSVC v142 - VS 2019 C++ x64/x86 build tools**
@@ -89,11 +84,9 @@ git clone https://github.com/validityBase/vbase-py-samples.git
 On Windows 10, the easiest way to clone a GitHub repository without installing additional software is to use **GitHub’s built-in Zip download** feature. This method allows you to download the repository as a ZIP file and extract it, effectively "cloning" the repository without requiring Git or any command-line tools.
 
 1. **Go to the GitHub Repository**:
-
    - Open your web browser and navigate to the GitHub repository page: https://github.com/validityBase/vbase-py-samples
 
 2. **Download as ZIP**:
-
    - On the repository’s main page, click the green **Code** button.
    - In the dropdown, select **Download ZIP**. This will download the entire repository as a ZIP file.
 
