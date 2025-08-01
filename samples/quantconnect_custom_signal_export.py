@@ -69,7 +69,7 @@ class CustomSignalExport:
                 # The timeout is the number of seconds to wait for the response.
                 # Stamps may take a few seconds to process since they wait for
                 # the confirmation of the blockchain transaction.
-                # We add a margin of satefy to account for any network contention.
+                # We add a margin of safety to account for any network contention.
                 timeout=60,
             )
             response.raise_for_status()
