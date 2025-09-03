@@ -26,9 +26,6 @@ class CustomSignalExport:
     def __init__(self, algorithm, vbase_api_key):
         self.algorithm = algorithm
         self.algorithm.log("CustomSignalExport.__init__()")
-        self.algorithm.log(
-            f"CustomSignalExport.__init__(): vbase_api_key = {vbase_api_key}"
-        )
         self.vbase_api_key = vbase_api_key
 
     def send(self, parameters: SignalExportTargetParameters) -> bool:
