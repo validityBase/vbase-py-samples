@@ -1,6 +1,7 @@
 # region imports
 from AlgorithmImports import *
 import requests
+
 # endregion
 
 
@@ -11,7 +12,7 @@ import requests
 
 
 # The standard production vBase API URL.
-VBASE_STAMP_API_URL = "https://app.vbase.com/api/v1/stamp/"
+VBASE_STAMP_API_URL = "https://app.vbase.com/api/v1/stamps/"
 # Replace with the collection CID of the collection you want to export to.
 # Collection CID is the SHA3-256 hash of the collection name.
 # It can be found in the collections section of the user profile in the vBase app.
@@ -53,11 +54,11 @@ class CustomSignalExport:
                 # The data to send to vBase.
                 data={
                     # The collectionCid is the CID of the collection to export to.
-                    "collectionCid": COLLECTION_CID,
+                    "collection_cid": COLLECTION_CID,
                     # The data is the CSV string of the portfolio targets.
                     "data": csv_data,
                     # A boolean indicating whether to store the stamped file.
-                    "storeStampedFile": "true",
+                    "store_stamped_file": "true",
                     # A boolean indicating whether to make the request idempotent.
                     # If the request is idempotent, only the first stamp for a given portfolio will be made.
                     # If the request is not idempotent, a new stamp will be made for each request.
