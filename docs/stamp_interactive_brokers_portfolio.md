@@ -26,8 +26,7 @@ You can find the implementation in [`stamp_interactive_brokers_portfolio.py`](ht
 Interactive Brokers provides the **Client Portal Gateway** as a lightweight API gateway for accessing account data via a Web API. Follow these steps to download and run the gateway:
 
 1. **Download the Client Portal Gateway**:
-   - Visit the official [Client Portal Gateway page](https://www.interactivebrokers.com/en/index.php?f=50462) and download the latest **Client Portal Gateway** for Windows.
-   - Alternatively, you can access the latest **Client Portal Gateway** directly from the [IBKR GitHub Repository](https://github.com/InteractiveBrokers/clientportal.gw).
+   - Visit the official [Client Portal Gateway page](https://www.interactivebrokers.com/en/trading/ibgateway-latest.php) and download the latest **Client Portal Gateway** for Windows
 2. **Extract the ZIP File**:
    - After downloading the Client Portal Gateway ZIP file, extract it to a folder on your machine (e.g., `C:\IBClientPortalGateway`).
 3. **Run the Gateway**:
