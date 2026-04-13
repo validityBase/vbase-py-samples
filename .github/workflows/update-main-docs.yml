@@ -12,10 +12,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        # v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        # v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
         with:
           python-version: "3.11"
 
@@ -29,7 +31,8 @@ jobs:
           sphinx-build -b markdown docs/ docs/_build/markdown
 
       - name: Publish Documents
-        uses: validityBase/docs/publish-docs-action@main
+        # main @ validityBase/docs
+        uses: validityBase/docs/publish-docs-action@dae3fa92603ea55c2081dcb6d15aa0ad1a6355cd
         with:
           docs-repo-access-token: ${{ secrets.DOCS_REPO_ACCESS_TOKEN }}
           source-docs-path: 'docs/_build/markdown'
