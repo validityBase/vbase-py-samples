@@ -110,14 +110,11 @@ def get_last_successful_run_timestamp(workflow_filename: str) -> Optional[str]:
     )
     workflow_runs = runs.get("workflow_runs", []) if isinstance(runs, dict) else []
 
-    # The first result is the most recent successful run; skip the current run
-    # (which triggered this script) by taking the second one if available.
-    # In practice, GitHub queues this run before marking it succeeded, so the
-    # first result IS the previous run — but we take index 1 to be safe.
+    # The query is already restricted to successful runs, so the current
+    # in-progress run is not returned here. GitHub returns runs newest first,
+    # so the first successful candidate is the correct cursor to use.
     candidates = [r for r in workflow_runs if r.get("conclusion") == "success"]
-    if len(candidates) >= 2:
-        return candidates[1]["updated_at"]
-    if len(candidates) == 1:
+    if candidates:
         return candidates[0]["updated_at"]
     return None
 
@@ -164,8 +161,10 @@ def get_full_product_tree() -> list[dict]:
     """
     import base64
 
+    repo_info = _request(f"{GITHUB_API}/repos/{PRODUCT_REPO}", token=PRODUCT_REPO_PAT)
+    default_branch = repo_info.get("default_branch", "main") if isinstance(repo_info, dict) else "main"
     tree_resp = _request(
-        f"{GITHUB_API}/repos/{PRODUCT_REPO}/git/trees/HEAD?recursive=1",
+        f"{GITHUB_API}/repos/{PRODUCT_REPO}/git/trees/{default_branch}?recursive=1",
         token=PRODUCT_REPO_PAT,
     )
     files = []

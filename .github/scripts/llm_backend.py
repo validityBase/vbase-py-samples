@@ -10,7 +10,7 @@ All providers accept the same (system_prompt, user_prompt) interface and
 return a parsed dict matching the doc-sync JSON schema:
   {
     "changes_needed": bool,
-    "files": [{"path": str, "reason": str, "draft_content": str}],
+    "findings": [{"docs_file": str, "current_text": str, "suggested_text": str, "reason": str}],
     "uncertain": [{"path": str, "question": str}],
     "selected_files": [str]   # only in Pass 1 metadata responses
   }
@@ -23,7 +23,7 @@ import os
 import sys
 import time
 from urllib.request import Request, urlopen
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 
 LLM_PROVIDER = os.environ.get("LLM_PROVIDER", "github-models")
 
@@ -56,6 +56,9 @@ def _post_json(url: str, headers: dict, body: dict) -> dict:
                 continue
             body_text = exc.read().decode(errors="replace")
             print(f"[ERROR] LLM API {url} -> HTTP {exc.code}: {body_text}", file=sys.stderr)
+            sys.exit(1)
+        except URLError as exc:
+            print(f"[ERROR] LLM API request failed: {exc.reason}", file=sys.stderr)
             sys.exit(1)
     print(f"[ERROR] LLM API {url} — exhausted {_MAX_RETRIES} retries after rate limiting.",
           file=sys.stderr)

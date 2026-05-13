@@ -23,6 +23,7 @@ import argparse
 import json
 import os
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
 from .github_client import (
     validate_product_pat,
@@ -57,7 +58,9 @@ MODE_DAYS: dict[str, int] = {
 }
 
 WORKFLOW_FILENAME = "doc-sync.yml"
-DOC_MAP_PATH = "doc-map.json"
+# Resolve repo root relative to this file (.github/scripts/main.py -> repo root)
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+DOC_MAP_PATH = str(_REPO_ROOT / "doc-map.json")
 GITHUB_OUTPUT = os.environ.get("GITHUB_OUTPUT", "")
 GITHUB_STEP_SUMMARY = os.environ.get("GITHUB_STEP_SUMMARY", "")
 
@@ -82,8 +85,11 @@ def load_doc_contents(doc_map: dict) -> dict[str, str]:
     """Load the current content of every doc/sample file listed in doc-map."""
     contents: dict[str, str] = {}
     for path in doc_map:
-        if os.path.exists(path):
-            with open(path, encoding="utf-8") as f:
+        if path.startswith("_"):  # skip metadata keys such as _comment
+            continue
+        full_path = _REPO_ROOT / path
+        if full_path.exists():
+            with open(full_path, encoding="utf-8") as f:
                 contents[path] = f.read()
         else:
             print(f"[WARN] doc-map entry {path!r} not found on disk — skipping.")
@@ -111,7 +117,7 @@ def run_llm_analysis(
         print(f"[INFO] Pass 1: LLM selected {len(selected_files)} files for full analysis.")
 
         if not selected_files:
-            return {"changes_needed": False, "files": [], "uncertain": []}
+            return {"changes_needed": False, "findings": [], "uncertain": []}
 
         # Pass 2: full diff for selected files only
         targeted_diff = build_full_diff_for_files(commit_diffs, selected_files)

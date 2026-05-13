@@ -46,13 +46,14 @@ jobs:
         run: python -m scripts.main --credential-check
         working-directory: .github
 
-  # ── Job 2: Analyse diffs and open a PR if docs need updating ──────────────
+  # ── Job 2: Analyse diffs and report if docs need updating ─────────────────
   doc-sync:
-    name: Analyse and sync docs
+    name: Analyse docs
     needs: credential-check
     runs-on: ubuntu-latest
     permissions:
       contents: read       # read repo files for doc content loading
+      actions: read        # read workflow runs via the Actions API
     steps:
       - name: Checkout
         # actions/checkout v4.2.2
