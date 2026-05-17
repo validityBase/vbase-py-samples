@@ -25,20 +25,14 @@ This sample illustrates how such timestamps can be restored for vBase datasets a
     # vBaseTest API key
     VBASE_API_KEY="YOUR_VBASE_API_KEY"
 
-      ```shell
-      # Forwarder config
-      # vBase test forwarder URL
-      VBASE_FORWARDER_URL="https://test.api.vbase.com/forwarder/"
-      # vBaseTest API key
-      VBASE_API_KEY="YOUR_VBASE_API_KEY"
 
-      # Private key for making commitments
-      VBASE_COMMITMENT_SERVICE_PRIVATE_KEY="YOUR_VBASE_COMMITMENT_SERVICE_PRIVATE_KEY"
+    # Private key for making commitments
+    VBASE_COMMITMENT_SERVICE_PRIVATE_KEY="YOUR_VBASE_COMMITMENT_SERVICE_PRIVATE_KEY"
 
-      # AWS Configuration
-      AWS_ACCESS_KEY_ID="YOUR_AWS_ACCESS_KEY_ID"
-      AWS_SECRET_ACCESS_KEY="YOUR_AWS_SECRET_ACCESS_KEY"
-      ```
+    # AWS Configuration
+    AWS_ACCESS_KEY_ID="YOUR_AWS_ACCESS_KEY_ID"
+    AWS_SECRET_ACCESS_KEY="YOUR_AWS_SECRET_ACCESS_KEY"
+    ```
 
 - Create a vBase client object using connection parameters specified in environment variables:
 
@@ -78,10 +72,6 @@ This could also be a copy to a different bucket, or a different storage.
     )
     ```
 
-      ```python
-      vbase_receipt = ds.add_record(i)
-      ```
-
 - Attempt to verify the copied objects.
 Since these have lost the timestamps and the original provenance information, the checks will fail:
     ```python
@@ -96,48 +86,49 @@ Since these have lost the timestamps and the original provenance information, th
     ```python
     # Fix the timestamps.
     assert ds_copy.try_restore_timestamps_from_index()[0]
+    ```
 
 - Copy a folder to another folder. This could also be a copy to a different bucket, or a different storage.
 
-      ```python
-      copy_s3_bucket(
-          boto_client=boto_client,
-          source_bucket_name=BUCKET_NAME,
-          source_folder_name=FOLDER_NAME,
-          destination_bucket_name=BUCKET_NAME,
-          destination_folder_name=COPY_FOLDER_NAME,
-      )
-      ```
+    ```python
+    copy_s3_bucket(
+        boto_client=boto_client,
+        source_bucket_name=BUCKET_NAME,
+        source_folder_name=FOLDER_NAME,
+        destination_bucket_name=BUCKET_NAME,
+        destination_folder_name=COPY_FOLDER_NAME,
+    )
+    ```
 
 - Create a vBase dataset using the copied objects. These objects have lost the original timestamps.
 
-      ```python
-      ds_copy = VBaseDataset(vbc, SET_NAME, VBaseIntObject)
-      # Load all objects into the dataset.
-      ds_copy = init_vbase_dataset_from_s3_objects(
-          ds_copy, boto_client, BUCKET_NAME, COPY_FOLDER_NAME
-      )
-      ```
+    ```python
+    ds_copy = VBaseDataset(vbc, SET_NAME, VBaseIntObject)
+    # Load all objects into the dataset.
+    ds_copy = init_vbase_dataset_from_s3_objects(
+        ds_copy, boto_client, BUCKET_NAME, COPY_FOLDER_NAME
+    )
+    ```
 
 - Attempt to verify the copied objects. Since these have lost the timestamps and the original provenance information, the checks will fail:
 
-      ```python
-      success, l_log = ds_copy.verify_commitments()
-      assert not success
-      print("Verification log:")
-      for log in l_log:
-          print(log)
-      ```
+    ```python
+    success, l_log = ds_copy.verify_commitments()
+    assert not success
+    print("Verification log:")
+    for log in l_log:
+        print(log)
+    ```
 
 - Fix the record timestamps using the vBase commitment information and verify the corrected provenance data:
 
-      ```python
-      # Fix the timestamps.
-      assert ds_copy.try_restore_timestamps_from_index()[0]
+    ```python
+    # Fix the timestamps.
+    assert ds_copy.try_restore_timestamps_from_index()[0]
 
-      print("Dataset fixed:")
-      pprint.pprint(ds_copy.to_pd_object())
+    print("Dataset fixed:")
+    pprint.pprint(ds_copy.to_pd_object())
 
-      # Verify the records again.
-      assert ds_copy.verify_commitments()[0]
-      ```
+    # Verify the records again.
+    assert ds_copy.verify_commitments()[0]
+    ```
