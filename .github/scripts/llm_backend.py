@@ -30,7 +30,7 @@ LLM_PROVIDER = os.environ.get("LLM_PROVIDER", "github-models")
 # Model names per provider — override via env var if needed
 MODELS = {
     "github-models": os.environ.get("GITHUB_MODEL", "gpt-4o"),
-    "openai": os.environ.get("OPENAI_MODEL", "gpt-4o"),
+    "openai": os.environ.get("OPENAI_MODEL", "gpt-5.4"),
     "anthropic": os.environ.get("ANTHROPIC_MODEL", "claude-3-5-sonnet-20241022"),
 }
 
