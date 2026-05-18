@@ -127,7 +127,7 @@ Since these have lost the timestamps and the original provenance information, th
     assert ds_copy.try_restore_timestamps_from_index()[0]
 
     print("Dataset fixed:")
-    pprint.pprint(ds_copy.to_pd_object())
+    pprint.pprint(ds_copy.get_pd_data_frame())
 
     # Verify the records again.
     assert ds_copy.verify_commitments()[0]

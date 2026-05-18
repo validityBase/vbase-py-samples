@@ -30,10 +30,10 @@ mkdir ~/validityBase && cd ~/validityBase
 
 ## 3. Install the vBase Python SDK <a href="#install-the-vbase-python-sdk" id="install-the-vbase-python-sdk"></a>
 
-Install the `vbase` python package that provides the vBase Python SDK from GitHub:
+Install the `vbase` python package that provides the vBase Python SDK:
 
 ```bash
-pip install git+https://github.com/validityBase/vbase-py.git
+pip install vbase
 ```
 
 ## 4. Clone the vBase Python SDK Samples <a href="#clone-the-vbase-python-sdk-samples" id="clone-the-vbase-python-sdk-samples"></a>
