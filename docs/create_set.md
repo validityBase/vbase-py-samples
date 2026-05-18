@@ -25,7 +25,7 @@ This operation records that the user with the above VBASE_COMMITMENT_SERVICE_PRI
 
 Set creation is idempotent. If the set already exists, duplicate calls are no-ops and return empty receipts. The returned receipt contains information on the set commitment. It can be optionally retained to simplify subsequent validation. All receipts are also available via vBase indexing services.
 
-Since add_set() calls are idempotent, duplicate calls will be no-ops and will return empty receipts.
+Since add_set() and add_named_set() calls are idempotent, duplicate calls will be no-ops and will return empty receipts.
     ```python
     receipt = vbc.add_named_set(SET_NAME)
     print("add_named_set() receipt:\n%s", pprint.pformat(receipt))
