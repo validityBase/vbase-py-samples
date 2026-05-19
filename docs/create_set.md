@@ -23,9 +23,9 @@ The commitment service is a smart contract running on a blockchain. The initiali
 - Create the test set commitment.
 This operation records that the user with the above VBASE_COMMITMENT_SERVICE_PRIVATE_KEY has created the named dataset. Such commitments are used to validate that a given collection of user datasets is complete and mitigates Sybil attacks (https://en.wikipedia.org/wiki/Sybil_attack). 
 
-Set creation is idempotent. Multiple creations will log multiple events, but a single set commitment will be recorded. The returned receipt contains information on the set commitment. It can be optionally retained to simplify subsequent validation. All receipts are also available via vBase indexing services.
+Set creation is idempotent. If the set already exists, duplicate calls are no-ops and return empty receipts. The returned receipt contains information on the set commitment. It can be optionally retained to simplify subsequent validation. All receipts are also available via vBase indexing services.
 
-Since add_set() calls are idempotent, duplicate calls will be no-ops and will return empty receipts.
+Since add_set() and add_named_set() calls are idempotent, duplicate calls will be no-ops and will return empty receipts.
     ```python
     receipt = vbc.add_named_set(SET_NAME)
     print("add_named_set() receipt:\n%s", pprint.pformat(receipt))
