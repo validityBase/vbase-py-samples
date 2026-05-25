@@ -21,68 +21,24 @@ on:
           - last_2_years
 
 jobs:
-  # ── Job 1: Validate cross-repo credentials before doing any real work ──────
-  credential-check:
-    name: Validate credentials
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        # actions/checkout v5.0.1
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
-
-      - name: Set up Python
-        # actions/setup-python v6
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
-        with:
-          python-version: "3.11"
-
-      - name: Validate product repo access
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # PRODUCT_REPO_PAT is optional — omit it when the product repo is public.
-          # When set, it is used instead of GITHUB_TOKEN for product repo API calls.
-          PRODUCT_REPO_PAT: ${{ secrets.PRODUCT_REPO_PAT }}
-          PRODUCT_REPO: ${{ vars.PRODUCT_REPO }}
-        run: python -m scripts.main --credential-check
-        working-directory: .github
-
-  # ── Job 2: Analyse diffs and report if docs need updating ─────────────────
   doc-sync:
     name: Analyse docs
-    needs: credential-check
     runs-on: ubuntu-latest
     permissions:
-      contents: read       # read repo files for doc content loading
-      actions: read        # read workflow runs via the Actions API
+      contents: read   # read repo files for doc content loading
+      actions: read    # read workflow runs via the Actions API
     steps:
       - name: Checkout
         # actions/checkout v5.0.1
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
 
-      - name: Set up Python
-        # actions/setup-python v6
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
-        with:
-          python-version: "3.11"
-
-      - name: Configure git identity
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
       - name: Run doc-sync
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # PRODUCT_REPO_PAT is optional for public product repos.
-          PRODUCT_REPO_PAT: ${{ secrets.PRODUCT_REPO_PAT }}
-          PRODUCT_REPO: ${{ vars.PRODUCT_REPO }}
-          LLM_PROVIDER: ${{ vars.LLM_PROVIDER || 'github-models' }}
-          GITHUB_MODEL: ${{ vars.GITHUB_MODEL || 'gpt-4o' }}
-          # Optional overrides for other providers:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.4' }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL || 'claude-3-5-sonnet-20241022' }}
-          MODE: ${{ inputs.mode }}
-        run: python -m scripts.main --mode "$MODE"
-        working-directory: .github
+        uses: validityBase/vbase-github-actions/validate-docs-against-product-sources@features/add_new_action_validate_docs
+        with:
+          mode: ${{ inputs.mode }}
+          product-repo: ${{ vars.PRODUCT_REPO }}
+          # PRODUCT_REPO_PAT is optional — omit when the product repo is public.
+          product-repo-pat: ${{ secrets.PRODUCT_REPO_PAT }}
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          exclude-files: "README.md,CONTRIBUTING.md,docs/conf.py,docs/index.rst,docs/requirements.txt"
+          workflow-filename: doc-sync.yml
