@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
 
       - name: Run doc-sync
-        uses: validityBase/vbase-github-actions/validate-docs-against-product-sources@features/add_new_action_validate_docs
+        uses: validityBase/vbase-github-actions/.github/actions/validate-docs-against-product-sources@features/add_new_action_validate_docs
         with:
           mode: ${{ inputs.mode }}
           product-repo: ${{ vars.PRODUCT_REPO }}
