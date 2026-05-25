@@ -40,5 +40,6 @@ jobs:
           # PRODUCT_REPO_PAT is optional — omit when the product repo is public.
           product-repo-pat: ${{ secrets.PRODUCT_REPO_PAT }}
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          openai-model: ${{ vars.OPENAI_MODEL || 'gpt-5.4' }}
           exclude-files: "README.md,CONTRIBUTING.md,docs/conf.py,docs/index.rst,docs/requirements.txt"
           workflow-filename: doc-sync.yml
