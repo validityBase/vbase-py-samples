@@ -7,8 +7,12 @@ from setuptools import find_packages, setup
 with open("README.md", encoding="utf-8") as f:
     long_description = f.read()
 
-with open("requirements.txt", encoding="utf-8") as f:
-    requirements = f.read().splitlines()
+with open("requirements.in", encoding="utf-8") as f:
+    requirements = [
+        line.strip()
+        for line in f.read().splitlines()
+        if line.strip() and not line.strip().startswith("#")
+    ]
 
 setup(
     name="vbase_samples",
