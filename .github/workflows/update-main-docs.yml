@@ -16,10 +16,12 @@ jobs:
       python-version: "3.11"
       requirements-files: |
         docs/requirements.txt
+      require-hashes: "true"
       pre-publish-command: sphinx-build -b markdown docs/ docs/_build/markdown
       source-docs-path: docs/_build/markdown
       target-repository-branch: main
       resolve-absolute-links-repos: |
+        vbase-py-samples
         vbase-py-tools
     secrets:
       DOCS_REPO_ACCESS_TOKEN: ${{ secrets.DOCS_REPO_ACCESS_TOKEN }}

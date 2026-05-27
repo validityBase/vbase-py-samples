@@ -1,20 +1,15 @@
 # AGENTS.md
 
-## Setup
-- GitHub Actions notes: [internal/specs/github-actions.md](internal/specs/github-actions.md)
-- Persistent agent memory: [internal/agents/memory/](internal/agents/memory/)
+Primary instructions are in [CLAUDE.md](CLAUDE.md). Read that first.
 
-## Workflow
-When making docs, samples, or CI changes in this repo:
-1. Confirm the intended behavior before editing.
-2. Keep changes scoped to the relevant workflow, sample, docs, or config.
-3. Update specs or operational docs when CI behavior changes.
-4. Run relevant validation, or list the exact commands that could not be run.
-5. Prepare a PR-ready summary with validation and follow-ups.
+## Key Pointers
 
-## GitHub Actions
-- Pin third-party actions to full commit SHAs.
-- Use shared `validityBase/vbase-github-actions` actions/workflows by reviewed version tags.
-- Prefer shared reusable workflows for repeated CI/docs flows.
-- Keep workflow permissions explicit and minimal.
-- Do not commit secrets, private tokens, webhook URLs, generated `.env` payloads, or notebook outputs containing credentials.
+- Persistent agent memory: [internal/agents/memory/MEMORY.md](internal/agents/memory/MEMORY.md)
+- GitHub Actions spec: [internal/specs/github-actions.md](internal/specs/github-actions.md)
+- Python dependency hashes: [internal/specs/python-dependency-hashes.md](internal/specs/python-dependency-hashes.md)
+
+## Agent Notes
+
+- Keep this file as a thin pointer for non-Claude coding agents.
+- Keep internal specs, guides, and agent memory under `internal/`.
+- Keep generated or externally published documentation out of `internal/`.

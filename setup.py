@@ -2,13 +2,19 @@
 vBase Python Software Development Kit (SDK) Samples
 """
 
+from pathlib import Path
+
 from setuptools import find_packages, setup
 
-with open("README.md", encoding="utf-8") as f:
-    long_description = f.read()
+ROOT_DIR = Path(__file__).resolve().parent
 
-with open("requirements.txt", encoding="utf-8") as f:
-    requirements = f.read().splitlines()
+long_description = (ROOT_DIR / "README.md").read_text(encoding="utf-8")
+
+requirements = [
+    line.strip()
+    for line in (ROOT_DIR / "requirements.in").read_text(encoding="utf-8").splitlines()
+    if line.strip() and not line.strip().startswith("#")
+]
 
 setup(
     name="vbase_samples",
