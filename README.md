@@ -25,24 +25,24 @@ Please follow the [Quickstart](docs/quickstart.md) guide to configure your envir
 Install dependencies from the generated hash-locked requirements files:
 
 ```bash
-python -m pip install --require-hashes -r requirements.txt
+python -m pip install --require-hashes -r requirements/lock/base.txt
 ```
 
 For development tooling:
 
 ```bash
-python -m pip install --require-hashes -r requirements-dev.txt
+python -m pip install --require-hashes -r requirements/lock/dev.txt
 python -m pip install --no-deps --no-build-isolation -e .
 ```
 
-Dependency updates should be made in the matching `.in` file, then regenerated
-with `pip-compile --generate-hashes`. Do not edit generated `.txt` lock files by
-hand.
+Dependency updates should be made in `requirements/src/`, then regenerated with
+`pip-compile --generate-hashes`. Do not edit generated files in
+`requirements/lock/` by hand.
 
 Use the pinned lock tooling before regenerating requirements files:
 
 ```bash
-python -m pip install --require-hashes -r requirements-lock.txt
+python -m pip install --require-hashes -r requirements/lock/tools.txt
 ```
 
 ## Documentation writing hints

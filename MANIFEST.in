@@ -1,1 +1,2 @@
-include requirements.in
+include requirements/src/base.in
+include requirements/lock/base.txt

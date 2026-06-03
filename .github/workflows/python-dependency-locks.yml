@@ -3,10 +3,10 @@ name: Python Dependency Locks
 on:
   pull_request:
     paths:
-      - "requirements*.in"
-      - "requirements*.txt"
-      - "docs/requirements*.in"
-      - "docs/requirements*.txt"
+      - "requirements/src/*.in"
+      - "requirements/lock/*.txt"
+      - "docs/requirements/src/*.in"
+      - "docs/requirements/lock/*.txt"
       - "setup.py"
       - ".github/workflows/python-dependency-locks.yml"
   workflow_dispatch:
@@ -26,15 +26,15 @@ jobs:
         uses: validityBase/vbase-github-actions/.github/actions/setup-python-deps@v1
         with:
           requirements-files: |
-            requirements-lock.txt
+            requirements/lock/tools.txt
           python-version: "3.11"
           require-hashes: "true"
 
       - name: Regenerate lock tooling lock
-        run: pip-compile --strip-extras --no-annotate --allow-unsafe --generate-hashes -o requirements-lock.txt requirements-lock.in
+        run: pip-compile --strip-extras --no-annotate --allow-unsafe --generate-hashes -o requirements/lock/tools.txt requirements/src/tools.in
 
       - name: Verify lock tooling lock is committed
-        run: git diff --exit-code -- requirements-lock.txt
+        run: git diff --exit-code -- requirements/lock/tools.txt
 
   root-locks:
     runs-on: ubuntu-latest
@@ -47,24 +47,24 @@ jobs:
         uses: validityBase/vbase-github-actions/.github/actions/setup-python-deps@v1
         with:
           requirements-files: |
-            requirements-lock.txt
+            requirements/lock/tools.txt
           python-version: "3.11"
           require-hashes: "true"
 
       - name: Regenerate root dependency locks
         run: |
-          pip-compile --strip-extras --no-annotate --generate-hashes -o requirements.txt requirements.in
-          pip-compile --strip-extras --no-annotate --allow-unsafe --generate-hashes -o requirements-dev.txt requirements-dev.in
-          pip-compile --strip-extras --no-annotate --generate-hashes -o requirements-win.txt requirements-win.in
+          pip-compile --strip-extras --no-annotate --generate-hashes -o requirements/lock/base.txt requirements/src/base.in
+          pip-compile --strip-extras --no-annotate --allow-unsafe --generate-hashes -o requirements/lock/dev.txt requirements/src/dev.in
+          pip-compile --strip-extras --no-annotate --generate-hashes -o requirements/lock/win.txt requirements/src/win.in
 
       - name: Verify root dependency locks are committed
-        run: git diff --exit-code -- requirements.txt requirements-dev.txt requirements-win.txt
+        run: git diff --exit-code -- requirements/lock/base.txt requirements/lock/dev.txt requirements/lock/win.txt
 
       - name: Install development dependencies
         uses: validityBase/vbase-github-actions/.github/actions/setup-python-deps@v1
         with:
           requirements-files: |
-            requirements-dev.txt
+            requirements/lock/dev.txt
           python-version: "3.11"
           require-hashes: "true"
 
@@ -85,20 +85,20 @@ jobs:
         uses: validityBase/vbase-github-actions/.github/actions/setup-python-deps@v1
         with:
           requirements-files: |
-            requirements-lock.txt
+            requirements/lock/tools.txt
           python-version: "3.11"
           require-hashes: "true"
 
       - name: Regenerate docs dependency lock
-        run: pip-compile --strip-extras --no-annotate --generate-hashes -o docs/requirements.txt docs/requirements.in
+        run: pip-compile --strip-extras --no-annotate --generate-hashes -o docs/requirements/lock/base.txt docs/requirements/src/base.in
 
       - name: Verify docs dependency lock is committed
-        run: git diff --exit-code -- docs/requirements.txt
+        run: git diff --exit-code -- docs/requirements/lock/base.txt
 
       - name: Install docs dependencies
         uses: validityBase/vbase-github-actions/.github/actions/setup-python-deps@v1
         with:
           requirements-files: |
-            docs/requirements.txt
+            docs/requirements/lock/base.txt
           python-version: "3.11"
           require-hashes: "true"

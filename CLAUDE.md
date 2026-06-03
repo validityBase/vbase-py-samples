@@ -8,8 +8,9 @@ Python SDK.
 - Keep sample code small, readable, and focused on demonstrating SDK usage.
 - Do not commit secrets, private keys, API tokens, `.env` files, or notebook
   outputs containing credentials.
-- Runtime dependencies are declared in `requirements.in`; generated lock files
-  are committed with hashes and must not be edited by hand.
+- Runtime dependencies are declared in `requirements/src/base.in`; generated
+  lock files are committed under `requirements/lock/` with hashes and must not
+  be edited by hand.
 - Documentation published externally lives in `docs/`.
 - Internal specs, guides, and agent memory live in `internal/`.
 

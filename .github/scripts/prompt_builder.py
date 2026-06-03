@@ -27,7 +27,7 @@ STRICT RULES — follow without exception:
 3. If a new API, class, or method appears in the product with no existing doc \
    entry, IGNORE IT.
 4. Do NOT modify: README.md, CONTRIBUTING.md, docs/conf.py, docs/index.rst, \
-   docs/requirements.txt.
+   docs/requirements/lock/base.txt.
 5. For uncertain cases, flag them in the "uncertain" list rather than guessing.
 6. "current_text" MUST be a verbatim short excerpt (1-3 sentences or a code block) \
    copied exactly from the current doc content provided — it will be used to \
