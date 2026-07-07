@@ -1,12 +1,10 @@
 # # create_set
 
-"""This sample creates and validates a vBase set.
-"""
+"""This sample creates and validates a vBase set."""
 
 import pprint
 
 from vbase import VBaseClient
-
 
 # Name for the test set to create.
 SET_NAME = "TestDataset"

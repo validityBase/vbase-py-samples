@@ -27,7 +27,6 @@ from aws_utils import (
 )
 from utils import get_env_var_or_fail
 
-
 # ## Configuration
 
 # Load dotenv configuration if available, else, use environment variables.

@@ -20,7 +20,6 @@ from vbase import (
     VBaseStringObject,
 )
 
-
 # Name for the test set to create.
 SET_NAME = "TestDataset"
 

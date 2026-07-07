@@ -1,8 +1,6 @@
 # # Sentiment Dataset Stamper Demo
 
-"""This sample creates a tamper-proof dataset history.
-"""
-
+"""This sample creates a tamper-proof dataset history."""
 
 # ## Imports
 
@@ -24,7 +22,6 @@ from aws_utils import (
     create_s3_client_from_env,
     write_s3_object,
 )
-
 
 # ## Configuration
 

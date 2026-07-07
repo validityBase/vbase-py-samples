@@ -27,7 +27,6 @@ from aws_utils import (
 )
 from utils import get_env_var_or_fail
 
-
 """
 ## IB Client Portal Gateway Setup
 
