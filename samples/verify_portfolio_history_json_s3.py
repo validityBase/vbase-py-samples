@@ -1,8 +1,6 @@
 # # Track Record Verification Demo
 
-"""This sample verifies a tamper-proof portfolio track record.
-"""
-
+"""This sample verifies a tamper-proof portfolio track record."""
 
 # ## Imports
 
@@ -23,7 +21,6 @@ from aws_utils import (
     create_s3_client_from_env,
     init_vbase_dataset_from_s3_objects,
 )
-
 
 # ## Configuration
 

@@ -15,7 +15,6 @@ from vbase import (
     VBaseJsonObject,
 )
 
-
 # ## Configuration
 
 # Name for the strategy to create.

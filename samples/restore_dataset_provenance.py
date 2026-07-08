@@ -21,7 +21,6 @@ from aws_utils import (
     print_s3_objects,
 )
 
-
 # ## Configuration
 
 # S3 bucket for the tests.

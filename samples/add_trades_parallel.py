@@ -4,7 +4,6 @@
 and verifies the strategy.
 """
 
-
 # ## Imports
 
 from datetime import datetime
@@ -31,7 +30,6 @@ from aws_utils import (
     create_s3_objects_from_dataset,
     init_vbase_dataset_from_s3_objects,
 )
-
 
 # ## Configuration
 
