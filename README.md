@@ -39,5 +39,5 @@ MyST generates IDs based on the section text, so our IDs must match the generate
 We use prettier to ensure compatibility with Gitbook. You can install prettier in your local repository with the following command:
 
 ```bash
-npm install
+npm ci --ignore-scripts
 ```
