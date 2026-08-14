@@ -36,8 +36,8 @@ This works: `## My Text <a href="#my-text" id="my-text"></a>`
 
 MyST generates IDs based on the section text, so our IDs must match the generated ones. It's tedious, but necessary. Every time when we change a caption for some section - we need to update the corresponding ID
 
-We use prettier to ensure compatibility with Gitbook. You can install prettier in your local repository with the following command:
+We use prettier to ensure compatibility with Gitbook. Install the locked Node dependencies before running the local formatting hooks:
 
 ```bash
-npm install
+npm ci --ignore-scripts
 ```
