@@ -1,0 +1,3 @@
+-r base.in
+ckzg>=2.0.1
+numpy>=2.1.2

@@ -41,5 +41,5 @@ jobs:
           product-repo-pat: ${{ secrets.PRODUCT_REPO_PAT }}
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           openai-model: ${{ vars.OPENAI_MODEL || 'gpt-5.4' }}
-          exclude-files: "README.md,CONTRIBUTING.md,docs/conf.py,docs/index.rst,docs/requirements.txt"
+          exclude-files: "README.md,CONTRIBUTING.md,docs/conf.py,docs/index.rst,requirements/docs.in,requirements/docs.txt"
           workflow-filename: doc-sync.yml

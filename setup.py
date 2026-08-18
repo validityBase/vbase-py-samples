@@ -1,14 +1,19 @@
-"""
-vBase Python Software Development Kit (SDK) Samples
-"""
+"""vBase Python Software Development Kit (SDK) Samples."""
+
+from pathlib import Path
 
 from setuptools import find_packages, setup
 
-with open("README.md", encoding="utf-8") as f:
-    long_description = f.read()
+ROOT_DIR = Path(__file__).resolve().parent
+long_description = (ROOT_DIR / "README.md").read_text(encoding="utf-8")
 
-with open("requirements.txt", encoding="utf-8") as f:
-    requirements = f.read().splitlines()
+requirements = []
+for raw_line in (ROOT_DIR / "requirements/base.in").read_text(
+    encoding="utf-8"
+).splitlines():
+    line = raw_line.split("#", 1)[0].strip()
+    if line and not line.startswith("-"):
+        requirements.append(line)
 
 setup(
     name="vbase_samples",
@@ -21,7 +26,7 @@ setup(
     url="https://github.com/validityBase/vbase-py-samples",
     packages=find_packages(),
     package_data={
-        "": ["../requirements.txt"],
+        "": ["../requirements/base.in"],
     },
     install_requires=requirements,
     classifiers=[

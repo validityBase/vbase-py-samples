@@ -22,6 +22,20 @@ The following samples illustrate common solutions built on top of the vBase SDK 
 
 Please follow the [Quickstart](docs/quickstart.md) guide to configure your environment.
 
+## Dependency Installation
+
+Dependency inputs and generated hash-locked files live under `requirements/`.
+Install the runtime dependencies with:
+
+```bash
+python -m pip install --require-hashes -r requirements/base.txt
+```
+
+For development, Windows, or documentation work, install the corresponding
+`requirements/dev.txt`, `requirements/win.txt`, or `requirements/docs.txt`
+lock file. Do not edit generated `.txt` files by hand; update the matching
+`.in` file and regenerate it with the pinned `pip-tools` lock tooling.
+
 ## Documentation writing hints
 
 We use the MyST markdown format for our documentation. Here are some rules to make our documentation consistent and MyST-compatible:

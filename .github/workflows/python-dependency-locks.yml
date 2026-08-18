@@ -1,0 +1,44 @@
+name: Python Dependency Locks
+
+on:
+  pull_request:
+    paths:
+      - "requirements/*.in"
+      - "requirements/*.txt"
+      - ".github/dependabot.yml"
+      - ".github/workflows/python-dependency-locks.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-locks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # actions/checkout v5.0.1
+
+      - name: Install lock tooling
+        uses: validityBase/vbase-github-actions/.github/actions/setup-python-deps@v1
+        with:
+          requirements-files: |
+            requirements/tools.txt
+          python-version: "3.11"
+          require-hashes: "true"
+
+      - name: Regenerate dependency locks
+        run: |
+          pip-compile --strip-extras --no-annotate --generate-hashes \
+            --output-file=requirements/base.txt requirements/base.in
+          pip-compile --strip-extras --no-annotate --generate-hashes \
+            --output-file=requirements/dev.txt requirements/dev.in
+          pip-compile --strip-extras --no-annotate --generate-hashes \
+            --output-file=requirements/win.txt requirements/win.in
+          pip-compile --strip-extras --no-annotate --generate-hashes \
+            --output-file=requirements/docs.txt requirements/docs.in
+          pip-compile --strip-extras --no-annotate --allow-unsafe --generate-hashes \
+            --output-file=requirements/tools.txt requirements/tools.in
+
+      - name: Verify dependency locks are committed
+        run: git diff --exit-code -- requirements/*.txt
