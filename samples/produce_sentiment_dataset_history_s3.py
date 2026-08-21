@@ -1,114 +1,89 @@
-# # Sentiment Dataset Stamper Demo
+# %% [markdown]
+# # Produce a Sentiment Dataset History in S3
+#
+# Stamp exact sentiment record bytes privately and store them in Amazon S3.
+# %%
 
-"""This sample creates a tamper-proof dataset history."""
-
-# ## Imports
-
-from datetime import datetime
+from datetime import datetime, timezone
 import json
-import os
-import pprint
 import random
-from dotenv import load_dotenv
+from uuid import uuid4
 
-from vbase import (
-    VBaseClient,
-    ForwarderCommitmentService,
-    VBaseDataset,
-    VBaseJsonObject,
+from aws_utils import create_s3_client_from_env, write_s3_object
+from utils import (
+    create_vbase_client_from_env,
+    get_cid_for_bytes,
+    get_env_var_or_fail,
+    wait_for_stamps,
 )
 
-from aws_utils import (
-    create_s3_client_from_env,
-    write_s3_object,
-)
-
-# ## Configuration
-
-# The producer's sovereign cryptographic identity.
-PK = "0xabfc6c981e4e9f1f26175bc40aef73248d467617309c5e04e83da34171999076"
-
-# The dataset name.
-DATASET_NAME = "sentiment_dataset_" + datetime.now().strftime("%Y%m%d%H%M%S")
-
-# Additional configuration.
-BUCKET_NAME = "vbase-test"
 N_TIME_PERIODS = 10
-FOLDER_NAME = "samples/sentiment_dataset_history/"
-DATASET_FOLDER_NAME = FOLDER_NAME + DATASET_NAME
-ADDRESS = "0xA401F59d7190E4448Eb60691E3bc78f1Ef03e88C"
+S3_PREFIX = "vbase-samples/sentiment-history"
+RUN_ID = f"{datetime.now(timezone.utc):%Y%m%dT%H%M%SZ}-{uuid4().hex[:8]}"
+COLLECTION_NAME = f"Python Sentiment Sample {RUN_ID}"
+COLLECTION_DESCRIPTION = "A verifiable sentiment history stored in Amazon S3."
 
 
-# ## Setup
+# %% [markdown]
+# ## Stamp exact bytes and write them to S3
+# %%
+s3_client = create_s3_client_from_env()
+bucket_name = get_env_var_or_fail("AWS_S3_BUCKET")
 
-# Load the information necessary to call vBase APIs.
-load_dotenv(verbose=True, override=True)
-forwarder_url = os.environ.get("VBASE_FORWARDER_URL")
-api_key = os.environ.get("VBASE_API_KEY")
-
-# Connect to AWS.
-boto_client = create_s3_client_from_env()
-
-# Connect to vBase.
-vbc = VBaseClient(
-    ForwarderCommitmentService(
-        forwarder_url,
-        api_key,
-        PK,
+with create_vbase_client_from_env() as client:
+    collection = client.create_collection(
+        name=COLLECTION_NAME,
+        description=COLLECTION_DESCRIPTION,
     )
-)
+    owner_address = client.get_current_user().last_address
+    if not owner_address:
+        raise RuntimeError("The current vBase account does not have an owner address.")
 
+    collection_prefix = f"{S3_PREFIX}/{collection.cid}"
+    object_cids = []
+    random_generator = random.Random(1234)
 
-# ## Create and Stamp Records
-
-# Create the vBase dataset object.
-ds = VBaseDataset(vbc, DATASET_NAME, VBaseJsonObject)
-print(f"Created dataset: {pprint.pformat(ds.to_dict())}")
-
-# Create sample records.
-random.seed(1234)
-for i_record in range(N_TIME_PERIODS):
-    # Create a random record in [0, 100].
-    record = json.dumps(
-        {
-            "AAPL": round(random.random() * 100),
-            "MSFT": round(random.random() * 100),
-            "TSLA": round(random.random() * 100),
+    for period in range(N_TIME_PERIODS):
+        sentiment = {
+            "AAPL": round(random_generator.random() * 100),
+            "MSFT": round(random_generator.random() * 100),
+            "TSLA": round(random_generator.random() * 100),
         }
+        record_bytes = json.dumps(
+            sentiment,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        object_cid = get_cid_for_bytes(record_bytes)
+        stamp = client.create_stamp(
+            data_cid=object_cid,
+            collection_cid=collection.cid,
+            store_stamped_file=False,
+            idempotent=True,
+            idempotency_window=0,
+        )
+        if stamp.commitment_receipt.object_cid.lower() != object_cid.lower():
+            raise RuntimeError("vBase returned a different CID than the stamped bytes.")
+
+        object_key = write_s3_object(
+            s3_client,
+            bucket_name,
+            collection_prefix,
+            f"record_{period:02d}.json",
+            record_bytes,
+        )
+        object_cids.append(object_cid)
+        print(f"{object_key}: {object_cid}")
+
+    wait_for_stamps(
+        client,
+        object_cids,
+        collection.cid,
+        user_address=owner_address,
     )
-    print(f"Record: {pprint.pformat(record)}")
 
-    # Add the record to the vBase dataset object.
-    receipt = ds.add_record(record)
-    print(f"Stamp receipt: {pprint.pformat(receipt)}")
-
-    # Save the record.
-    write_s3_object(
-        boto_client,
-        BUCKET_NAME,
-        DATASET_FOLDER_NAME,
-        f"record_{i_record}.json",
-        record,
-    )
-
-# Display the shareable dataset history URL.
-print(
-    "Data saved to: "
-    "http://vbase-test.s3-website-us-east-1.amazonaws.com/?prefix="
-    f"{DATASET_FOLDER_NAME}"
-)
-print(f"Dataset info: name = {ds.name}, owner = {ds.owner}")
-
-# ## Summary
-
-"""Process
-* We used only a private key and dataset records as inputs.
-* We created a tamper-proof history of dataset records.
-* Data was not shared with vBase or any other third party.
-"""
-
-"""Key Implications
-* We can produce an easily verifiable dataset record.
-* We can selectively share the dataset history.
-* The record and all analytics can be independently calculated and verified forever.
-"""
+    print(f"Sentiment history: s3://{bucket_name}/{collection_prefix}/")
+    print(f"Collection name: {collection.name}")
+    print(f"Collection CID: {collection.cid}")
+    print(f"Owner address: {owner_address}")
+    print("Every stored sentiment record has a matching vBase stamp.")

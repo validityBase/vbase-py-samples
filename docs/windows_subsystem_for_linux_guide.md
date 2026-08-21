@@ -4,12 +4,6 @@
 
 This tutorial guides you through setting up Windows Subsystem for Linux (WSL) to run vBase samples.
 
-- [1. Install Windows Subsystem for Linux (WSL)](windows_subsystem_for_linux_guide.md#install-windows-subsystem-for-linux-wsl)
-- [2. Install Jupyter Lab](windows_subsystem_for_linux_guide.md#install-jupyter-lab)
-- [3. Install Git](windows_subsystem_for_linux_guide.md#install-git)
-- [4. Clone the vbase-py-samples Git Repository](windows_subsystem_for_linux_guide.md#clone-the-vbase-py-samples-git-repository)
-- [5. Run Jupyter Lab and Open a Notebook](windows_subsystem_for_linux_guide.md#run-jupyter-lab-and-open-a-notebook)
-
 ## 1. Install Windows Subsystem for Linux (WSL)<a href="#install-windows-subsystem-for-linux-wsl" id="install-windows-subsystem-for-linux-wsl"></a>
 
 1. **Open PowerShell as Administrator:** Right-click the Start button and select “Windows PowerShell (Admin)”.
@@ -38,7 +32,7 @@ This tutorial guides you through setting up Windows Subsystem for Linux (WSL) to
 
 7. **Launch WSL:** After installation, launch WSL from the Start menu. The first launch will take some time due to setup. You will be prompted to create a user account and password.
 
-## 2. Install Jupyter Lab<a href="#install-jupyter-lab" id="install-jupyter-lab"></a>
+## 2. Install Python<a href="#install-python" id="install-python"></a>
 
 > **Note:** The following steps assume you have WSL installed and are running commands in the open WSL console window.
 
@@ -51,13 +45,7 @@ This tutorial guides you through setting up Windows Subsystem for Linux (WSL) to
 2. **Install Python3 and pip:** Run the following command:
 
    ```bash
-   sudo apt install python3 python3-pip -y
-   ```
-
-3. **Install Jupyter Lab:** Use pip to install Jupyter Lab:
-
-   ```bash
-   pip3 install jupyterlab
+   sudo apt install python3 python3-pip python3-venv -y
    ```
 
 ## 3. Install Git<a href="#install-git" id="install-git"></a>
@@ -82,12 +70,38 @@ This tutorial guides you through setting up Windows Subsystem for Linux (WSL) to
    git clone https://github.com/validityBase/vbase-py-samples
    ```
 
-## 5. Run Jupyter Lab and Open a Notebook<a href="#run-jupyter-lab-and-open-a-notebook" id="run-jupyter-lab-and-open-a-notebook"></a>
+## 5. Install the Samples<a href="#install-the-samples" id="install-the-samples"></a>
 
 1. **Navigate to the Repository Directory:**
 
    ```bash
-   cd vbase-py-samples
+   cd ~/validityBase/vbase-py-samples
+   ```
+
+2. **Create a virtual environment and install the dependencies:**
+
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   python -m pip install -r requirements.txt
+   python -m pip install jupyterlab
+   ```
+
+3. **Configure your API key:**
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Open `.env` in an editor and set `VBASE_API_KEY` to the key from [vBase Account Settings](https://app.vbase.com/profile/#account_settings). Do not commit `.env`.
+
+## 6. Run Jupyter Lab and Open a Notebook<a href="#run-jupyter-lab-and-open-a-notebook" id="run-jupyter-lab-and-open-a-notebook"></a>
+
+1. **Navigate to the Repository Directory:**
+
+   ```bash
+   cd ~/validityBase/vbase-py-samples
+   source venv/bin/activate
    ```
 
 1. **Run Jupyter Lab:** Start Jupyter Lab by running:

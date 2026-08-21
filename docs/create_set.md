@@ -1,38 +1,31 @@
-# Create a Set
+# Create a Collection
 
 <!-- omit in toc -->
 
-This sample creates and validates a vBase set.
+This sample creates or retrieves a vBase collection for the authenticated account and confirms that the collection is available through the API.
 
-You can find the implementation in [`create_set.py`](https://github.com/validityBase/vbase-py-samples/blob/main/samples/create_set.py).
+Implementation: [`samples/create_set.py`](https://github.com/validityBase/vbase-py-samples/blob/main/samples/create_set.py)
 
-## Summary<a href="#summary" id="summary"></a>
+## Before you run it <a href="#before-you-run-it" id="before-you-run-it"></a>
 
-A set is a collection of objects. A named set of data records is a dataset. Such datasets can implement any point-in-time (PIT) or bitemporal data and prove this provenance to third parties.
+Complete the [Quickstart](quickstart.md) and set `VBASE_API_KEY`.
 
-The sample illustrates low-level vBase set operations. Low-level set operations expose all vBase features and provide the most control without the benefit of simplifying higher-level abstractions.
+## How it works <a href="#how-it-works" id="how-it-works"></a>
 
-## Detailed Description<a href="#detailed-description" id="detailed-description"></a>
+The shared helper constructs `VBaseAPIClient` from the API key. The sample checks the current user's collections by name and calls `create_collection()` only when needed:
 
-- Create a vBase object using a Web3 HTTP commitment service.
-The commitment service is a smart contract running on a blockchain. The initialization uses connection parameters specified in environment variables:
-    ```python
-    vbc = VBaseClient.create_instance_from_env()
-    ```
+```python
+collection = get_or_create_collection(
+    client,
+    COLLECTION_NAME,
+    COLLECTION_DESCRIPTION,
+)
+```
 
-- Create the test set commitment.
-This operation records that the user with the above VBASE_COMMITMENT_SERVICE_PRIVATE_KEY has created the named dataset. Such commitments are used to validate that a given collection of user datasets is complete and mitigates Sybil attacks (https://en.wikipedia.org/wiki/Sybil_attack). 
+It then retrieves collections for the account owner and requires an exact CID match. A successful run prints the collection name, CID, and owner address.
 
-Set creation is idempotent. If the set already exists, duplicate calls are no-ops and return empty receipts. The returned receipt contains information on the set commitment. It can be optionally retained to simplify subsequent validation. All receipts are also available via vBase indexing services.
+```bash
+python samples/create_set.py
+```
 
-Since add_set() and add_named_set() calls are idempotent, duplicate calls will be no-ops and will return empty receipts.
-    ```python
-    receipt = vbc.add_named_set(SET_NAME)
-    print("add_named_set() receipt:\n%s", pprint.pformat(receipt))
-    ```
-
-- Verify that a given set commitment exists for a given user.
-This will typically be called by the data consumer to verify a producer's claims about dataset provenance:
-    ```python
-    assert vbc.user_named_set_exists(vbc.get_default_user(), SET_NAME)
-    ```
+Collections group related stamps into one independently identifiable history. Creating or retrieving a collection does not require a blockchain private key in the local environment; authentication uses the vBase account API key.

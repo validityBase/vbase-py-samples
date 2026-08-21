@@ -1,38 +1,26 @@
-# Add a String Record to a Dataset Asynchronously
+# Use the vBase API Client from Async Code
 
-This sample creates a dataset comprising string records if one does not exist and adds a record to the dataset. The sample uses async methods to commit a dataset and records
-and illustrates async operation using asyncio.
+This sample runs the complete synchronous stamping and verification workflow without blocking an application's `asyncio` event loop.
 
-You can find the implementation in [`add_string_dataset_record_async.py`](https://github.com/validityBase/vbase-py-samples/blob/main/samples/add_string_dataset_record_async.py).
+Implementation: [`samples/add_string_dataset_record_async.py`](https://github.com/validityBase/vbase-py-samples/blob/main/samples/add_string_dataset_record_async.py)
 
-## Summary<a href="#summary" id="summary"></a>
+## Why a worker thread is used <a href="#why-a-worker-thread-is-used" id="why-a-worker-thread-is-used"></a>
 
-A set is a collection of objects. A named set of data records is a dataset. Such datasets can implement any point-in-time (PIT) or bitemporal data and prove this provenance to third parties. 
+`VBaseAPIClient` provides a synchronous interface. Async applications can move the blocking network workflow to an executor:
 
-The sample demonstrates the higher-order async vBase dataset and string record abstractions that hide the details of the object and record content id (CID) calculation (hashing). This example builds on the add_string_dataset_record.py code and illustrates async methods.
+```python
+loop = asyncio.get_running_loop()
+result = await loop.run_in_executor(None, operation)
+```
 
-## Detailed Description<a href="#detailed-description" id="detailed-description"></a>
+The worker creates and closes its own API client. Client sessions are not shared across threads.
 
-- Create a vBase object using a Web3 HTTP commitment service.
-The commitment service is a smart contract running on a blockchain. The initialization uses connection parameters specified in environment variables:
-    ```python
-    vbc = VBaseClient.create_instance_from_env()
-    ```
+## Run the sample <a href="#run-the-sample" id="run-the-sample"></a>
 
-- Create the test dataset asynchronously.
-This factory method constructs a `VBaseDatasetAsync` object using the `asyncio` event loop. Arguments and mechanics are similar to those of `VBaseDataset` object creation.
-    ```python
-    VBaseDatasetAsync.create(vbc, name=SET_NAME, record_type=VBaseStringObject)
-    ```
+Complete the [Quickstart](quickstart.md), then run:
 
-- Add string record to the dataset asynchronously.
-This method makes an object commitment using the `asyncio` event loop. Arguments and mechanics are similar to those of `ds.add_record()` call:
-    ```python
-    ds.add_record_async("TestRecord")
-    ```
+```bash
+python samples/add_string_dataset_record_async.py
+```
 
-- Verify that a given set commitment exists for a given user.
-This will typically be called by the data consumer to verify a producer's claims about dataset provenance:
-    ```python
-    assert ds.verify_commitments()[0]
-    ```
+The matching notebook uses top-level `await` but is generated from the same Python source. A successful run prints the collection CID, object CID, and verified timestamp.

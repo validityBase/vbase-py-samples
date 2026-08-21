@@ -1,78 +1,47 @@
-# Stamp Interactive Brokers Portfolio
+# Stamp an Interactive Brokers Portfolio
 
-<!-- omit in toc -->
+This sample retrieves current positions from the Interactive Brokers Client Portal API, converts them to portfolio weights, and creates a private vBase stamp for the exact CSV bytes stored in Amazon S3.
 
-This sample illustrates how to retrieve, save, and stamp an Interactive Brokers (IB) portfolio.
+Implementation: [`samples/stamp_interactive_brokers_portfolio.py`](https://github.com/validityBase/vbase-py-samples/blob/main/samples/stamp_interactive_brokers_portfolio.py)
 
-The sample can be run from the command line interactively or as a script if your environment is set appropriately.
+## Prerequisites
 
-The sample will run the **Interactive Brokers (IB) Client Portal Gateway** on your Windows computer and make a request to it using the Web API from Python.
+Complete the [quickstart](quickstart.md), configure an S3 bucket where your AWS identity can write objects, and start an authenticated Client Portal Gateway session on `https://localhost:5000`.
 
-You can find the implementation in [`stamp_interactive_brokers_portfolio.py`](https://github.com/validityBase/vbase-py-samples/blob/main/samples/stamp_interactive_brokers_portfolio.py).
+This focused example supports a non-tiered IBKR account whose equity positions all use one currency. Advisor, broker, and other tiered account structures require the documented subaccount endpoints. Mixed-currency portfolios require currency conversion before their market values can be normalized into meaningful weights.
 
-- [1. Prerequisites](stamp_interactive_brokers_portfolio.md#prerequisites)
-- [2. Download and Install Client Portal Gateway](stamp_interactive_brokers_portfolio.md#download-and-install-client-portal-gateway)
-- [3. Set Environment Variables](stamp_interactive_brokers_portfolio.md#set-environment-variables)
-- [4. Run the Sample](stamp_interactive_brokers_portfolio.md#run-the-sample)
+Add these values to `.env`:
 
-## 1. Prerequisites <a href="#prerequisites" id="prerequisites"></a>
+```ini
+VBASE_API_KEY=your-vbase-api-key
+VBASE_COLLECTION_NAME=Interactive Brokers Portfolio History
 
-1. **Interactive Brokers Account**: You must have an IB account (live or paper trading).
-2. **Python**: Ensure Python is installed on your Windows machine.
-3. **vBase**: Follow the [vBase Windows Guide](windows_guide.md) to set up Windows environment to run vBase samples.
+AWS_S3_BUCKET=your-s3-bucket
+# AWS_DEFAULT_REGION=us-east-1
+# AWS_ACCESS_KEY_ID=your-aws-access-key-id
+# AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key
+# AWS_SESSION_TOKEN=your-session-token
 
-## 2. Download and Install Client Portal Gateway <a href="#download-and-install-client-portal-gateway" id="download-and-install-client-portal-gateway"></a>
-
-Interactive Brokers provides the **Client Portal Gateway** as a lightweight API gateway for accessing account data via a Web API. Follow these steps to download and run the gateway:
-
-1. **Download the Client Portal Gateway**:
-   - Visit the official [Client Portal Gateway page](https://www.interactivebrokers.com/en/trading/ibgateway-latest.php) and download the latest **Client Portal Gateway** for Windows
-2. **Extract the ZIP File**:
-   - After downloading the Client Portal Gateway ZIP file, extract it to a folder on your machine (e.g., `C:\IBClientPortalGateway`).
-3. **Run the Gateway**:
-   - At the Command Line, run:
-
-   ```default
-   cd \\path\\to\\clientportal\\clientportal.gw
-   bin\\run.bat root\\conf.yaml
-   ```
-
-4. **Authenticate to the Gateway**:
-   - Open the client portal in a browser:
-
-   ```default
-   https://localhost:5000/
-   ```
-
-   You may need to ignore security warnings and accept the self-signed certificate in your browser.
-   - Login to the client portal with your IB credentials.
-   - You should see the “Client login succeeds” message.
-   - Once the gateway is running, it provides a Web API that requires authentication via the session token returned during the login process. The gateway will keep running in the background.
-
-## 3. Set Environment Variables<a href="#set-environment-variables" id="set-environment-variables"></a>
-
-Set the following environment variables for your IB and vBase configuration:
-
-- IB Configuration:
-  - `IB_ACCOUNT_ID` - The IB account id.
-- AWS S3 Configuration (Optional if you save the portfolio data elsewhere):
-  - `AWS_ACCESS_KEY_ID` - The Access Key used to connect to the S3 service.
-  - `AWS_SECRET_ACCESS_KEY` - The Secret Key used to connect to the S3 service.
-  - `AWS_S3_BUCKET_NAME` - The AWS S3 bucket name used to store the portfolio data.
-- vBase Configuration:
-  - `VBASE_FORWARDER_URL` - vBase Forwarder Service URL:
-    - https://dev.api.vbase.com/forwarder/ for development/testnet.
-    - https://api.vbase.com/forwarder/ for production.
-  - `VBASE_API_KEY` - The vBase API Key used to access the Forwarder service.
-  - `VBASE_COMMITMENT_SERVICE_PRIVATE_KEY` - The private key used to sign portfolio stamps.
-  - `VBASE_DATASET_NAME` - The name of the vBase dataset that will hold the portfolio history.
-
-## 4. Run the Sample<a href="#run-the-sample" id="run-the-sample"></a>
-
-Run the sample from the command line:
-
-```bash
-python3 stamp_interactive_brokers_portfolio.py
+IB_ACCOUNT_ID=your-interactive-brokers-account-id
+# IB_CA_CERT_PATH=/path/to/a/trusted/ca-certificate.pem
 ```
 
-or walk through the sample in an interactive window.
+Set `IB_CA_CERT_PATH` to a trusted certificate bundle when your gateway uses a locally trusted certificate. If it is omitted, the sample prints a warning and disables certificate verification only for its loopback gateway request.
+
+## Run the sample
+
+```bash
+python samples/stamp_interactive_brokers_portfolio.py
+```
+
+The script:
+
+1. Initializes access to the configured portfolio account and retrieves all position pages from the local Client Portal Gateway.
+2. Normalizes position market values into portfolio weights.
+3. Shows the portfolio and asks for confirmation.
+4. Serializes the portfolio to deterministic CSV bytes and calculates their CID locally.
+5. Creates a private stamp, writes the same bytes to S3, and verifies the resulting receipt.
+
+The S3 object key contains the collection CID and stamped data CID, so repeated snapshots do not overwrite one another. Never commit broker, AWS, or vBase credentials.
+
+See the Interactive Brokers documentation for the [Client Portal Gateway](https://www.interactivebrokers.com/docs/web-api/v1/endpoints/introduction) and [portfolio positions endpoint](https://www.interactivebrokers.com/docs/web-api/v1/endpoints/portfolio/positions).

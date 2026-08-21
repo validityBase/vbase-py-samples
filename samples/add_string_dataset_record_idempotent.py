@@ -1,48 +1,52 @@
-# # add_string_dataset_record
+# # Add a String Record Idempotently
 
-"""This sample creates a dataset comprising string records
-if one does not exist and adds a record to the dataset in an idempotent way.
+"""Show that repeated idempotent requests return the same text stamp."""
 
-This sample expands the simple record addition to show
-how one can check for existing commitments for a record.
-"""
-
-import pprint
-
-from vbase import (
-    VBaseClient,
-    VBaseDataset,
-    VBaseStringObject,
+from utils import (
+    create_vbase_client_from_env,
+    get_or_create_collection,
+    wait_for_stamp,
 )
 
-# Name for the test dataset to create.
-DATASET_NAME = "TestDataset"
-# Test record data.
-RECORD_DATA = "TestRecord"
+COLLECTION_NAME = "Python Idempotency Sample"
+COLLECTION_DESCRIPTION = "Idempotent records created by the vBase Python samples."
+RECORD = "A record that should have one unlimited-window stamp"
 
 
-# Initialize vBase using environment variables.
-vbc = VBaseClient.create_instance_from_env()
+with create_vbase_client_from_env() as client:
+    collection = get_or_create_collection(
+        client,
+        COLLECTION_NAME,
+        COLLECTION_DESCRIPTION,
+    )
+    request = {
+        "data": RECORD,
+        "file_name": "idempotent-record.txt",
+        "collection_cid": collection.cid,
+        "idempotent": True,
+        "idempotency_window": 0,
+    }
+    first_stamp = client.create_stamp(**request)
+    second_stamp = client.create_stamp(**request)
+    first_receipt = first_stamp.commitment_receipt
+    second_receipt = second_stamp.commitment_receipt
 
-# Create the dataset of strings, if necessary.
-# The constructor will not make a duplicate dataset commitment if one already exists.
-ds = VBaseDataset(vbc, DATASET_NAME, VBaseStringObject)
+    if first_receipt.object_cid.lower() != second_receipt.object_cid.lower():
+        raise RuntimeError("The repeated requests returned different object CIDs.")
+    if (
+        first_receipt.transaction_hash.lower()
+        != second_receipt.transaction_hash.lower()
+    ):
+        raise RuntimeError("The repeated requests created different transactions.")
 
-# Idempotent record addition that will ignore duplicates.
-# You can rerun this section of code without adding duplicate records.
-if any(
-    r["objectCid"] == VBaseStringObject.get_cid_for_data(RECORD_DATA)
-    for r in ds.get_commitment_receipts()
-):
-    print("Record exists.")
-else:
-    print("Record does not exist.")
-    receipt = ds.add_record(RECORD_DATA)
-    print(f"add_record() receipt:\n{pprint.pformat(receipt)}")
+    wait_for_stamp(
+        client,
+        first_receipt.object_cid,
+        collection.cid,
+        filter_by_user=True,
+    )
 
-# Validate the dataset commitments.
-assert ds.verify_commitments()[0]
-
-# Print dataset commitment receipts.
-receipts = ds.get_commitment_receipts()
-print(f"receipts = {pprint.pformat(receipts)}")
+    print(f"Collection: {collection.name} ({collection.cid})")
+    print(f"Object CID: {first_receipt.object_cid}")
+    print(f"Transaction: {first_receipt.transaction_hash}")
+    print("The repeated idempotent request returned the original stamp.")

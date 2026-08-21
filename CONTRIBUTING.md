@@ -19,3 +19,12 @@ To contribute code or documentation, please do the following:
 - Create a fork of the repository.
 - Create a new branch with your change, and push the changes to it.
 - Submit a pull request for your change. Provide a detailed description of the changes and any supporting information.
+
+## Updating Samples and Documentation
+
+- Paired Python and Jupyter samples use percent-format cell markers. After changing a paired `.py` file, run `python scripts/sync_notebooks.py` and commit the generated notebook.
+- Run `python -m unittest discover -s tests -v` before opening a pull request.
+- Keep notebook outputs and execution counts cleared.
+- Never commit API keys, cloud credentials, private keys, or real account data.
+- Use MyST-compatible Markdown. Keep explicit heading IDs aligned with the heading text and update links when headings change.
+- Install the locked Node dependencies with `npm ci --ignore-scripts` before running Prettier locally.
