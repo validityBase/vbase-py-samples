@@ -35,13 +35,14 @@ def stamp_and_verify_record(record):
             collection_cid=collection.cid,
         )
         receipt = stamp.commitment_receipt
-        wait_for_stamp(
+        verified_receipt = wait_for_stamp(
             client,
             receipt.object_cid,
             collection.cid,
             filter_by_user=True,
+            transaction_hash=receipt.transaction_hash,
         )
-        return collection, receipt
+        return collection, verified_receipt
 
 
 async def stamp_record_without_blocking(record):
