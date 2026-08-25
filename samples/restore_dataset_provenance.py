@@ -53,6 +53,13 @@ with create_vbase_client_from_env() as client:
     for value in range(1, N_RECORDS + 1):
         record_bytes = str(value).encode("utf-8")
         object_cid = get_cid_for_bytes(record_bytes)
+        write_s3_object(
+            s3_client,
+            bucket_name,
+            source_prefix,
+            f"record_{value:02d}.txt",
+            record_bytes,
+        )
         stamp = client.create_stamp(
             data_cid=object_cid,
             collection_cid=collection.cid,
@@ -62,13 +69,6 @@ with create_vbase_client_from_env() as client:
         )
         if stamp.commitment_receipt.object_cid.lower() != object_cid.lower():
             raise RuntimeError("vBase returned a different CID than the stamped bytes.")
-        write_s3_object(
-            s3_client,
-            bucket_name,
-            source_prefix,
-            f"record_{value:02d}.txt",
-            record_bytes,
-        )
         source_cids.append(object_cid)
 
     source_receipts = wait_for_stamps(

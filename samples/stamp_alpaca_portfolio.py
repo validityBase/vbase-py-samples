@@ -76,6 +76,14 @@ with create_vbase_client_from_env() as client:
     if not owner_address:
         raise RuntimeError("The current vBase account does not have an owner address.")
 
+    timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+    object_key = write_s3_object(
+        s3_client,
+        bucket_name,
+        f"{S3_PREFIX}/{collection.cid}",
+        f"alpaca_portfolio_{timestamp}_{object_cid}.csv",
+        portfolio_bytes,
+    )
     stamp = client.create_stamp(
         data_cid=object_cid,
         collection_cid=collection.cid,
@@ -85,14 +93,6 @@ with create_vbase_client_from_env() as client:
     if stamp.commitment_receipt.object_cid.lower() != object_cid.lower():
         raise RuntimeError("vBase returned a different CID than the portfolio bytes.")
 
-    timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
-    object_key = write_s3_object(
-        s3_client,
-        bucket_name,
-        f"{S3_PREFIX}/{collection.cid}",
-        f"alpaca_portfolio_{timestamp}_{object_cid}.csv",
-        portfolio_bytes,
-    )
     verified_receipt = wait_for_stamp(
         client,
         object_cid,

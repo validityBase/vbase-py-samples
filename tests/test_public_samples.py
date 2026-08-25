@@ -12,6 +12,14 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 SAMPLES_DIR = REPOSITORY_ROOT / "samples"
 NOTEBOOKS = sorted(SAMPLES_DIR.glob("*.ipynb"))
 PYTHON_SAMPLES = sorted(SAMPLES_DIR.glob("*.py"))
+S3_STAMP_SAMPLE_NAMES = (
+    "produce_portfolio_history_csv_s3.py",
+    "produce_portfolio_history_json_s3.py",
+    "produce_sentiment_dataset_history_s3.py",
+    "restore_dataset_provenance.py",
+    "stamp_alpaca_portfolio.py",
+    "stamp_interactive_brokers_portfolio.py",
+)
 EXPECTED_NOTEBOOK_NAMES = {
     f"{sample_name}.ipynb" for sample_name in PAIRED_SAMPLE_NAMES
 }
@@ -111,6 +119,34 @@ class PublicSamplesTests(unittest.TestCase):
             any(requirement.startswith("vbase-api") for requirement in requirements)
         )
         self.assertNotIn("vbase", requirements)
+
+    def test_s3_samples_store_records_before_stamping(self):
+        for sample_name in S3_STAMP_SAMPLE_NAMES:
+            sample_path = SAMPLES_DIR / sample_name
+            tree = ast.parse(
+                sample_path.read_text(encoding="utf-8"),
+                filename=str(sample_path),
+            )
+            write_lines = []
+            stamp_lines = []
+            for node in ast.walk(tree):
+                if not isinstance(node, ast.Call):
+                    continue
+                if (
+                    isinstance(node.func, ast.Name)
+                    and node.func.id == "write_s3_object"
+                ):
+                    write_lines.append(node.lineno)
+                if (
+                    isinstance(node.func, ast.Attribute)
+                    and node.func.attr == "create_stamp"
+                ):
+                    stamp_lines.append(node.lineno)
+
+            with self.subTest(sample=sample_name):
+                self.assertEqual(len(write_lines), 1)
+                self.assertEqual(len(stamp_lines), 1)
+                self.assertLess(write_lines[0], stamp_lines[0])
 
 
 if __name__ == "__main__":

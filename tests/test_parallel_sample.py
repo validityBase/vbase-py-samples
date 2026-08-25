@@ -68,13 +68,9 @@ class ParallelSampleTests(unittest.TestCase):
     def test_account_mutations_are_serialized_across_workers(self):
         FakeVBaseClient.collection_count = 0
 
-        with patch(
-            "utils.create_vbase_client_from_env", FakeVBaseClient
-        ), patch(
+        with patch("utils.create_vbase_client_from_env", FakeVBaseClient), patch(
             "utils.wait_for_stamps", fake_wait_for_stamps
-        ), redirect_stdout(
-            io.StringIO()
-        ) as output:
+        ), redirect_stdout(io.StringIO()) as output:
             runpy.run_path(
                 str(SAMPLES_DIR / "add_trades_parallel.py"),
                 run_name="__main__",
