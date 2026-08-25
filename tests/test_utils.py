@@ -25,11 +25,12 @@ class FakeVBaseClient:
     def __init__(self, collections=None, receipts=None):
         self.collections = collections or []
         self.receipts = receipts or []
+        self.get_collection_calls = []
         self.create_calls = []
         self.verify_calls = []
 
     def get_collections(self, user_address=None):
-        del user_address
+        self.get_collection_calls.append(user_address)
         return self.collections
 
     def create_collection(self, **kwargs):
@@ -102,30 +103,26 @@ class UtilsTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "was not found"):
             get_collection_by_cid(client, "0xmissing", "0xowner")
 
-    def test_wait_for_stamps_requires_collection_and_owner(self):
+    def test_wait_for_stamps_requires_collection_owned_by_user(self):
+        collection = SimpleNamespace(name="Collection", cid="0xcollection")
         receipts = [
             SimpleNamespace(
                 object_cid="0xaaa",
                 set_cid="0xwrong",
-                user_address="0xowner",
+                user_address="account-name",
             ),
             SimpleNamespace(
                 object_cid="0xaaa",
                 set_cid="0xcollection",
-                user_address="0xowner",
+                user_address="account-name",
             ),
             SimpleNamespace(
                 object_cid="0xbbb",
                 set_cid="0xcollection",
-                user_address="0xwrong",
-            ),
-            SimpleNamespace(
-                object_cid="0xbbb",
-                set_cid="0xcollection",
-                user_address="0xowner",
+                user_address="account-name",
             ),
         ]
-        client = FakeVBaseClient(receipts=receipts)
+        client = FakeVBaseClient(collections=[collection], receipts=receipts)
 
         matches = wait_for_stamps(
             client,
@@ -137,7 +134,31 @@ class UtilsTests(unittest.TestCase):
         )
 
         self.assertEqual(set(matches), {"0xaaa", "0xbbb"})
+        self.assertEqual(client.get_collection_calls, ["0xowner"])
         self.assertEqual(client.verify_calls, [(["0xaaa", "0xbbb"], False)])
+
+    def test_wait_for_stamps_accepts_account_name_for_owner_address(self):
+        collection = SimpleNamespace(name="Collection", cid="0xcollection")
+        receipt = SimpleNamespace(
+            object_cid="0xaaa",
+            set_cid="0xcollection",
+            user_address="account-name",
+        )
+        client = FakeVBaseClient(collections=[collection], receipts=[receipt])
+
+        with patch("utils.time.monotonic", side_effect=[0, 0, 1]), patch(
+            "utils.time.sleep"
+        ):
+            matches = wait_for_stamps(
+                client,
+                ["0xaaa"],
+                "0xcollection",
+                user_address="0xowner",
+                timeout_seconds=1,
+                poll_interval_seconds=0,
+            )
+
+        self.assertIs(matches["0xaaa"], receipt)
 
     def test_wait_for_stamps_rejects_duplicate_cids(self):
         client = FakeVBaseClient()
@@ -145,6 +166,7 @@ class UtilsTests(unittest.TestCase):
             wait_for_stamps(client, ["0xaaa", "0xAAA"], "0xcollection")
 
     def test_wait_for_stamps_matches_the_expected_transaction(self):
+        collection = SimpleNamespace(name="Collection", cid="0xcollection")
         receipts = [
             SimpleNamespace(
                 object_cid="0xaaa",
@@ -159,7 +181,7 @@ class UtilsTests(unittest.TestCase):
                 transaction_hash="0xnew",
             ),
         ]
-        client = FakeVBaseClient(receipts=receipts)
+        client = FakeVBaseClient(collections=[collection], receipts=receipts)
 
         matches = wait_for_stamps(
             client,

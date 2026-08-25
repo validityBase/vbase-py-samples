@@ -109,7 +109,12 @@ def wait_for_stamps(
     timeout_seconds: int = 120,
     poll_interval_seconds: int = 5,
 ) -> Dict[str, Any]:
-    """Wait for stamps matching every CID, the collection, and optionally owner."""
+    """Wait for stamps matching every CID and collection.
+
+    When an owner address is supplied, confirm the collection through the
+    owner-filtered collections API before polling. Verification receipts may
+    represent their owner by account name instead of blockchain address.
+    """
     requested_cids = list(object_cids)
     remaining = {object_cid.lower(): object_cid for object_cid in requested_cids}
     if len(remaining) != len(requested_cids):
@@ -126,6 +131,9 @@ def wait_for_stamps(
             + ", ".join(sorted(unknown_transaction_cids))
         )
 
+    if user_address is not None:
+        get_collection_by_cid(client, collection_cid, user_address)
+
     deadline = time.monotonic() + timeout_seconds
     receipts: Dict[str, Any] = {}
 
@@ -137,10 +145,6 @@ def wait_for_stamps(
         for receipt in result.stamp_list:
             normalized_cid = receipt.object_cid.lower()
             matches_collection = receipt.set_cid.lower() == collection_cid.lower()
-            matches_owner = (
-                user_address is None
-                or receipt.user_address.lower() == user_address.lower()
-            )
             expected_transaction = expected_transactions.get(normalized_cid)
             matches_transaction = (
                 expected_transaction is None
@@ -149,7 +153,6 @@ def wait_for_stamps(
             if (
                 normalized_cid in remaining
                 and matches_collection
-                and matches_owner
                 and matches_transaction
             ):
                 receipts[normalized_cid] = receipt
