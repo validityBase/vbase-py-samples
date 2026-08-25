@@ -45,7 +45,7 @@ The script:
 2. Keeps US equity positions and normalizes their market values into weights.
 3. Shows the portfolio and asks for confirmation.
 4. Serializes the portfolio to deterministic CSV bytes and calculates their CID locally.
-5. Creates a private stamp, writes the same bytes to S3, and verifies the resulting receipt.
+5. Writes the exact bytes to S3, creates a private stamp for their CID, and verifies the resulting receipt.
 
 The S3 object key contains the collection CID and stamped data CID, so repeated snapshots do not overwrite one another.
 
