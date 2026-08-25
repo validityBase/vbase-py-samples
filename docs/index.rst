@@ -1,5 +1,5 @@
-vBase Python Software Development Kit (SDK) Samples
-===================================================
+vBase REST API Python Client Samples
+====================================
 
 .. toctree::
    :maxdepth: 2
@@ -12,5 +12,6 @@ vBase Python Software Development Kit (SDK) Samples
    restore_dataset_provenance
    stamp_interactive_brokers_portfolio
    stamp_alpaca_portfolio
+   github_codespaces_guide
    windows_guide
    windows_subsystem_for_linux_guide

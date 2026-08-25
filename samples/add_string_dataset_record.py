@@ -1,34 +1,44 @@
-# # add_string_dataset_record
+# %% [markdown]
+# # Add a String Record
+#
+# Create, stamp, and verify a text record in a vBase collection.
+# %%
 
-"""This sample creates a dataset comprising string records
-if one does not exist and adds a record to the dataset.
-
-The sample demonstrates the higher order vBase dataset and string record abstractions
-that hide the details of object and record content id (CID) calculation (hashing).
-This example builds on the create_set.py code and omits redundant comments.
-"""
-
-import pprint
-
-from vbase import (
-    VBaseClient,
-    VBaseDataset,
-    VBaseStringObject,
+from utils import (
+    create_vbase_client_from_env,
+    get_or_create_collection,
+    wait_for_stamp,
 )
 
-# Name for the test set to create.
-SET_NAME = "TestDataset1"
+COLLECTION_NAME = "Python Text Sample"
+COLLECTION_DESCRIPTION = "Text records created by the vBase Python samples."
+RECORD = "A verifiable text record"
 
 
-# Initialize vBase using environment variables.
-vbc = VBaseClient.create_instance_from_env()
+# %% [markdown]
+# ## Stamp and verify the record
+# %%
+with create_vbase_client_from_env() as client:
+    collection = get_or_create_collection(
+        client,
+        COLLECTION_NAME,
+        COLLECTION_DESCRIPTION,
+    )
+    stamp = client.create_stamp(
+        data=RECORD,
+        file_name="text-record.txt",
+        collection_cid=collection.cid,
+    )
+    receipt = stamp.commitment_receipt
+    verified_receipt = wait_for_stamp(
+        client,
+        receipt.object_cid,
+        collection.cid,
+        filter_by_user=True,
+    )
 
-# Create the dataset object, if necessary.
-ds = VBaseDataset(vbc, SET_NAME, VBaseStringObject)
-
-# Add a record to the dataset.
-receipt = ds.add_record("TestRecord")
-print(f"add_record() receipt:\n{pprint.pformat(receipt)}")
-
-# Validate the dataset commitments.
-assert ds.verify_commitments()[0]
+    print(f"Collection: {collection.name} ({collection.cid})")
+    print(f"Stamped CID: {receipt.object_cid}")
+    print(f"Timestamp: {verified_receipt.timestamp}")
+    print(f"Transaction: {verified_receipt.transaction_hash}")
+    print("The text record was verified successfully.")

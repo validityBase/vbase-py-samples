@@ -1,140 +1,113 @@
-# # Track Record Verification Demo
+# %% [markdown]
+# # Verify a JSON Portfolio History from S3
+#
+# Verify exact JSON portfolio bytes against one vBase collection and owner.
+# %%
 
-"""This sample verifies a tamper-proof portfolio track record."""
+import json
+import os
 
-# ## Imports
-
-import pprint
-import random
-import sys
-from dotenv import load_dotenv
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from vbase import (
-    VBaseClient,
-    VBaseDataset,
-)
-
 from aws_utils import (
     create_s3_client_from_env,
-    init_vbase_dataset_from_s3_objects,
+    read_s3_objects,
+    validate_s3_object_keys,
+)
+from utils import (
+    create_vbase_client_from_env,
+    get_cid_for_bytes,
+    get_collection_by_cid,
+    get_env_var_or_fail,
+    wait_for_stamps,
 )
 
-# ## Configuration
-
-# The strategy owner address.
-STRATEGY_OWNER = "0xA401F59d7190E4448Eb60691E3bc78f1Ef03e88C"
-
-# The strategy name.
-STRATEGY_NAME = "strategy20240618145216"
-
-# Additional configuration.
-BUCKET_NAME = "vbase-test"
-FOLDER_NAME = "samples/portfolio_history/"
-STRATEGY_FOLDER_NAME = FOLDER_NAME + STRATEGY_NAME
+EXPECTED_RECORD_COUNT = 10
+S3_PREFIX = "vbase-samples/portfolio-history-json"
 
 
-# ## Setup
+# %% [markdown]
+# ## Load exact bytes and verify every expected record
+# %%
+s3_client = create_s3_client_from_env()
+bucket_name = get_env_var_or_fail("AWS_S3_BUCKET")
+collection_cid = get_env_var_or_fail("VBASE_COLLECTION_CID")
 
-# Load the information necessary to call vBase APIs.
-assert load_dotenv(verbose=True, override=True)
-
-# Connect to AWS.
-boto_client = create_s3_client_from_env()
-
-# Connect to vBase.
-vbc = VBaseClient.create_instance_from_env()
-
-# Initialize the strategy dataset object.
-ds_strategy = VBaseDataset(
-    vbc,
-    init_dict={
-        "name": STRATEGY_NAME,
-        "owner": STRATEGY_OWNER,
-        "record_type_name": "VBaseJsonObject",
-        "records": [],
-    },
-)
-
-# Additional Setup.
-if "ipykernel" not in sys.modules and "IPython" in sys.modules:
-    # Configure plot backend if running in interactive mode.
-    # The following line creates overactive warning.
-    # We want the import within the clause.
-    # pylint: disable=ungrouped-imports
-    import matplotlib
-
-    # Set plot backend to WebAgg.
-    # This backend provides interactive web charts.
-    matplotlib.use("WebAgg")
-
-
-# ## Validate the Portfolio History
-
-# Load the portfolio records.
-ds_strategy = init_vbase_dataset_from_s3_objects(
-    ds_strategy, boto_client, BUCKET_NAME, STRATEGY_FOLDER_NAME
-)
-
-# Restore timestamps using the blockchain stamps.
-assert ds_strategy.try_restore_timestamps_from_index()
-
-# Verify the portfolio records.
-assert ds_strategy.verify_commitments()
-
-# Build and display the verified portfolio records.
-l_receipts = ds_strategy.get_commitment_receipts()
-html = "<table>"
-html += "<tr><th>num</th><th>portfolio</th><th>portfolio_hash</th><th>tx</th></tr>"
-# Populate the table with data.
-for i, record in enumerate(ds_strategy.records):
-    html += (
-        f"<tr><td>{i}</td><td>{record.data}</td><td>{record.cid}</td>"
-        f"<td>{l_receipts[i]['transactionHash']}</td></tr>"
+with create_vbase_client_from_env() as client:
+    owner_address = (
+        os.getenv("VBASE_OWNER_ADDRESS") or client.get_current_user().last_address
     )
-html += "</table>"
-# Check if the script is running in an interactive mode or a Jupyter notebook.
-if "ipykernel" not in sys.modules and "IPython" in sys.modules:
-    pprint.pprint(html)
-else:
-    # Load support for HTML display, if necessary.
-    from IPython.display import display, HTML
+    if not owner_address:
+        raise RuntimeError("Set VBASE_OWNER_ADDRESS or configure an account address.")
 
-    # Display the HTML table in the Jupyter notebook.
-    display(HTML(html))
+    collection = get_collection_by_cid(client, collection_cid, owner_address)
+    collection_prefix = f"{S3_PREFIX}/{collection.cid}"
+    s3_objects = read_s3_objects(s3_client, bucket_name, collection_prefix)
+    expected_keys = [
+        f"{collection_prefix}/portfolio_{period:02d}.json"
+        for period in range(EXPECTED_RECORD_COUNT)
+    ]
+    validate_s3_object_keys(s3_objects, expected_keys, "JSON portfolio history")
 
+    records = []
+    for object_key, record_bytes in s3_objects:
+        portfolio = json.loads(record_bytes.decode("utf-8"))
+        if not isinstance(portfolio, dict):
+            raise ValueError(f"Expected a JSON object in {object_key}.")
+        records.append(
+            {
+                "object_key": object_key,
+                "data": portfolio,
+                "object_cid": get_cid_for_bytes(record_bytes),
+            }
+        )
 
-# ## Display Portfolio Analytics
+    object_cids = [record["object_cid"] for record in records]
+    if len({cid.lower() for cid in object_cids}) != len(object_cids):
+        raise RuntimeError("The JSON portfolio history contains duplicate record CIDs.")
 
-# Convert strategy data to a Pandas DataFrame.
-df_strategy = ds_strategy.get_pd_data_frame()
-print("Strategy DataFrame:\n", df_strategy)
+    receipts_by_cid = wait_for_stamps(
+        client,
+        object_cids,
+        collection.cid,
+        user_address=owner_address,
+    )
+    verification_frame = pd.DataFrame(
+        [
+            {
+                "object_key": record["object_key"],
+                "object_cid": record["object_cid"],
+                "timestamp": receipts_by_cid[record["object_cid"].lower()].timestamp,
+                "transaction_hash": receipts_by_cid[
+                    record["object_cid"].lower()
+                ].transaction_hash,
+            }
+            for record in records
+        ]
+    )
+    print(verification_frame)
 
-# Plot validated strategy return.
-random.seed(1)
-df_asset_returns = pd.DataFrame(
-    (np.random.random(size=df_strategy.shape) * 2 - 1) / 20,
-    index=df_strategy.index,
-    columns=df_strategy.columns,
-)
-df_strategy_returns = (df_strategy.shift(1) * df_asset_returns).sum(axis=1)
-print("\nReturns DataFrame:\n", df_strategy_returns)
-(1 + df_strategy_returns).cumprod().fillna(1).plot()
-plt.show()
+    strategy_frame = pd.DataFrame(
+        [record["data"] for record in records],
+        index=pd.to_datetime(
+            [
+                receipts_by_cid[record["object_cid"].lower()].timestamp
+                for record in records
+            ],
+            utc=True,
+        ),
+    ).sort_index()
+    strategy_frame.index.name = "timestamp"
+    print(strategy_frame)
 
+    random_generator = np.random.default_rng(1)
+    asset_returns = pd.DataFrame(
+        (random_generator.random(size=strategy_frame.shape) * 2 - 1) / 20,
+        index=strategy_frame.index,
+        columns=strategy_frame.columns,
+    )
+    strategy_returns = (strategy_frame.shift(1) * asset_returns).sum(axis=1)
+    (1 + strategy_returns).cumprod().fillna(1).plot()
 
-# ## Summary
-
-"""Process
-* We used only a link to the portfolio history, strategy name and owner.
-* We validated data integrity and timestamps using public blockchain records.
-* We converted the historical data to a Pandas DataFrame for easy analysis.
-"""
-
-"""Key Implications
-* The track record and all analytics can be independently calculated and verified forever.
-* Data can be validated with a single line.
-* vBase integrates smoothly with existing data science libraries and workflows.
-"""
+    print("Every expected JSON portfolio record has a matching vBase stamp.")

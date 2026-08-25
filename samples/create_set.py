@@ -1,21 +1,40 @@
-# # create_set
+# %% [markdown]
+# # Create a Collection
+#
+# Create a vBase collection and confirm that it is available.
+# %%
 
-"""This sample creates and validates a vBase set."""
+from utils import create_vbase_client_from_env, get_or_create_collection
 
-import pprint
-
-from vbase import VBaseClient
-
-# Name for the test set to create.
-SET_NAME = "TestDataset"
+COLLECTION_NAME = "Python Sample Collection"
+COLLECTION_DESCRIPTION = "A collection created by the vBase Python samples."
 
 
-# Initialize vBase using environment variables.
-vbc = VBaseClient.create_instance_from_env()
+# %% [markdown]
+# ## Create and retrieve the collection
+# %%
+with create_vbase_client_from_env() as client:
+    collection = get_or_create_collection(
+        client,
+        COLLECTION_NAME,
+        COLLECTION_DESCRIPTION,
+    )
+    owner_address = client.get_current_user().last_address
+    if not owner_address:
+        raise RuntimeError("The current vBase account does not have an owner address.")
 
-# Create the set commitment.
-receipt = vbc.add_named_set(SET_NAME)
-print(f"add_named_set() receipt:\n{pprint.pformat(receipt)}")
+    matching_collection = next(
+        (
+            item
+            for item in client.get_collections(user_address=owner_address)
+            if item.cid.lower() == collection.cid.lower()
+        ),
+        None,
+    )
+    if matching_collection is None:
+        raise RuntimeError("The collection could not be retrieved after creation.")
 
-# Validate the set commitment.
-assert vbc.user_named_set_exists(vbc.get_default_user(), SET_NAME)
+    print(f"Collection: {collection.name}")
+    print(f"Collection CID: {collection.cid}")
+    print(f"Owner address: {owner_address}")
+    print("The collection is ready to receive stamps.")

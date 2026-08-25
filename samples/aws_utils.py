@@ -1,276 +1,115 @@
-"""
-AWS utilities
-"""
+"""AWS S3 helpers shared by the storage-backed samples."""
 
-from io import StringIO
-import json
-import os
-import pprint
-from typing import List, Union
-import boto3
-from dotenv import load_dotenv
-import pandas as pd
-
-from vbase import VBaseDataset
+from typing import Any, List, Tuple
 
 
-def create_s3_client_from_env() -> boto3.client:
-    """
-    Create a boto3.client object using the environment variables.
+def create_s3_client_from_env() -> Any:
+    """Create an S3 client using boto3's standard credential resolution."""
+    from dotenv import load_dotenv
+    import boto3
 
-    :return: The boto3.client object.
-    """
-    load_dotenv(verbose=True, override=True)
-    # Initialize the AWS session and the S3 client.
-    aws_session = boto3.Session(
-        aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
-        aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
-    )
-    # Create an S3 client
-    boto3_client = aws_session.client("s3")
-    return boto3_client
+    load_dotenv(verbose=True, override=False)
+    return boto3.client("s3")
 
 
-def get_s3_objects(
-    boto_client: boto3.client, bucket_name: str, folder_name: str
-) -> Union[List[dict], None]:
-    """
-    Get S3 objects.
-
-    :param boto_client: The boto3.client object.
-    :param bucket_name: The bucket name.
-    :param folder_name: The folder name within the bucket.
-    """
-    # Ensure the folder names end with a "/".
-    if not folder_name.endswith("/"):
-        folder_name += "/"
-    # Note that this assumes small datasets and does not implement paging.
-    s3_objs = boto_client.list_objects_v2(Bucket=bucket_name, Prefix=folder_name)
-    if "Contents" in s3_objs:
-        return s3_objs["Contents"]
-    return None
+def list_s3_objects(
+    s3_client: Any,
+    bucket_name: str,
+    prefix: str,
+) -> List[dict]:
+    """List every object below an S3 prefix in stable key order."""
+    normalized_prefix = prefix.rstrip("/") + "/"
+    paginator = s3_client.get_paginator("list_objects_v2")
+    objects = []
+    for page in paginator.paginate(Bucket=bucket_name, Prefix=normalized_prefix):
+        objects.extend(page.get("Contents", []))
+    return sorted(objects, key=lambda item: item["Key"])
 
 
-def print_s3_objects(boto_client: boto3.client, bucket_name: str, folder_name: str):
-    """
-    Print S3 objects.
-
-    :param boto_client: The boto3.client object.
-    :param bucket_name: The bucket name.
-    :param folder_name: The folder name within the bucket.
-    """
-    s3_objs = get_s3_objects(boto_client, bucket_name, folder_name)
-    if s3_objs is None:
-        print("No objects")
-    else:
-        pprint.pprint(
-            [
-                {"object": s3_obj["Key"], "timestamp": str(s3_obj["LastModified"])}
-                for s3_obj in s3_objs
-            ]
-        )
-
-
-def copy_s3_bucket(
-    boto_client: boto3.client,
-    source_bucket_name: str,
-    source_folder_name: str,
-    destination_bucket_name: str,
-    destination_folder_name: str,
-):
-    """
-    Copy an S3 bucket.
-
-    :param boto_client: The boto3.client object.
-    :param source_bucket_name: The source bucket name.
-    :param source_folder_name: The folder name within the source bucket.
-    :param destination_bucket_name: The destination bucket name.
-    :param destination_folder_name: The folder name within the destination bucket.
-    """
-    # Ensure the folder names end with a "/".
-    if not source_folder_name.endswith("/"):
-        source_folder_name += "/"
-    if not destination_folder_name.endswith("/"):
-        destination_folder_name += "/"
-
-    # Let exceptions propagate to the caller.
-    # Create a paginator to handle pagination.
-    paginator = boto_client.get_paginator("list_objects_v2")
-    for page in paginator.paginate(
-        Bucket=source_bucket_name, Prefix=source_folder_name
-    ):
-        # See if any contents were returned for the page.
-        if "Contents" in page:
-            for obj in page["Contents"]:
-                # Adjust the destination key to include the destination folder
-                destination_key = obj["Key"].replace(
-                    source_folder_name, destination_folder_name, 1
-                )
-                copy_source = {"Bucket": source_bucket_name, "Key": obj["Key"]}
-                # Copy the object to the new destination key in the destination bucket.
-                boto_client.copy(copy_source, destination_bucket_name, destination_key)
-                print(
-                    f"Copied {obj['Key']} from {source_bucket_name} to "
-                    f"{destination_bucket_name}/{destination_key}"
-                )
-
-
-def init_vbase_dataset_from_s3_objects(
-    ds: VBaseDataset, boto_client: boto3.client, bucket_name: str, folder_name: str
-) -> VBaseDataset:
-    """
-    Get S3 objects and add them to a dataset.
-
-    :param ds: The vBaseDataset object to initialize.
-    :param boto_client: The boto3.client object.
-    :param bucket_name: The bucket name.
-    :param folder_name: The folder name within the bucket.
-    """
-    # Get all the objects to add to the dataset.
-    # Note that this assumes small datasets and does not implement paging.
-    s3_objs = get_s3_objects(boto_client, bucket_name, folder_name)
-    if s3_objs is None:
-        print("No objects")
-        return ds
-    # Append object data and records to the dataset.
-    ds.records = []
-    ds.timestamps = []
-    for s3_obj in s3_objs:
-        response = boto_client.get_object(Bucket=bucket_name, Key=s3_obj["Key"])
-        str_data = response["Body"].read().decode("utf-8")
-        ds.records.append(ds.record_type(str_data))
-        ds.timestamps.append(
-            str(pd.Timestamp(response["LastModified"]).tz_convert("UTC"))
-        )
-    return ds
-
-
-def init_vbase_dataset_from_long_csv(ds: VBaseDataset, csv_long: str) -> VBaseDataset:
-    """
-    Initialize a dataset using a CSV string in a long format.
-
-    Consider the following two CSVs:
-
-        sym,wt
-        SPY,0.93
-        TSLA,-0.12
-
-        sym,wt
-        SPY,-0.63
-        TSLA,-0.77
-
-    They can be concatenated into a long format CSV
-    along with their object timestamps as follows:
-
-        t,sym,wt
-        2024-11-05 20:45:12+00:00,SPY,0.93
-        2024-11-05 20:45:12+00:00,TSLA,-0.12
-        2024-11-05 20:45:22+00:00,SPY,-0.63
-        2024-11-05 20:45:22+00:00,TSLA,-0.77
-
-    The function takes the long CSV and initializes the dataset.
-
-    :param ds: The vBaseDataset object to initialize.
-    :param csv_long: The long CSV string.
-    """
-    df_ds = pd.read_csv(StringIO(csv_long))
-
-    # Extract the unique timestamps from the first column.
-    timestamps = df_ds.iloc[:, 0].unique()
-
-    # Iterate over the timestamps and add the records to the dataset.
-    for timestamp in timestamps:
-        df_record = df_ds[df_ds.iloc[:, 0] == timestamp]
-        # Drop the timestamp column.
-        df_record = df_record.iloc[:, 1:]
-        # Convert the record to a CSV string.
-        csv_record = df_record.to_csv(index=False)
-        # Append the record to the dataset.
-        ds.records.append(ds.record_type(csv_record))
-        ds.timestamps.append(str(pd.Timestamp(timestamp).tz_convert("UTC")))
-    return ds
-
-
-def create_s3_objects_from_dataset(
-    ds: VBaseDataset, boto_client: boto3.client, bucket_name: str, folder_name: str
-) -> dict:
-    """
-    Create S3 objects for dataset records.
-
-    :param ds: The vBaseDataset object.
-    :param boto_client: The boto3.client object.
-    :param bucket_name: The bucket name.
-    :param folder_name: The folder name within the bucket.
-    :return: The operation receipts.
-    """
-    if not folder_name.endswith("/"):
-        folder_name += "/"
-    # Append dataset name to folder name, if necessary.
-    if not folder_name.endswith(f"{ds.name}/"):
-        folder_name += f"{ds.name}/"
-
-    # Loop over the dataset records,
-    # creating S3 objects for them.
-    l_s3_receipts = []
-    for i, record in enumerate(ds.records):
-        record_json = json.dumps(record.get_dict())
-        s3_obj_name = f"{folder_name}obj_{i}.json"
-        s3_receipt = boto_client.put_object(
-            Bucket=bucket_name, Key=s3_obj_name, Body=record_json
-        )
-        print(f"Created S3 object: {s3_obj_name}")
-        l_s3_receipts.append(s3_receipt)
-    return l_s3_receipts
+def print_s3_objects(s3_client: Any, bucket_name: str, prefix: str) -> None:
+    """Print object keys and storage timestamps below a prefix."""
+    objects = list_s3_objects(s3_client, bucket_name, prefix)
+    if not objects:
+        print("No objects found.")
+        return
+    for item in objects:
+        print(f"{item['Key']}: {item['LastModified']}")
 
 
 def write_s3_object(
-    boto_client: boto3.client,
+    s3_client: Any,
     bucket_name: str,
-    folder_name: str,
+    prefix: str,
     file_name: str,
-    data: str,
-) -> dict:
-    """
-    Write an object to S3.
-
-    :param ds: The vBaseDataset object.
-    :param boto_client: The boto3.client object.
-    :param bucket_name: The bucket name.
-    :param folder_name: The folder name within the bucket.
-    :return: The operation receipt.
-    """
-    if not folder_name.endswith("/"):
-        folder_name += "/"
-    # Append dataset name to folder name, if necessary.
-    if not folder_name.endswith("/"):
-        folder_name += "/"
-
-    s3_obj_name = folder_name + file_name
-    s3_receipt = boto_client.put_object(Bucket=bucket_name, Key=s3_obj_name, Body=data)
-    print(f"Created S3 object: {s3_obj_name}")
-    return s3_receipt
-
-
-def read_s3_object(
-    boto_client: boto3.client, bucket_name: str, folder_name: str, file_name: str
+    data: bytes,
 ) -> str:
-    """
-    Read an object to S3.
+    """Write exact bytes to S3 and return the object key."""
+    object_key = f"{prefix.rstrip('/')}/{file_name}"
+    s3_client.put_object(Bucket=bucket_name, Key=object_key, Body=data)
+    return object_key
 
-    :param ds: The vBaseDataset object.
-    :param boto_client: The boto3.client object.
-    :param bucket_name: The bucket name.
-    :param folder_name: The folder name within the bucket.
-    :return: the object string.
-    """
-    if not folder_name.endswith("/"):
-        folder_name += "/"
-    # Append dataset name to folder name, if necessary.
-    if not folder_name.endswith("/"):
-        folder_name += "/"
 
-    s3_obj_name = folder_name + file_name
+def read_s3_object(s3_client: Any, bucket_name: str, object_key: str) -> bytes:
+    """Read exact bytes from one S3 object."""
+    response = s3_client.get_object(Bucket=bucket_name, Key=object_key)
+    body = response["Body"]
+    try:
+        return body.read()
+    finally:
+        close = getattr(body, "close", None)
+        if close is not None:
+            close()
 
-    response = boto_client.get_object(Bucket=bucket_name, Key=s3_obj_name)
-    str_data = response["Body"].read().decode("utf-8")
-    return str_data
+
+def read_s3_objects(
+    s3_client: Any,
+    bucket_name: str,
+    prefix: str,
+) -> List[Tuple[str, bytes]]:
+    """Read every object below a prefix in stable key order."""
+    return [
+        (item["Key"], read_s3_object(s3_client, bucket_name, item["Key"]))
+        for item in list_s3_objects(s3_client, bucket_name, prefix)
+    ]
+
+
+def validate_s3_object_keys(
+    objects: List[Tuple[str, bytes]],
+    expected_keys: List[str],
+    history_name: str,
+) -> None:
+    """Require an S3 history to contain exactly the expected object keys."""
+    actual = {key for key, _ in objects}
+    expected = set(expected_keys)
+    missing = sorted(expected - actual)
+    unexpected = sorted(actual - expected)
+    if missing or unexpected:
+        raise RuntimeError(
+            f"The S3 {history_name} does not match the expected sample files. "
+            f"Missing: {missing or 'none'}; unexpected: {unexpected or 'none'}."
+        )
+
+
+def copy_s3_prefix(
+    s3_client: Any,
+    source_bucket_name: str,
+    source_prefix: str,
+    destination_bucket_name: str,
+    destination_prefix: str,
+) -> List[str]:
+    """Copy every object below one S3 prefix to another prefix."""
+    normalized_source = source_prefix.rstrip("/") + "/"
+    normalized_destination = destination_prefix.rstrip("/") + "/"
+    destination_keys = []
+
+    for item in list_s3_objects(s3_client, source_bucket_name, source_prefix):
+        relative_key = item["Key"][len(normalized_source) :]
+        destination_key = normalized_destination + relative_key
+        s3_client.copy(
+            {"Bucket": source_bucket_name, "Key": item["Key"]},
+            destination_bucket_name,
+            destination_key,
+        )
+        destination_keys.append(destination_key)
+
+    return destination_keys

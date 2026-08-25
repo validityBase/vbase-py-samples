@@ -1,68 +1,72 @@
-# # add_string_dataset_record_async
-
-"""This sample creates a dataset comprising string records
-if one does not exist and adds a record to the dataset.
-The sample uses async methods to commit dataset and records
-and illustrates async operation using asyncio.
-
-The sample demonstrates the higher order vBase dataset and string record abstractions
-that hide the details of object and record content id (CID) calculation (hashing).
-This example builds on the create_set.py code and omits redundant comments.
-"""
+# %% [markdown]
+# # Use the vBase API Client from Async Code
+#
+# Run the synchronous vBase API workflow without blocking the event loop.
+# %%
 
 import asyncio
-import pprint
-import time
+from functools import partial
 
-from vbase import (
-    VBaseClient,
-    VBaseDatasetAsync,
-    VBaseStringObject,
+from utils import (
+    create_vbase_client_from_env,
+    get_or_create_collection,
+    wait_for_stamp,
 )
 
-# Name for the test set to create.
-SET_NAME = "TestDataset"
+COLLECTION_NAME = "Python Async Sample"
+COLLECTION_DESCRIPTION = "Records created from asynchronous Python code."
+RECORD = "A record stamped without blocking the event loop"
 
 
+# %% [markdown]
+# ## Define the worker workflow
+# %%
+def stamp_and_verify_record(record):
+    """Run one complete workflow in a worker-owned client session."""
+    with create_vbase_client_from_env() as client:
+        collection = get_or_create_collection(
+            client,
+            COLLECTION_NAME,
+            COLLECTION_DESCRIPTION,
+        )
+        stamp = client.create_stamp(
+            data=record,
+            file_name="async-text-record.txt",
+            collection_cid=collection.cid,
+        )
+        receipt = stamp.commitment_receipt
+        verified_receipt = wait_for_stamp(
+            client,
+            receipt.object_cid,
+            collection.cid,
+            filter_by_user=True,
+            transaction_hash=receipt.transaction_hash,
+        )
+        return collection, verified_receipt
+
+
+async def stamp_record_without_blocking(record):
+    """Move the synchronous network work to the default executor."""
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(None, partial(stamp_and_verify_record, record))
+
+
+# %% [markdown]
+# ## Run without blocking the event loop
+# %%
 async def main():
-    """
-    Create the dataset and add records asynchronously.
-    """
-
-    # Initialize vBase using environment variables.
-    vbc = VBaseClient.create_instance_from_env()
-
-    # Create the dataset object, if necessary.
-    # Call the async VBaseDatasetAsync.create() factory method
-    # to start dataset creation.
-    start_time = time.time()
-    task = asyncio.create_task(
-        VBaseDatasetAsync.create(vbc, name=SET_NAME, record_type=VBaseStringObject)
+    """Stamp a record while allowing the event loop to remain responsive."""
+    collection, receipt = await stamp_record_without_blocking(RECORD)
+    print(f"Collection: {collection.name} ({collection.cid})")
+    print(f"Stamped CID: {receipt.object_cid}")
+    print(f"Timestamp: {receipt.timestamp}")
+    print(
+        "The worker completed and verified the stamp without blocking the event loop."
     )
-    elapsed_time = time.time() - start_time
-    print(f"VBaseDatasetAsync.create(): create_task took {elapsed_time} seconds.")
-    # Await for dataset creation.
-    start_time = time.time()
-    ds = await task
-    elapsed_time = time.time() - start_time
-    print(f"VBaseDatasetAsync.create(): await took {elapsed_time} seconds.")
-
-    # Add a record to the dataset.
-    # Call the async add_record_async() method
-    # to start record creation.
-    start_time = time.time()
-    task = asyncio.create_task(ds.add_record_async("TestRecord"))
-    elapsed_time = time.time() - start_time
-    print(f"ds.add_record_async(record_data) create_task took {elapsed_time} seconds.")
-    # Await for record creation.
-    start_time = time.time()
-    receipt = await task
-    elapsed_time = time.time() - start_time
-    print(f"ds.add_record_async(record_data) await took {elapsed_time} seconds.")
-    print(f"add_record_async() receipt:\n{pprint.pformat(receipt)}")
-
-    # Validate the dataset commitments.
-    assert ds.verify_commitments()[0]
 
 
-asyncio.run(main())
+# NOTEBOOK_ONLY: await main()
+# SCRIPT_ONLY_BEGIN
+if __name__ == "__main__":
+    asyncio.run(main())
+# SCRIPT_ONLY_END

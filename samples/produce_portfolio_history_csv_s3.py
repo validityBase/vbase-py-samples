@@ -1,141 +1,90 @@
-# # Strategy Stamper Demo
+# %% [markdown]
+# # Produce a CSV Portfolio History in S3
+#
+# Stamp exact CSV portfolio bytes privately and store them in Amazon S3.
+# %%
 
-"""This sample creates a tamper-proof portfolio track record."""
-
-# ## Imports
-
-from datetime import datetime
-from io import StringIO
-import os
-import pprint
+from datetime import datetime, timezone
 import random
-from dotenv import load_dotenv
+from uuid import uuid4
+
 import pandas as pd
 
-from vbase import (
-    VBaseClient,
-    ForwarderCommitmentService,
-    VBaseDataset,
-    VBaseStringObject,
+from aws_utils import create_s3_client_from_env, write_s3_object
+from utils import (
+    create_vbase_client_from_env,
+    get_cid_for_bytes,
+    get_env_var_or_fail,
+    wait_for_stamps,
 )
 
-from aws_utils import (
-    create_s3_client_from_env,
-    write_s3_object,
-)
-
-# ## Configuration
-
-# The trader's sovereign cryptographic identity.
-PRIVATE_KEY = "0xabfc6c981e4e9f1f26175bc40aef73248d467617309c5e04e83da34171999076"
-
-# The strategy name.
-STRATEGY_NAME = "strategy" + datetime.now().strftime("%Y%m%d%H%M%S")
-
-# Additional configuration.
-BUCKET_NAME = "vbase-test"
 N_TIME_PERIODS = 5
-FOLDER_NAME = "samples/portfolio_history/"
-STRATEGY_FOLDER_NAME = FOLDER_NAME + STRATEGY_NAME
-ADDRESS = "0xA401F59d7190E4448Eb60691E3bc78f1Ef03e88C"
+S3_PREFIX = "vbase-samples/portfolio-history-csv"
+RUN_ID = f"{datetime.now(timezone.utc):%Y%m%dT%H%M%SZ}-{uuid4().hex[:8]}"
+COLLECTION_NAME = f"Python CSV Portfolio Sample {RUN_ID}"
+COLLECTION_DESCRIPTION = "A verifiable CSV portfolio history stored in Amazon S3."
 
 
-# ## Setup
+# %% [markdown]
+# ## Stamp exact bytes and write them to S3
+# %%
+s3_client = create_s3_client_from_env()
+bucket_name = get_env_var_or_fail("AWS_S3_BUCKET")
 
-# Load the information necessary to call vBase APIs.
-load_dotenv(verbose=True, override=True)
-forwarder_url = os.environ.get("VBASE_FORWARDER_URL")
-api_key = os.environ.get("VBASE_API_KEY")
-
-# Connect to vBase.
-vbc = VBaseClient(
-    ForwarderCommitmentService(
-        forwarder_url,
-        api_key,
-        PRIVATE_KEY,
+with create_vbase_client_from_env() as client:
+    collection = client.create_collection(
+        name=COLLECTION_NAME,
+        description=COLLECTION_DESCRIPTION,
     )
-)
+    owner_address = client.get_current_user().last_address
+    if not owner_address:
+        raise RuntimeError("The current vBase account does not have an owner address.")
 
-# Connect to AWS.
-boto_client = create_s3_client_from_env()
+    collection_prefix = f"{S3_PREFIX}/{collection.cid}"
+    object_cids = []
+    random_generator = random.Random(1234)
 
+    for period in range(N_TIME_PERIODS):
+        portfolio_frame = pd.DataFrame(
+            {
+                "sym": ["SPY", "TSLA", "BTCUSD", "JPM:CDS:5"],
+                "wt": [round(random_generator.random() * 2 - 1, 2) for _ in range(4)],
+            }
+        )
+        record_bytes = portfolio_frame.to_csv(
+            index=False,
+            lineterminator="\n",
+        ).encode("utf-8")
+        object_cid = get_cid_for_bytes(record_bytes)
+        object_key = write_s3_object(
+            s3_client,
+            bucket_name,
+            collection_prefix,
+            f"portfolio_{period:02d}.csv",
+            record_bytes,
+        )
+        stamp = client.create_stamp(
+            data_cid=object_cid,
+            collection_cid=collection.cid,
+            store_stamped_file=False,
+            idempotent=True,
+            idempotency_window=0,
+        )
+        if stamp.commitment_receipt.object_cid.lower() != object_cid.lower():
+            raise RuntimeError("vBase returned a different CID than the stamped bytes.")
 
-# ## Create and Stamp Portfolios
+        object_cids.append(object_cid)
+        print(f"{object_key}: {object_cid}")
 
-# Create the vBase dataset object for the strategy.
-ds_strategy = VBaseDataset(vbc, STRATEGY_NAME, VBaseStringObject)
-print(f"Created dataset: {pprint.pformat(ds_strategy.to_dict())}")
-
-# Create sample portfolios.
-random.seed(1234)
-l_port_csvs = []
-l_timestamps = []
-for i_trade in range(N_TIME_PERIODS):
-    # Create a random portfolio in [-1, 1].
-    # We can use any identifier for which returns can be verified.
-    port_csv = pd.DataFrame(
-        {
-            "sym": ["SPY", "TSLA", "BTCUSD", "JPM:CDS:5"],
-            "wt": [round(random.random() * 2 - 1, 2) for _ in range(4)],
-        }
-    ).to_csv(index=False)
-    l_port_csvs.append(port_csv)
-    print(f"Portfolio:\n{port_csv}")
-
-    # Add the portfolio to the vBase dataset object.
-    receipt = ds_strategy.add_record(port_csv)
-    print(f"Stamp receipt: {pprint.pformat(receipt)}")
-    l_timestamps.append(receipt["timestamp"])
-
-    # Save the portfolio.
-    write_s3_object(
-        boto_client,
-        BUCKET_NAME,
-        STRATEGY_FOLDER_NAME,
-        f"portfolio_{i_trade}.csv",
-        port_csv,
+    wait_for_stamps(
+        client,
+        object_cids,
+        collection.cid,
+        user_address=owner_address,
     )
 
-# Create a long portfolio history CSV.
-# We could create it from the above DataFrames,
-# but we will show how to concatenate the CSVs.
-df_ports_long = pd.concat(
-    [
-        pd.read_csv(StringIO(port_csv)).assign(t=l_timestamps[i])[["t", "sym", "wt"]]
-        for i, port_csv in enumerate(l_port_csvs)
-    ],
-    axis=0,
-)
-csv_ports_long = df_ports_long.to_csv(index=False)
-
-# Save the long portfolio history CSV.
-write_s3_object(
-    boto_client,
-    BUCKET_NAME,
-    STRATEGY_FOLDER_NAME,
-    "portfolio_long.csv",
-    csv_ports_long,
-)
-
-# Display the shareable portfolio history URL.
-print(
-    "Data saved to: "
-    "http://vbase-test.s3-website-us-east-1.amazonaws.com/?prefix="
-    f"{STRATEGY_FOLDER_NAME}"
-)
-print(f"Strategy info: name = {ds_strategy.name}, owner = {ds_strategy.owner}")
-
-
-# ## Summary
-
-"""Process
-* We used only a private key and portfolio weights as inputs.
-* We created a tamper-proof history of portfolio records.
-* Portfolio data was not shared with vBase or any other third party.
-"""
-
-"""Key Implications
-* We can produce an easily verifiable track record.
-* We can selectively share the portfolio history.
-* The track record and all analytics can be independently calculated and verified forever.
-"""
+    print(f"Portfolio history: s3://{bucket_name}/{collection_prefix}/")
+    print(f"Collection name: {collection.name}")
+    print(f"Collection CID: {collection.cid}")
+    print(f"Owner address: {owner_address}")
+    print("Every stored CSV record has a matching vBase stamp.")

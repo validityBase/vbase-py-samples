@@ -1,6 +1,4 @@
-"""
-vBase Python Software Development Kit (SDK) Samples
-"""
+"""vBase REST API Python client samples."""
 
 from setuptools import find_packages, setup
 
@@ -15,7 +13,7 @@ setup(
     version="0.0.1",
     author="PIT Labs, Inc.",
     author_email="tech@vbase.com",
-    description="vBase Python Software Development Kit (SDK) Samples",
+    description="vBase REST API Python Client Samples",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/validityBase/vbase-py-samples",
