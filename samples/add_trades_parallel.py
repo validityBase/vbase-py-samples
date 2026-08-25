@@ -1,14 +1,16 @@
 # %% [markdown]
-# # Stamp Trades in Parallel
+# # Coordinate Concurrent Trade Workflows
 #
-# Stamp several independent trade histories concurrently for one account.
-# Each worker creates its own client from the same account API key. Modeling
-# separate owners would require a separate user-owned API key for each owner.
+# Prepare and verify several independent trade histories in worker threads.
+# Each worker creates its own client from the same account API key. vBase writes
+# are serialized because concurrent on-chain transactions for one account can
+# conflict. True parallel writes require one user-owned API key per worker.
 # %%
 
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 import random
+from threading import Lock
 import time
 from uuid import uuid4
 
@@ -17,18 +19,30 @@ from utils import create_vbase_client_from_env, wait_for_stamps
 N_STRATEGIES = 5
 N_TRADES = 10
 RUN_ID = f"{datetime.now(timezone.utc):%Y%m%dT%H%M%SZ}-{uuid4().hex[:8]}"
+ACCOUNT_WRITE_LOCK = Lock()
+
+
+# %% [markdown]
+# ## Create the strategy collections
+# %%
+def create_strategy_collections():
+    """Create collections sequentially before starting the worker threads."""
+    with create_vbase_client_from_env() as client:
+        return [
+            client.create_collection(
+                name=f"Python Parallel Trades {RUN_ID} Strategy {strategy_index}",
+                description="A strategy created by the parallel trades sample.",
+            )
+            for strategy_index in range(N_STRATEGIES)
+        ]
 
 
 # %% [markdown]
 # ## Define one worker-owned stamping workflow
 # %%
-def stamp_strategy(strategy_index):
-    """Create and verify one strategy using a worker-owned API client."""
+def stamp_strategy(strategy_index, collection):
+    """Stamp and verify one strategy using a worker-owned API client."""
     with create_vbase_client_from_env() as client:
-        collection = client.create_collection(
-            name=f"Python Parallel Trades {RUN_ID} Strategy {strategy_index}",
-            description="A strategy created by the parallel trades sample.",
-        )
         owner_address = client.get_current_user().last_address
         if not owner_address:
             raise RuntimeError(
@@ -45,13 +59,14 @@ def stamp_strategy(strategy_index):
                 "symbol": "ETHUSD",
                 "size": round(random_generator.random() * 2 - 1, 2),
             }
-            stamp = client.create_stamp(
-                data=trade,
-                file_name=f"trade_{trade_id:02d}.json",
-                collection_cid=collection.cid,
-                idempotent=True,
-                idempotency_window=0,
-            )
+            with ACCOUNT_WRITE_LOCK:
+                stamp = client.create_stamp(
+                    data=trade,
+                    file_name=f"trade_{trade_id:02d}.json",
+                    collection_cid=collection.cid,
+                    idempotent=True,
+                    idempotency_window=0,
+                )
             trades.append(trade)
             stamp_receipts.append(stamp.commitment_receipt)
 
@@ -67,9 +82,16 @@ def stamp_strategy(strategy_index):
 # %% [markdown]
 # ## Run the strategy workflows concurrently
 # %%
+strategy_collections = create_strategy_collections()
 start_time = time.monotonic()
 with ThreadPoolExecutor(max_workers=N_STRATEGIES) as executor:
-    results = list(executor.map(stamp_strategy, range(N_STRATEGIES)))
+    results = list(
+        executor.map(
+            stamp_strategy,
+            range(N_STRATEGIES),
+            strategy_collections,
+        )
+    )
 elapsed_seconds = time.monotonic() - start_time
 
 for result_collection, result_trades, result_receipts in results:
