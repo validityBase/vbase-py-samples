@@ -12,8 +12,8 @@ Configure `VBASE_API_KEY` and the AWS variables from the [Quickstart](quickstart
 
 1. Create a unique vBase collection.
 2. Encode each record to exact UTF-8 bytes and calculate its SHA3-256 CID locally.
-3. Stamp each CID with `store_stamped_file=False`, so record contents are not uploaded to vBase.
-4. Write the exact bytes to an S3 source prefix.
+3. Write the exact bytes to an S3 source prefix.
+4. Stamp each CID with `store_stamped_file=False`, so record contents are not uploaded to vBase.
 5. Copy the objects to a new prefix. S3 storage timestamps may change, but the bytes and CIDs must remain identical.
 6. Recalculate every copied object's CID and match it to a receipt with the expected collection and owner.
 7. Build a provenance table containing both the copied object's S3 timestamp and its trusted vBase stamp timestamp.
