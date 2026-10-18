@@ -23,7 +23,7 @@ on:
 jobs:
   doc-sync:
     name: Analyse docs
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read   # read repo files for doc content loading
       actions: read    # read workflow runs via the Actions API
