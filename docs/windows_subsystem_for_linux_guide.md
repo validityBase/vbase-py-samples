@@ -48,6 +48,8 @@ This tutorial guides you through setting up Windows Subsystem for Linux (WSL) to
    sudo apt install python3 python3-pip python3-venv -y
    ```
 
+   Check that `python3 --version` reports Python 3.11 or newer before continuing. If your Linux distribution provides an older version, install Python 3.11 or newer and use it to create the virtual environment below.
+
 ## 3. Install Git<a href="#install-git" id="install-git"></a>
 
 1. **Install Git:** Run the following command to install git:

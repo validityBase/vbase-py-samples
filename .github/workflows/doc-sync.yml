@@ -1,0 +1,45 @@
+name: Doc Sync
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Analysis scope"
+        type: choice
+        required: true
+        default: from_last_run
+        options:
+          - fresh_check
+          - from_last_run
+          - last_1_week
+          - last_1_month
+          - last_2_months
+          - last_3_months
+          - last_5_months
+          - last_6_months
+          - last_1_year
+          - last_2_years
+
+jobs:
+  doc-sync:
+    name: Analyse docs
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read   # read repo files for doc content loading
+      actions: read    # read workflow runs via the Actions API
+    steps:
+      - name: Checkout
+        # actions/checkout v5.0.1
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+
+      - name: Run doc-sync
+        uses: validityBase/vbase-github-actions/.github/actions/validate-docs-against-product-sources@v1.0.10
+        with:
+          mode: ${{ inputs.mode }}
+          product-repo: ${{ vars.PRODUCT_REPO }}
+          # PRODUCT_REPO_PAT is optional — omit when the product repo is public.
+          product-repo-pat: ${{ secrets.PRODUCT_REPO_PAT }}
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          openai-model: ${{ vars.OPENAI_MODEL || 'gpt-5.4' }}
+          exclude-files: "README.md,CONTRIBUTING.md,docs/conf.py,docs/index.rst,docs/requirements.txt"
+          workflow-filename: doc-sync.yml

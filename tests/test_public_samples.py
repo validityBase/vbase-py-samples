@@ -24,7 +24,7 @@ EXPECTED_NOTEBOOK_NAMES = {
     f"{sample_name}.ipynb" for sample_name in PAIRED_SAMPLE_NAMES
 }
 PUBLIC_CONTENT_FILES = (
-    [REPOSITORY_ROOT / "README.md"]
+    [REPOSITORY_ROOT / "README.md", REPOSITORY_ROOT / "doc-map.json"]
     + sorted((REPOSITORY_ROOT / "docs").glob("*.md"))
     + PYTHON_SAMPLES
     + NOTEBOOKS
