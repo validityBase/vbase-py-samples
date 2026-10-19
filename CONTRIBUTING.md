@@ -27,4 +27,3 @@ To contribute code or documentation, please do the following:
 - Keep notebook outputs and execution counts cleared.
 - Never commit API keys, cloud credentials, private keys, or real account data.
 - Use MyST-compatible Markdown. Keep explicit heading IDs aligned with the heading text and update links when headings change.
-- Install the locked Node dependencies with `npm ci --ignore-scripts` before running Prettier locally.

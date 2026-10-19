@@ -20,7 +20,7 @@ On Windows PowerShell, activate the environment with:
 
 ```powershell
 .\venv\Scripts\Activate.ps1
-python -m pip install -r requirements-win.txt
+python -m pip install -r requirements.txt
 ```
 
 ## 3. Configure the environment <a href="#configure-the-environment" id="configure-the-environment"></a>

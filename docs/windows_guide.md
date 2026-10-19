@@ -4,7 +4,7 @@ Use these steps to run the vBase samples from PowerShell on Windows 10 or 11.
 
 ## 1. Install Python and Git
 
-Install [Python for Windows](https://www.python.org/downloads/windows/) and select **Add Python to PATH** in the installer. The core samples support Python 3.8 or newer; the optional Alpaca sample requires Python 3.10 or newer.
+Install [Python 3.11 or later for Windows](https://www.python.org/downloads/windows/) and select **Add Python to PATH** in the installer.
 
 Install [Git for Windows](https://git-scm.com/download/win) when you want to clone the repository. Git is not required when you use the ZIP download option below.
 
@@ -40,7 +40,7 @@ From the repository root, create and activate a virtual environment, then instal
 python -m venv venv
 .\venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
-python -m pip install -r requirements-win.txt
+python -m pip install -r requirements.txt
 ```
 
 If PowerShell prevents the activation script from running, see Microsoft's [execution policy documentation](https://learn.microsoft.com/powershell/module/microsoft.powershell.core/about/about_execution_policies). In Command Prompt, activate the same environment with `venv\Scripts\activate.bat`.
