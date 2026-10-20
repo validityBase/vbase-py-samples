@@ -6,7 +6,7 @@ Implementation: [`samples/stamp_alpaca_portfolio.py`](https://github.com/validit
 
 ## Prerequisites
 
-Complete the [quickstart](quickstart.md), configure an S3 bucket where your AWS identity can write objects, and create Alpaca API credentials. The official `alpaca-py` SDK requires Python 3.10 or newer.
+Complete the [quickstart](quickstart.md), configure an S3 bucket where your AWS identity can write objects, and create Alpaca API credentials.
 
 Install the optional broker dependency:
 

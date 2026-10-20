@@ -2,7 +2,7 @@
 
 Public Python and Jupyter examples for creating and verifying data provenance with the [`vbase-api`](https://pypi.org/project/vbase-api/) client.
 
-- Python 3.8+ for the core samples
+- Python 3.11 or later
 - vBase REST API authentication with one API key
 - Apache 2.0 license
 
@@ -40,8 +40,6 @@ See the [Quickstart](docs/quickstart.md) for Windows commands, S3 configuration,
 | Provenance restoration | `restore_dataset_provenance`                                                      | Recovering trusted stamp timestamps after S3 copy metadata changes                                        |
 | Broker integrations    | Alpaca and Interactive Brokers                                                    | Normalizing portfolio weights, private CID stamping, and S3 storage                                       |
 | QuantConnect           | `quantconnect_custom_signal_export`                                               | QuantConnect's native `VBaseSignalExport` provider                                                        |
-
-The optional Alpaca sample uses the current `alpaca-py` SDK and requires Python 3.10 or newer.
 
 Every paired `.py` and `.ipynb` sample is generated from the same source. Run `python scripts/sync_notebooks.py` after changing a paired Python sample.
 

@@ -1,2 +1,0 @@
-# Install the same runtime dependencies on Windows.
--r requirements.txt
