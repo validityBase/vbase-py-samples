@@ -11,7 +11,7 @@ with open("requirements.txt", encoding="utf-8") as f:
 setup(
     name="vbase_samples",
     version="0.0.1",
-    author="PIT Labs, Inc.",
+    author="PIT Labs Inc.",
     author_email="tech@vbase.com",
     description="vBase REST API Python Client Samples",
     long_description=long_description,
